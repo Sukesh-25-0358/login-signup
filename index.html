@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Stackly Auth</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<style>
+body {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.font-welcome-heading {
+  font-family: "Times New Roman", Georgia, serif;
+  letter-spacing: 0.55em;
+  font-weight: 600;
+}
+
+.error-text {
+  font-size: 11px;
+  color: #ffb4b4;
+  margin-top: 4px;
+}
+</style>
+</head>
+
+<body class="bg-white">
+
+<script>
+const NEXT_PUBLIC_BACKEND_CONNECTED = false;
+
+function showPage(page) {
+  document.getElementById('signupPage').classList.add('hidden');
+  document.getElementById('loginPage').classList.add('hidden');
+  document.getElementById('errorPage').classList.add('hidden');
+  document.getElementById(page + 'Page').classList.remove('hidden');
+}
+
+function validateEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+/* ================= SIGNUP VALIDATION ================= */
+function handleSignup() {
+  let name = document.getElementById("signupName").value.trim();
+  let email = document.getElementById("signupEmail").value.trim();
+  let password = document.getElementById("signupPassword").value;
+  let confirm = document.getElementById("signupConfirm").value;
+
+  let valid = true;
+
+  document.getElementById("signupNameError").innerText = "";
+  document.getElementById("signupEmailError").innerText = "";
+  document.getElementById("signupPasswordError").innerText = "";
+  document.getElementById("signupConfirmError").innerText = "";
+
+  if (name === "") {
+    document.getElementById("signupNameError").innerText = "Name is required";
+    valid = false;
+  }
+
+  if (!validateEmail(email)) {
+    document.getElementById("signupEmailError").innerText = "Enter valid email";
+    valid = false;
+  }
+
+  if (password.length < 6) {
+    document.getElementById("signupPasswordError").innerText = "Password must be 6+ characters";
+    valid = false;
+  }
+
+  if (password !== confirm) {
+    document.getElementById("signupConfirmError").innerText = "Passwords do not match";
+    valid = false;
+  }
+
+  if (!valid) return;
+
+  if (!NEXT_PUBLIC_BACKEND_CONNECTED) {
+    showPage("error");
+    return;
+  }
+
+  alert("Signup successful!");
+}
+
+/* ================= LOGIN VALIDATION ================= */
+function handleLogin() {
+  let email = document.getElementById("loginEmail").value.trim();
+  let password = document.getElementById("loginPassword").value;
+
+  let valid = true;
+
+  document.getElementById("loginEmailError").innerText = "";
+  document.getElementById("loginPasswordError").innerText = "";
+
+  if (!validateEmail(email)) {
+    document.getElementById("loginEmailError").innerText = "Enter valid email";
+    valid = false;
+  }
+
+  if (password.length < 6) {
+    document.getElementById("loginPasswordError").innerText = "Password must be 6+ characters";
+    valid = false;
+  }
+
+  if (!valid) return;
+
+  if (!NEXT_PUBLIC_BACKEND_CONNECTED) {
+    showPage("error");
+    return;
+  }
+
+  alert("Login successful!");
+}
+</script>
+
+<!-- ================= SIGNUP PAGE ================= -->
+<div id="signupPage" class="h-screen flex items-center justify-center px-6">
+
+<div class="w-full max-w-6xl flex flex-col lg:flex-row gap-10">
+
+<div class="w-full lg:w-1/2 flex items-center justify-center">
+<img src="https://via.placeholder.com/500x400" class="w-[85%] max-w-[520px]" />
+</div>
+
+<div class="w-full lg:w-1/2 flex justify-center">
+<div class="w-full max-w-[520px] bg-gradient-to-b from-[#5f82e8] via-[#3f66c9] to-[#021a46] rounded-[10px] shadow-[0_55px_120px_rgba(0,0,0,0.6)] px-10">
+
+<div class="px-10 pt-14 pb-10 text-white">
+
+<h1 class="font-welcome-heading text-2xl text-center mb-7">WELCOME</h1>
+
+<div class="space-y-5">
+
+<div>
+<input id="signupName" type="text" placeholder="Name"
+class="w-full bg-transparent border-b border-white/60 pb-2 placeholder-white text-sm outline-none">
+<p id="signupNameError" class="error-text"></p>
+</div>
+
+<div>
+<input id="signupEmail" type="email" placeholder="Email"
+class="w-full bg-transparent border-b border-white/60 pb-2 placeholder-white text-sm outline-none">
+<p id="signupEmailError" class="error-text"></p>
+</div>
+
+<div>
+<input id="signupPassword" type="password" placeholder="Password"
+class="w-full bg-transparent border-b border-white/60 pb-2 placeholder-white text-sm outline-none">
+<p id="signupPasswordError" class="error-text"></p>
+</div>
+
+<div>
+<input id="signupConfirm" type="password" placeholder="Confirm Password"
+class="w-full bg-transparent border-b border-white/60 pb-2 placeholder-white text-sm outline-none">
+<p id="signupConfirmError" class="error-text"></p>
+</div>
+
+</div>
+
+<button onclick="handleSignup()"
+class="mt-8 w-full h-[45px] bg-gradient-to-r from-[#2d8cf0] to-[#5a78c7] rounded-md text-sm font-medium shadow-md">
+SignUp
+</button>
+
+<p class="text-center text-xs mt-4">
+Already have an account?
+<span onclick="showPage('login')" class="text-yellow-400 cursor-pointer">Login</span>
+</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<!-- ================= LOGIN PAGE ================= -->
+<div id="loginPage" class="hidden h-screen flex items-center justify-center px-6">
+
+<div class="w-full max-w-6xl flex flex-col lg:flex-row gap-10">
+
+<div class="w-full lg:w-1/2 flex items-center justify-center">
+<img src="https://via.placeholder.com/500x400" class="w-[85%] max-w-[520px]" />
+</div>
+
+<div class="w-full lg:w-1/2 flex justify-center">
+<div class="w-full max-w-[520px] bg-gradient-to-b from-[#5f82e8] via-[#3f66c9] to-[#021a46] rounded-[10px] px-10">
+
+<div class="px-10 pt-20 pb-10 text-white">
+
+<h1 class="font-welcome-heading text-2xl text-center mb-7">WELCOME</h1>
+
+<div class="space-y-5">
+
+<div>
+<input id="loginEmail" type="email" placeholder="Email ID"
+class="w-full bg-transparent border-b border-white/60 pb-2 placeholder-white text-sm outline-none">
+<p id="loginEmailError" class="error-text"></p>
+</div>
+
+<div>
+<input id="loginPassword" type="password" placeholder="Password"
+class="w-full bg-transparent border-b border-white/60 pb-2 placeholder-white text-sm outline-none">
+<p id="loginPasswordError" class="error-text"></p>
+</div>
+
+</div>
+
+<button onclick="handleLogin()"
+class="mt-8 w-full h-[45px] bg-gradient-to-r from-[#2d8cf0] to-[#5a78c7] rounded-md text-sm font-medium shadow-md">
+Login
+</button>
+
+<p class="text-center text-xs mt-4">
+Don't have an account?
+<span onclick="showPage('signup')" class="text-yellow-400 cursor-pointer">SignUp</span>
+</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<!-- ================= ERROR PAGE ================= -->
+<div id="errorPage" class="hidden h-screen flex flex-col items-center justify-center bg-white">
+<h1 class="text-6xl font-bold text-red-600">404</h1>
+<p class="mt-4 text-lg text-gray-700">Backend Not Connected</p>
+<p class="mt-2 text-sm text-gray-500">Please try again later.</p>
+<button onclick="showPage('signup')" class="mt-6 px-6 py-2 bg-blue-600 text-white rounded-md">
+Go Back
+</button>
+</div>
+
+</body>
+</html>
