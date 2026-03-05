@@ -293,11 +293,17 @@ export default function SignupPage() {
               {/* DIVIDER */}
               <div className="my-8 border-t border-white/40"></div>
 
-              {/* GOOGLE BUTTON */}
+              {/* GOOGLE BUTTON - standard Google OAuth redirect */}
               <a
-                href="https://accounts.google.com/signin"
-                target="_blank"
-                rel="noreferrer"
+                href={
+                  "https://accounts.google.com/o/oauth2/v2/auth" +
+                  "?client_id=703831654489-m34p97it8cppn924006cgt8u6jgk9tsa.apps.googleusercontent.com" +
+                  "&redirect_uri=http://localhost:5000/api/auth/google" +
+                  "&response_type=code" +
+                  "&scope=openid%20email%20profile" +
+                  "&access_type=online" +
+                  "&prompt=select_account"
+                }
                 className="
                 w-full
                 h-[45px]
