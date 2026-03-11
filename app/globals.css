@@ -57,12 +57,19 @@ body {
 
 /* Forgot Password link - visibility and accessibility (WB_009) */
 .forgot-password-link {
-  font-size: 15px;
-  color: #93c5fd;
-  font-weight: 500;
+  font-size: 16px;
+  color: #bfdbfe;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 .forgot-password-link:hover {
-  color: #bfdbfe;
+  color: #ffffff;
+}
+.forgot-password-link:focus-visible {
+  outline: 2px solid #f2b541;
+  outline-offset: 3px;
+  border-radius: 6px;
 }
 
 /* Auth layout - responsive spacing */

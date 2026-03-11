@@ -57,12 +57,19 @@
     }
 
     .forgot-password-link {
-      font-size: 15px;
-      color: #93c5fd;
-      font-weight: 500;
+      font-size: 16px;
+      color: #bfdbfe;
+      font-weight: 600;
+      text-decoration: underline;
+      text-underline-offset: 3px;
     }
     .forgot-password-link:hover {
-      color: #bfdbfe;
+      color: #ffffff;
+    }
+    .forgot-password-link:focus-visible {
+      outline: 2px solid #f2b541;
+      outline-offset: 3px;
+      border-radius: 6px;
     }
 
     .auth-card-content {
@@ -903,7 +910,7 @@
             <p id="loginFormError" class="error-text mt-2 text-center"></p>
 
             <!-- SIGNUP LINK -->
-            <p class="text-center text-xs mt-4 text-red-300 opacity-90">
+            <p class="text-center text-xs mt-4 text-red-500 opacity-90">
               Don't have an account?
               <button
                 type="button"
