@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { verifyOtp } from "@/lib/api";
 
 export default function VerifyMobilePage() {
   const router = useRouter();
@@ -9,6 +10,9 @@ export default function VerifyMobilePage() {
   const contact = searchParams.get("contact") || "+91-XXXXXXXXXX";
   const [code, setCode] = useState(["", "", "", ""]);
   const [info, setInfo] = useState("");
+  const [error, setError] = useState("");
+  const isCodeComplete = code.every((digit) => digit !== "");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange =
     (index: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -22,12 +26,39 @@ export default function VerifyMobilePage() {
         const nextInput = document.getElementById(`mobile-otp-${index + 1}`);
         nextInput?.focus();
       }
+      setError("");
     };
 
-  const handleConfirm = (e: React.FormEvent) => {
+  const handleConfirm = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Placeholder confirm; backend logic can be added later.
-    setInfo("Code submitted. (Hook up backend validation here.)");
+    setError("");
+    if (!isCodeComplete) {
+      setError("Please enter the complete 4-digit code.");
+      return;
+    }
+    setIsSubmitting(true);
+    try {
+      await verifyOtp({
+        contact: contact,
+        code: code.join(""),
+      });
+      router.push("/verified");
+    } catch (err) {
+      const isNetworkError =
+        err instanceof TypeError ||
+        (err instanceof Error &&
+          (err.message === "Failed to fetch" ||
+            err.message.includes("NetworkError") ||
+            err.message.includes("load failed")));
+      const message = isNetworkError
+        ? "Connection error. Please try again."
+        : err instanceof Error
+          ? err.message
+          : "Verification failed. Please try again.";
+      setError(message);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -99,15 +130,22 @@ export default function VerifyMobilePage() {
 
             <button
               type="submit"
-              className="w-full max-w-[260px] mx-auto rounded-[1000px] text-[16px] sm:text-[17px] font-bold shadow-md hover:opacity-95 transition flex items-center justify-center"
+              disabled={!isCodeComplete || isSubmitting}
+              className="w-full max-w-[260px] mx-auto rounded-[1000px] text-[16px] sm:text-[17px] font-bold shadow-md hover:opacity-95 transition flex items-center justify-center disabled:opacity-60 disabled:cursor-not-allowed"
               style={{
                 height: "48px",
                 backgroundColor: "#F2B541",
                 color: "#FFFFFF",
               }}
             >
-              Confirm
+              {isSubmitting ? "Verifying..." : "Confirm"}
             </button>
+
+            {error && (
+              <p className="text-[12px] mt-1" style={{ color: "#F2B541" }}>
+                {error}
+              </p>
+            )}
 
             <button
               type="button"

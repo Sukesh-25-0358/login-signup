@@ -133,7 +133,7 @@
     const BACKEND_BASE_URL = "http://localhost:5000";
 
     function showPage(page) {
-      var pages = ["signup", "login", "error", "forgot", "verifyEmail", "verifyMobile"];
+      var pages = ["signup", "login", "error", "forgot", "verifyEmail", "verifyMobile", "verified", "createNewPassword"];
       pages.forEach(function (key) {
         var el = document.getElementById(key + "Page");
         if (el) el.classList.add("hidden");
@@ -299,20 +299,20 @@
     }
 
     // Show correct page on initial load based on URL hash
-    // Supported: #signup, #login, #forgot, #verifyEmail, #verifyMobile
+    // Direct links (same format as index.html#verifyMobile):
+    //   index.html#signup | index.html#login | index.html#forgot
+    //   index.html#verifyEmail | index.html#verifyMobile
+    //   index.html#verified | index.html#createNewPassword
+    // Supported: #signup, #login, #forgot, #verifyEmail, #verifyMobile, #verified, #createNewPassword
     document.addEventListener("DOMContentLoaded", function () {
       const hash = window.location.hash.replace("#", "");
-      if (hash === "signup") {
-        showPage("signup");
-      } else if (hash === "forgot") {
-        showPage("forgot");
-      } else if (hash === "verifyEmail") {
-        showPage("verifyEmail");
-      } else if (hash === "verifyMobile") {
-        showPage("verifyMobile");
-      } else {
-        showPage("login");
-      }
+      if (hash === "signup") showPage("signup");
+      else if (hash === "forgot") showPage("forgot");
+      else if (hash === "verifyEmail") showPage("verifyEmail");
+      else if (hash === "verifyMobile") showPage("verifyMobile");
+      else if (hash === "verified") showPage("verified");
+      else if (hash === "createNewPassword") showPage("createNewPassword");
+      else showPage("login");
     });
 
     window.addEventListener("hashchange", function () {
@@ -321,6 +321,8 @@
       else if (hash === "forgot") showPage("forgot");
       else if (hash === "verifyEmail") showPage("verifyEmail");
       else if (hash === "verifyMobile") showPage("verifyMobile");
+      else if (hash === "verified") showPage("verified");
+      else if (hash === "createNewPassword") showPage("createNewPassword");
       else showPage("login");
     });
 
@@ -378,6 +380,146 @@
           (type === "email" ? "email" : "mobile") +
           " resend backend here.)";
       }
+    }
+
+    function confirmEmailOtp() {
+      event.preventDefault();
+      var errEl = document.getElementById("verifyEmailOtpError");
+      var btn = document.getElementById("verifyEmailConfirmBtn");
+      if (errEl) errEl.innerText = "";
+      var complete = true;
+      for (var i = 0; i < 4; i++) {
+        var inp = document.getElementById("emailOtp" + i);
+        if (!inp || !inp.value.trim()) { complete = false; break; }
+      }
+      if (!complete) {
+        if (errEl) errEl.innerText = "Please enter the complete 4-digit code.";
+        return;
+      }
+      var contactEl = document.getElementById("verifyEmailContact");
+      var contact = (contactEl && contactEl.innerText) ? contactEl.innerText.trim() : (window._lastForgotContact || "");
+      var code = "";
+      for (var j = 0; j < 4; j++) {
+        var inpj = document.getElementById("emailOtp" + j);
+        if (inpj) code += inpj.value;
+      }
+      if (btn) { btn.disabled = true; btn.textContent = "Verifying..."; }
+      fetch(BACKEND_BASE_URL + "/api/auth/verify-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ contact: contact, code: code })
+      }).then(function (res) {
+        return res.json().then(function (data) {
+          if (res.ok) {
+            location.hash = "verified";
+            showPage("verified");
+          } else {
+            if (errEl) errEl.innerText = (data && data.message) ? data.message : "Invalid or expired code. Please try again.";
+          }
+        }).catch(function () {
+          if (errEl) errEl.innerText = "Invalid or expired code. Please try again.";
+        });
+      }).catch(function () {
+        if (errEl) errEl.innerText = "Connection error. Please try again.";
+      }).then(function () {
+        if (btn) { btn.disabled = false; btn.textContent = "Confirm"; }
+      });
+    }
+
+    function confirmMobileOtp() {
+      event.preventDefault();
+      var errEl = document.getElementById("verifyMobileOtpError");
+      var btn = document.getElementById("verifyMobileConfirmBtn");
+      if (errEl) errEl.innerText = "";
+      var complete = true;
+      for (var i = 0; i < 4; i++) {
+        var inp = document.getElementById("mobileOtp" + i);
+        if (!inp || !inp.value.trim()) { complete = false; break; }
+      }
+      if (!complete) {
+        if (errEl) errEl.innerText = "Please enter the complete 4-digit code.";
+        return;
+      }
+      var contactEl = document.getElementById("verifyMobileContact");
+      var contact = (contactEl && contactEl.innerText) ? contactEl.innerText.trim() : (window._lastForgotContact || "");
+      var code = "";
+      for (var j = 0; j < 4; j++) {
+        var inpj = document.getElementById("mobileOtp" + j);
+        if (inpj) code += inpj.value;
+      }
+      if (btn) { btn.disabled = true; btn.textContent = "Verifying..."; }
+      fetch(BACKEND_BASE_URL + "/api/auth/verify-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ contact: contact, code: code })
+      }).then(function (res) {
+        return res.json().then(function (data) {
+          if (res.ok) {
+            location.hash = "verified";
+            showPage("verified");
+          } else {
+            if (errEl) errEl.innerText = (data && data.message) ? data.message : "Invalid or expired code. Please try again.";
+          }
+        }).catch(function () {
+          if (errEl) errEl.innerText = "Invalid or expired code. Please try again.";
+        });
+      }).catch(function () {
+        if (errEl) errEl.innerText = "Connection error. Please try again.";
+      }).then(function () {
+        if (btn) { btn.disabled = false; btn.textContent = "Confirm"; }
+      });
+    }
+
+    function toggleNewPasswordVisibility() {
+      var input = document.getElementById("newPassword");
+      var btn = document.getElementById("newPasswordToggle");
+      if (input.type === "password") {
+        input.type = "text";
+        btn.classList.replace("fa-eye", "fa-eye-slash");
+      } else {
+        input.type = "password";
+        btn.classList.replace("fa-eye-slash", "fa-eye");
+      }
+    }
+
+    function toggleConfirmPasswordVisibility() {
+      var input = document.getElementById("confirmPassword");
+      var btn = document.getElementById("confirmPasswordToggle");
+      if (input.type === "password") {
+        input.type = "text";
+        btn.classList.replace("fa-eye", "fa-eye-slash");
+      } else {
+        input.type = "password";
+        btn.classList.replace("fa-eye-slash", "fa-eye");
+      }
+    }
+
+    function handleUpdatePassword() {
+      event.preventDefault();
+      var newPwd = document.getElementById("newPassword").value;
+      var confirmPwd = document.getElementById("confirmPassword").value;
+      var errEl = document.getElementById("createPasswordError");
+      errEl.innerText = "";
+      if (newPwd !== confirmPwd) {
+        errEl.innerText = "Passwords do not match.";
+        return;
+      }
+      if (newPwd.length < 8 || newPwd.length > 60) {
+        errEl.innerText = "Password must be 8-60 characters.";
+        return;
+      }
+      var hasUpper = /[A-Z]/.test(newPwd);
+      var hasLower = /[a-z]/.test(newPwd);
+      var hasNumber = /[0-9]/.test(newPwd);
+      var hasSymbol = /[^A-Za-z0-9]/.test(newPwd);
+      var count = [hasUpper, hasLower, hasNumber, hasSymbol].filter(Boolean).length;
+      if (count < 2) {
+        errEl.innerText = "Password must include at least two of: uppercase, lowercase, number, or symbol.";
+        return;
+      }
+      // TODO: call API to update password
+      location.hash = "login";
+      showPage("login");
     }
   </script>
 
@@ -833,7 +975,7 @@
           Registered email <span id="verifyEmailContact">email@example.com</span>
         </p>
 
-        <form onsubmit="event.preventDefault();" class="space-y-6">
+        <form onsubmit="confirmEmailOtp(); return false;" class="space-y-6">
           <div class="flex justify-center gap-3 sm:gap-4">
             <input id="emailOtp0" type="text" maxlength="1" inputmode="numeric" oninput="handleOtpInput('email',0,event)" class="w-10 h-10 sm:w-12 sm:h-12 rounded border bg-transparent text-center text-lg text-white outline-none focus:border-white/80" style="border: 1px solid rgba(255,255,255,0.7);" />
             <input id="emailOtp1" type="text" maxlength="1" inputmode="numeric" oninput="handleOtpInput('email',1,event)" class="w-10 h-10 sm:w-12 sm:h-12 rounded border bg-transparent text-center text-lg text-white outline-none focus:border-white/80" style="border: 1px solid rgba(255,255,255,0.7);" />
@@ -848,9 +990,11 @@
             </button>
           </p>
 
-          <button type="submit" class="w-full max-w-[260px] mx-auto rounded-[1000px] text-[16px] sm:text-[17px] font-bold shadow-md hover:opacity-95 transition flex items-center justify-center" style="height: 48px; background-color: #F2B541; color: #FFFFFF;">
+          <button type="submit" id="verifyEmailConfirmBtn" class="w-full max-w-[260px] mx-auto rounded-[1000px] text-[16px] sm:text-[17px] font-bold shadow-md hover:opacity-95 transition flex items-center justify-center disabled:opacity-60 disabled:cursor-not-allowed" style="height: 48px; background-color: #F2B541; color: #FFFFFF;">
             Confirm
           </button>
+
+          <p id="verifyEmailOtpError" class="text-[12px] mt-1" style="color: #F2B541;"></p>
 
           <button type="button" onclick="resendCode('email')" class="text-[12px] sm:text-[13px] underline font-semibold" style="color: #FFFFFF;">
             Resend CODE
@@ -877,7 +1021,7 @@
           Registered mobile number <span id="verifyMobileContact">+91-XXXXXXXXXX</span>
         </p>
 
-        <form onsubmit="event.preventDefault();" class="space-y-6">
+        <form onsubmit="confirmMobileOtp(); return false;" class="space-y-6">
           <div class="flex justify-center gap-3 sm:gap-4">
             <input id="mobileOtp0" type="text" maxlength="1" inputmode="numeric" oninput="handleOtpInput('mobile',0,event)" class="w-10 h-10 sm:w-12 sm:h-12 rounded border bg-transparent text-center text-lg text-white outline-none focus:border-white/80" style="border: 1px solid rgba(255,255,255,0.7);" />
             <input id="mobileOtp1" type="text" maxlength="1" inputmode="numeric" oninput="handleOtpInput('mobile',1,event)" class="w-10 h-10 sm:w-12 sm:h-12 rounded border bg-transparent text-center text-lg text-white outline-none focus:border-white/80" style="border: 1px solid rgba(255,255,255,0.7);" />
@@ -892,15 +1036,78 @@
             </button>
           </p>
 
-          <button type="submit" class="w-full max-w-[260px] mx-auto rounded-[1000px] text-[16px] sm:text-[17px] font-bold shadow-md hover:opacity-95 transition flex items-center justify-center" style="height: 48px; background-color: #F2B541; color: #FFFFFF;">
+          <button type="submit" id="verifyMobileConfirmBtn" class="w-full max-w-[260px] mx-auto rounded-[1000px] text-[16px] sm:text-[17px] font-bold shadow-md hover:opacity-95 transition flex items-center justify-center disabled:opacity-60 disabled:cursor-not-allowed" style="height: 48px; background-color: #F2B541; color: #FFFFFF;">
             Confirm
           </button>
+
+          <p id="verifyMobileOtpError" class="text-[12px] mt-1" style="color: #F2B541;"></p>
 
           <button type="button" onclick="resendCode('mobile')" class="text-[12px] sm:text-[13px] underline font-semibold" style="color: #FFFFFF;">
             Resend CODE
           </button>
           <p id="verifyMobileResendMessage" class="text-[11px] sm:text-[12px] mt-1" style="color: #FFFFFF;"></p>
         </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= VERIFIED PAGE (tick.png design) ================= -->
+  <div id="verifiedPage" class="hidden min-h-screen bg-white flex items-center justify-center px-4 sm:px-6 py-6">
+    <button type="button" onclick="location.hash='forgot'; showPage('forgot');" class="absolute left-4 top-4 text-2xl text-black" aria-label="Go back">
+      ←
+    </button>
+    <div class="w-full max-w-[480px]">
+      <div class="relative overflow-hidden w-full rounded-xl px-8 sm:px-10 py-8 sm:py-10 text-center" style="background: linear-gradient(180deg, #234E70 0%, #282738 100%); box-shadow: 4px 4px 4px 0 rgba(0,0,0,0.25);">
+        <div class="flex justify-center mb-4 sm:mb-6">
+          <img src="public/tick.png" alt="Verified" class="w-[96px] h-[96px] object-contain" />
+        </div>
+        <h1 class="text-[20px] sm:text-[24px] font-bold mb-2" style="color: #FFFFFF;">Verified !</h1>
+        <p class="text-[12px] sm:text-[13px] leading-relaxed mb-6 italic" style="color: #FFFFFF;">You have successfully verified</p>
+        <button type="button" onclick="location.hash='createNewPassword'; showPage('createNewPassword');" class="w-full max-w-[200px] mx-auto rounded-[1000px] text-[14px] sm:text-[15px] font-bold shadow-md hover:opacity-95 transition flex items-center justify-center" style="height: 40px; background-color: #F2B541; color: #000000;">
+          Start
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= CREATE NEW PASSWORD PAGE (new.png design) ================= -->
+  <div id="createNewPasswordPage" class="hidden min-h-screen bg-white flex items-center justify-center px-4 sm:px-6 py-6">
+    <button type="button" onclick="location.hash='verified'; showPage('verified');" class="absolute left-4 top-4 text-2xl text-black z-10" aria-label="Go back">
+      ←
+    </button>
+    <div class="w-full max-w-6xl flex flex-col lg:flex-row items-center justify-center gap-4 sm:gap-6 lg:gap-12">
+      <div class="w-full lg:w-1/2 flex items-center justify-center order-2 lg:order-1">
+        <img src="public/new.png" alt="Create new password" class="w-[85%] sm:w-[80%] lg:w-[88%] max-w-[480px] object-contain" />
+      </div>
+      <div class="w-full lg:w-1/2 flex items-center justify-center order-1 lg:order-2">
+        <div class="relative overflow-hidden w-full max-w-[420px] rounded-xl px-8 sm:px-10 py-8 sm:py-10" style="background: linear-gradient(180deg, #234E70 0%, #282738 100%); box-shadow: 4px 4px 4px 0 rgba(0,0,0,0.25);">
+          <h1 class="text-[20px] sm:text-[24px] font-bold text-center mb-6" style="color: #FFFFFF;">Create New Password</h1>
+          <form onsubmit="handleUpdatePassword(); return false;" class="space-y-5">
+            <div>
+              <label for="newPassword" class="block text-[13px] sm:text-[14px] mb-2" style="color: #FFFFFF;">New Password</label>
+              <div class="relative">
+                <input id="newPassword" type="password" placeholder="••••••••" class="w-full h-12 pl-4 pr-12 rounded border text-[14px] outline-none focus:border-white/80 transition bg-transparent" style="border: 1px solid rgba(255,255,255,0.5); color: #FFFFFF;" />
+                <button type="button" onclick="toggleNewPasswordVisibility()" class="absolute right-3 top-1/2 -translate-y-1/2 text-white/80 hover:text-white" aria-label="Show password">
+                  <i id="newPasswordToggle" class="fa-solid fa-eye text-sm"></i>
+                </button>
+              </div>
+            </div>
+            <div>
+              <label for="confirmPassword" class="block text-[13px] sm:text-[14px] mb-2" style="color: #FFFFFF;">Confirm Password</label>
+              <div class="relative">
+                <input id="confirmPassword" type="password" placeholder="••••••••" class="w-full h-12 pl-4 pr-12 rounded border text-[14px] outline-none focus:border-white/80 transition bg-transparent" style="border: 1px solid rgba(255,255,255,0.5); color: #FFFFFF;" />
+                <button type="button" onclick="toggleConfirmPasswordVisibility()" class="absolute right-3 top-1/2 -translate-y-1/2 text-white/80 hover:text-white" aria-label="Show password">
+                  <i id="confirmPasswordToggle" class="fa-solid fa-eye text-sm"></i>
+                </button>
+              </div>
+            </div>
+            <p class="text-[11px] sm:text-[12px] leading-relaxed" style="color: #FFFFFF;">Password Must be 8-60 characters and include at least two of the Following: Uppercase, Lowercase, number, or symbol.</p>
+            <p id="createPasswordError" class="text-[12px]" style="color: #ff6b6b;"></p>
+            <button type="submit" class="w-full max-w-[240px] mx-auto rounded-lg text-[12px] sm:text-[13px] font-bold uppercase shadow-md hover:opacity-95 transition flex items-center justify-center" style="height: 36px; background-color: #F2B541; color: #FFFFFF;">
+              UPDATE PASSWORD
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   </div>

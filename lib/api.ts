@@ -11,6 +11,29 @@ export type RegisterBody = {
   password: string;
 };
 
+export type VerifyOtpBody = {
+  contact: string;
+  code: string;
+};
+
+/** POST /api/auth/verify-otp - Verify email or mobile OTP */
+export async function verifyOtp(body: VerifyOtpBody): Promise<unknown> {
+  const res = await fetch(`${BACKEND_BASE_URL}/api/auth/verify-otp`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+
+  const data = await res.json().catch(() => ({}));
+
+  if (!res.ok) {
+    throw new Error(
+      (data as { message?: string }).message ?? "Invalid or expired code. Please try again."
+    );
+  }
+
+  return data;
+}
 /** POST /api/auth/login */
 export async function login(body: LoginBody): Promise<unknown> {
   const res = await fetch(`${BACKEND_BASE_URL}/api/auth/login`, {
