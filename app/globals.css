@@ -25,6 +25,11 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+/* Hide browser's native password reveal (e.g. Edge) so only our single eye shows */
+input[type="password"]::-ms-reveal {
+  display: none !important;
+}
+
 /* Display font for WELCOME heading - generous letter spacing like design */
 .font-welcome-heading {
   font-family: "Times New Roman", Georgia, serif;
