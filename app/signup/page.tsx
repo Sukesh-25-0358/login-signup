@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { FaUser, FaEnvelope, FaLock } from "react-icons/fa";
+import { FaUser, FaEnvelope, FaPhone, FaLock } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 import { useRouter } from "next/navigation";
 import { register as registerApi } from "@/lib/api";
@@ -10,6 +10,7 @@ import { register as registerApi } from "@/lib/api";
 type SignupFormState = {
   name: string;
   email: string;
+  mobileNumber: string;
   password: string;
   confirmPassword: string;
 };
@@ -17,6 +18,7 @@ type SignupFormState = {
 type SignupFormErrors = {
   name?: string;
   email?: string;
+  mobileNumber?: string;
   password?: string;
   confirmPassword?: string;
   form?: string;
@@ -25,6 +27,7 @@ type SignupFormErrors = {
 const initialSignupState: SignupFormState = {
   name: "",
   email: "",
+  mobileNumber: "",
   password: "",
   confirmPassword: "",
 };
@@ -65,6 +68,12 @@ export default function SignupPage() {
       !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email.trim().toLowerCase())
     ) {
       newErrors.email = "Please enter a valid email address.";
+    }
+
+    if (!values.mobileNumber.trim()) {
+      newErrors.mobileNumber = "Mobile number is required.";
+    } else if (!/^\+?[0-9]{6,15}$/.test(values.mobileNumber.trim())) {
+      newErrors.mobileNumber = "Enter a valid mobile number (6–15 digits).";
     }
 
     if (!values.password) {
@@ -117,6 +126,7 @@ export default function SignupPage() {
         name: form.name.trim(),
         email: form.email.trim().toLowerCase(),
         password: form.password,
+        ...(form.mobileNumber.trim() && { mobileNumber: form.mobileNumber.trim() }),
       });
 
       setForm(initialSignupState);
@@ -152,21 +162,21 @@ export default function SignupPage() {
             <div className="pointer-events-none absolute inset-0 rounded-[10px] shadow-[inset_20px_0_45px_rgba(0,0,0,0.55),inset_-20px_0_45px_rgba(0,0,0,0.55)]" />
             <div className="pointer-events-none absolute inset-0 rounded-[10px] shadow-[inset_0_0_0_1px_rgba(0,0,0,0.25)]" />
 
-            <div className="relative z-10 flex flex-col flex-1 min-h-0 min-w-0 px-4 sm:px-6 pt-3 sm:pt-4 pb-3 sm:pb-4 lg:pt-8 lg:pb-6 text-white signup-card-content text-left">
+            <div className="relative z-10 flex flex-col flex-1 min-h-0 min-w-0 px-4 sm:px-6 pt-2.5 sm:pt-4 pb-2 sm:pb-3 lg:pt-8 lg:pb-6 text-white signup-card-content text-left">
               <div className="w-full flex justify-center flex-shrink-0">
-                <h1 className="font-welcome-heading text-xl sm:text-2xl text-center font-semibold mb-2 sm:mb-3 lg:mb-4 tracking-widest">
+                <h1 className="font-welcome-heading text-xl sm:text-2xl text-center font-semibold mb-1.5 sm:mb-2.5 lg:mb-4 tracking-widest">
                   WELCOME
                 </h1>
               </div>
 
-              <div className="flex justify-center mb-2 sm:mb-3 lg:mb-4 flex-shrink-0">
+              <div className="flex justify-center mb-1.5 sm:mb-2.5 lg:mb-4 flex-shrink-0">
                 <div className="bg-white w-[120px] sm:w-[140px] lg:w-[180px] h-[44px] sm:h-[52px] lg:h-[64px] rounded-[50%] flex items-center justify-center shadow-lg overflow-hidden">
                   <img src="/stackly-logo.webp" alt="Stackly Logo" className="h-3.5 sm:h-4 lg:h-7 object-contain" />
                 </div>
               </div>
 
               <form onSubmit={handleSignup} noValidate>
-                <div className="space-y-2 sm:space-y-3 lg:space-y-3 flex-shrink-0">
+                <div className="space-y-1.5 sm:space-y-2.5 lg:space-y-3 flex-shrink-0">
                   <div className="flex flex-col">
                     <div className="flex items-center border-b border-white/80 pb-2">
                       <FaUser className="mr-3 text-sm text-white/90" />
@@ -208,6 +218,27 @@ export default function SignupPage() {
                   </div>
 
                   <div className="flex flex-col">
+                    <div className="flex items-center border-b border-white/80 pb-2">
+                      <FaPhone className="mr-3 text-sm text-white/90" />
+                      <input
+                        type="tel"
+                        inputMode="numeric"
+                        placeholder="Mobile number"
+                        value={form.mobileNumber}
+                        onChange={handleChange("mobileNumber")}
+                        className="bg-transparent outline-none w-full placeholder-white/90 text-sm text-white min-w-0"
+                        aria-invalid={!!errors.mobileNumber}
+                        aria-describedby={errors.mobileNumber ? "mobile-error" : undefined}
+                      />
+                    </div>
+                    {errors.mobileNumber && (
+                      <p id="mobile-error" className="auth-error-text mt-0.5 text-[11px] sm:text-xs">
+                        {errors.mobileNumber}
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="flex flex-col">
                     <div className="flex items-center border-b border-white/80 pb-2 relative">
                       <FaLock className="mr-3 text-sm text-white/90 flex-shrink-0" />
                       <input
@@ -232,9 +263,6 @@ export default function SignupPage() {
                         )}
                       </button>
                     </div>
-                    <p className="text-[10px] sm:text-xs text-white/80 mt-0.5 leading-tight">
-                      Password must: at least 8 characters • a lowercase letter • an uppercase letter • a number • a special character (!@#$%^&*).
-                    </p>
                     {errors.password && (
                       <p id="password-error" className="auth-error-text mt-0.5 text-[11px] sm:text-xs">
                         {errors.password}
@@ -286,22 +314,22 @@ export default function SignupPage() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="mt-3 w-full h-[42px] flex-shrink-0 bg-gradient-to-r from-[#2d8cf0] to-[#5a78c7] rounded-md text-sm font-medium text-white shadow-md hover:opacity-90 transition disabled:opacity-60 disabled:cursor-not-allowed"
+                  className="mt-2 w-full h-[42px] flex-shrink-0 bg-gradient-to-r from-[#2d8cf0] to-[#5a78c7] rounded-md text-sm font-medium text-white shadow-md hover:opacity-90 transition disabled:opacity-60 disabled:cursor-not-allowed"
                 >
                   {isSubmitting ? "Checking..." : "Sign Up"}
                 </button>
               </form>
 
-              <p className="text-center text-xs mt-2 text-white/80 flex-shrink-0">
+              <p className="text-center text-xs mt-1.5 text-white/80 flex-shrink-0">
                 Already have an account?{" "}
                 <Link href="/login" className="text-amber-300 hover:text-amber-200 font-medium">
                   Login
                 </Link>
               </p>
 
-              <div className="my-2 border-t border-white/50 flex-shrink-0" />
+              <div className="my-1.5 border-t border-white/50 flex-shrink-0" />
 
-              <div className="flex-shrink-0 pt-1 pb-4">
+              <div className="flex-shrink-0 pt-0.5 pb-2 sm:pt-1 sm:pb-4">
                 <a
                   href={
                     "https://accounts.google.com/o/oauth2/v2/auth" +

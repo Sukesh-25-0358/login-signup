@@ -345,17 +345,20 @@
     async function handleSignup() {
       const name = document.getElementById("signupName").value.trim();
       const email = document.getElementById("signupEmail").value.trim();
+      const mobile = document.getElementById("signupMobile").value.trim();
       const password = document.getElementById("signupPassword").value;
       const confirmPassword = document.getElementById("signupConfirmPassword").value;
 
       const nameError = document.getElementById("signupNameError");
       const emailError = document.getElementById("signupEmailError");
+      const mobileError = document.getElementById("signupMobileError");
       const passwordError = document.getElementById("signupPasswordError");
       const confirmPasswordError = document.getElementById("signupConfirmPasswordError");
       const formError = document.getElementById("signupFormError");
 
       nameError.innerText = "";
       emailError.innerText = "";
+      if (mobileError) mobileError.innerText = "";
       passwordError.innerText = "";
       if (confirmPasswordError) confirmPasswordError.innerText = "";
       if (formError) formError.innerText = "";
@@ -367,6 +370,13 @@
       }
       if (!validateEmail(email)) {
         emailError.innerText = "Enter valid email";
+        valid = false;
+      }
+      if (!mobile) {
+        if (mobileError) mobileError.innerText = "Mobile number is required.";
+        valid = false;
+      } else if (!isMobile(mobile)) {
+        if (mobileError) mobileError.innerText = "Enter a valid mobile number (6–15 digits).";
         valid = false;
       }
       if (password.length < 8) {
@@ -397,14 +407,12 @@
       if (!valid) return;
 
       try {
+        const body = { name: name, email: email.toLowerCase(), password: password };
+        if (mobile) body.mobileNumber = mobile;
         const res = await fetch(BACKEND_BASE_URL + "/api/auth/register", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            name: name,
-            email: email.toLowerCase(),
-            password: password,
-          }),
+          body: JSON.stringify(body),
         });
         const data = await res.json().catch(function () { return {}; });
         if (!res.ok) {
@@ -807,23 +815,23 @@
             "
           ></div>
 
-            <div class="relative z-10 flex flex-col flex-1 min-h-0 min-w-0 px-4 sm:px-6 pt-3 sm:pt-4 pb-3 sm:pb-4 lg:pt-8 lg:pb-6 text-white signup-card-content text-left">
+            <div class="relative z-10 flex flex-col flex-1 min-h-0 min-w-0 px-4 sm:px-6 pt-2.5 sm:pt-4 pb-2 sm:pb-3 lg:pt-8 lg:pb-6 text-white signup-card-content text-left">
             <!-- WELCOME (WB_005: centered on narrow screens) -->
             <div class="w-full flex justify-center flex-shrink-0">
-            <h1 class="font-welcome-heading text-xl sm:text-2xl text-center font-semibold mb-2 sm:mb-3 lg:mb-4 tracking-widest">
+            <h1 class="font-welcome-heading text-xl sm:text-2xl text-center font-semibold mb-1.5 sm:mb-2.5 lg:mb-4 tracking-widest">
               WELCOME
             </h1>
             </div>
 
             <!-- LOGO (WB_014: aligned with login) -->
-            <div class="flex justify-center mb-2 sm:mb-3 lg:mb-4 flex-shrink-0">
+            <div class="flex justify-center mb-1.5 sm:mb-2.5 lg:mb-4 flex-shrink-0">
               <div class="bg-white w-[120px] sm:w-[140px] lg:w-[180px] h-[44px] sm:h-[52px] lg:h-[64px] rounded-[50%] flex items-center justify-center shadow-lg overflow-hidden">
                 <img src="public/stackly-logo.webp" alt="Stackly Logo" class="h-3.5 sm:h-4 lg:h-7 object-contain" />
               </div>
             </div>
 
             <!-- INPUTS -->
-            <div class="space-y-2 sm:space-y-3 lg:space-y-3 flex-shrink-0">
+            <div class="space-y-1.5 sm:space-y-2.5 lg:space-y-3 flex-shrink-0">
               <div>
                 <div class="flex items-center border-b border-white/80 pb-2">
                   <i class="fa-solid fa-user mr-3 text-sm text-white/90"></i>
@@ -851,6 +859,20 @@
               </div>
 
               <div>
+                <div class="flex items-center border-b border-white/80 pb-2">
+                  <i class="fa-solid fa-phone mr-3 text-sm text-white/90"></i>
+                  <input
+                    id="signupMobile"
+                    type="tel"
+                    inputmode="numeric"
+                    placeholder="Mobile number"
+                    class="bg-transparent outline-none w-full placeholder-white/90 text-sm text-white min-w-0"
+                  />
+                </div>
+                <p id="signupMobileError" class="error-text mt-0.5 text-[11px] sm:text-xs"></p>
+              </div>
+
+              <div>
                 <div id="signupPasswordWrap" class="flex items-center border-b border-white/80 pb-2 password-toggle-hidden relative">
                   <i class="fa-solid fa-lock mr-3 text-sm text-white/90 flex-shrink-0"></i>
                   <input
@@ -864,9 +886,6 @@
                     <i id="signupPasswordToggle" class="fa-solid fa-eye text-sm"></i>
                   </button>
                 </div>
-                <p id="signupPasswordRequirements" class="text-[10px] sm:text-xs text-white/80 mt-0.5 leading-tight flex-shrink-0">
-                  Password must: at least 8 characters • a lowercase letter • an uppercase letter • a number • a special character (!@#$%^&*).
-                </p>
                 <p id="signupPasswordError" class="error-text mt-0.5 text-[11px] sm:text-xs"></p>
               </div>
 
@@ -891,14 +910,14 @@
             <!-- SIGNUP BUTTON -->
             <button
               onclick="handleSignup()"
-              class="mt-3 w-full h-[42px] flex-shrink-0 bg-gradient-to-r from-[#2d8cf0] to-[#5a78c7] rounded-md text-sm font-medium text-white shadow-md hover:opacity-90 transition"
+              class="mt-2 w-full h-[42px] flex-shrink-0 bg-gradient-to-r from-[#2d8cf0] to-[#5a78c7] rounded-md text-sm font-medium text-white shadow-md hover:opacity-90 transition"
             >
               Sign Up
             </button>
             <p id="signupFormError" class="error-text mt-1.5 text-center text-[11px] sm:text-xs"></p>
 
             <!-- LOGIN LINK -->
-            <p class="text-center text-xs mt-2 text-white/80 flex-shrink-0">
+            <p class="text-center text-xs mt-1.5 text-white/80 flex-shrink-0">
               Already have an account?
               <button
                 type="button"
@@ -910,10 +929,10 @@
             </p>
 
             <!-- DIVIDER -->
-            <div class="my-2 border-t border-white/50 flex-shrink-0"></div>
+            <div class="my-1.5 border-t border-white/50 flex-shrink-0"></div>
 
             <!-- GOOGLE BUTTON - fully visible (WB_006) -->
-            <div class="flex-shrink-0 pt-1 pb-4">
+            <div class="flex-shrink-0 pt-0.5 pb-2 sm:pt-1 sm:pb-4">
             <button
               type="button"
               onclick="window.location.href='https://accounts.google.com/o/oauth2/v2/auth?client_id=703831654489-m34p97it8cppn924006cgt8u6jgk9tsa.apps.googleusercontent.com&redirect_uri=http://localhost:5000/api/auth/google&response_type=code&scope=openid%20email%20profile&access_type=online&prompt=select_account'"
