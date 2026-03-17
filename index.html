@@ -213,6 +213,10 @@
         overflow-x: hidden;
         -webkit-overflow-scrolling: touch;
       }
+      /* Signup: let content expand so Google button never clips when errors show */
+      .signup-card-content {
+        overflow: visible;
+      }
       .auth-page .auth-layout {
         flex: none;
         min-height: auto;
@@ -260,6 +264,12 @@
         display: flex;
         flex-direction: column;
         justify-content: flex-start;
+      }
+      /* Desktop/laptop: reserve space for error lines so layout doesn't shift/cut */
+      #signupPage .error-text {
+        min-height: 14px;
+        line-height: 14px;
+        display: block;
       }
     }
 
@@ -923,7 +933,7 @@
             "
           ></div>
 
-            <div class="relative z-10 flex flex-col flex-1 min-h-0 min-w-0 px-4 sm:px-6 pt-2 sm:pt-4 pb-1.5 sm:pb-3 lg:pt-8 lg:pb-6 text-white signup-card-content text-left justify-center">
+            <div class="relative z-10 flex flex-col flex-1 min-h-0 min-w-0 px-4 sm:px-6 pt-2 sm:pt-4 pb-1.5 sm:pb-3 lg:pt-8 lg:pb-6 text-white signup-card-content text-left">
             <!-- WELCOME (WB_005: centered on narrow screens) -->
             <div class="w-full flex justify-center flex-shrink-0">
             <h1 class="font-welcome-heading text-xl sm:text-2xl text-center font-semibold mb-1 sm:mb-2.5 lg:mb-4 tracking-widest">
@@ -938,7 +948,6 @@
               </div>
             </div>
 
-            <div class="min-h-0">
             <!-- INPUTS -->
             <div class="space-y-1 sm:space-y-2 lg:space-y-3 flex-shrink-0">
               <div>
@@ -1024,7 +1033,6 @@
               Sign Up
             </button>
             <p id="signupFormError" class="error-text mt-1 text-center text-[11px] sm:text-xs"></p>
-            </div>
 
             <!-- LOGIN LINK -->
             <div class="flex-shrink-0 mt-2">

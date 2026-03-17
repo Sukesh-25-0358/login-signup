@@ -168,21 +168,20 @@ export default function SignupPage() {
             <div className="pointer-events-none absolute inset-0 rounded-[10px] shadow-[inset_20px_0_45px_rgba(0,0,0,0.55),inset_-20px_0_45px_rgba(0,0,0,0.55)]" />
             <div className="pointer-events-none absolute inset-0 rounded-[10px] shadow-[inset_0_0_0_1px_rgba(0,0,0,0.25)]" />
 
-            <div className="relative z-10 flex flex-col flex-1 min-h-0 min-w-0 px-4 sm:px-6 pt-2.5 sm:pt-4 pb-2 sm:pb-3 lg:pt-8 lg:pb-6 text-white signup-card-content text-left justify-center">
-              <div className="min-h-0">
-                <div className="w-full flex justify-center flex-shrink-0">
-                  <h1 className="font-welcome-heading text-xl sm:text-2xl text-center font-semibold mb-1.5 sm:mb-2.5 lg:mb-4 tracking-widest">
-                    WELCOME
-                  </h1>
-                </div>
+            <div className="relative z-10 flex flex-col flex-1 min-h-0 min-w-0 px-4 sm:px-6 pt-2.5 sm:pt-4 pb-2 sm:pb-3 lg:pt-8 lg:pb-6 text-white signup-card-content text-left">
+              <div className="w-full flex justify-center flex-shrink-0">
+                <h1 className="font-welcome-heading text-xl sm:text-2xl text-center font-semibold mb-1.5 sm:mb-2.5 lg:mb-4 tracking-widest">
+                  WELCOME
+                </h1>
+              </div>
 
-                <div className="flex justify-center mb-1.5 sm:mb-2.5 lg:mb-4 flex-shrink-0">
-                  <div className="bg-white w-[120px] sm:w-[140px] lg:w-[180px] h-[44px] sm:h-[52px] lg:h-[64px] rounded-[50%] flex items-center justify-center shadow-lg overflow-hidden">
-                    <img src="/stackly-logo.webp" alt="Stackly Logo" className="h-3.5 sm:h-4 lg:h-7 object-contain" />
-                  </div>
+              <div className="flex justify-center mb-1.5 sm:mb-2.5 lg:mb-4 flex-shrink-0">
+                <div className="bg-white w-[120px] sm:w-[140px] lg:w-[180px] h-[44px] sm:h-[52px] lg:h-[64px] rounded-[50%] flex items-center justify-center shadow-lg overflow-hidden">
+                  <img src="/stackly-logo.webp" alt="Stackly Logo" className="h-3.5 sm:h-4 lg:h-7 object-contain" />
                 </div>
+              </div>
 
-                <form onSubmit={handleSignup} noValidate>
+              <form onSubmit={handleSignup} noValidate>
                 <div className="space-y-1.5 sm:space-y-2.5 lg:space-y-3 flex-shrink-0">
                   <div className="flex flex-col">
                     <div className="flex items-center border-b border-white/80 pb-2">
@@ -325,8 +324,7 @@ export default function SignupPage() {
                 >
                   {isSubmitting ? "Checking..." : "Sign Up"}
                 </button>
-                </form>
-              </div>
+              </form>
 
               <div className="flex-shrink-0 mt-2">
                 <p className="text-center text-xs mt-0 text-white/80">

@@ -197,6 +197,10 @@ input[type="password"]::-ms-reveal {
     overflow: visible;
     overflow-x: hidden;
   }
+  /* Signup: let content expand so Google button never clips when errors show */
+  .signup-card-content {
+    overflow: visible;
+  }
   .auth-page .auth-layout {
     flex: none;
     min-height: auto;
@@ -245,6 +249,13 @@ input[type="password"]::-ms-reveal {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
+  }
+
+  /* Desktop/laptop: reserve space for error lines so layout doesn't shift/cut */
+  .signup-card .auth-error-text {
+    min-height: 14px;
+    line-height: 14px;
+    display: block;
   }
 }
 
