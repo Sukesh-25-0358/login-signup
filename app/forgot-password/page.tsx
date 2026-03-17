@@ -63,7 +63,7 @@ export default function ForgotPasswordPage() {
     <div className="min-h-screen bg-white flex items-center justify-center px-4 sm:px-6 py-6">
       <div className="w-full max-w-6xl flex flex-col lg:flex-row items-center justify-center gap-4 sm:gap-6 lg:gap-12 auth-layout">
         {/* LEFT: Illustration */}
-        <div className="w-full lg:w-1/2 flex items-center justify-center order-2 lg:order-1">
+        <div className="auth-image-col w-full lg:w-1/2 flex items-center justify-center order-2 lg:order-1">
           <img
             src="/password.webp"
             alt="Password reset illustration"

@@ -60,6 +60,8 @@ export default function SignupPage() {
       newErrors.name = "Name is required.";
     } else if (values.name.trim().length < 2) {
       newErrors.name = "Name must be at least 2 characters.";
+    } else if (!/^[a-zA-Z\s]+$/.test(values.name.trim())) {
+      newErrors.name = "Name must contain only letters.";
     }
 
     if (!values.email.trim()) {

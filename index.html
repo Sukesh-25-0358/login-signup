@@ -104,7 +104,14 @@
       overflow: hidden;
     }
 
+    .auth-image-col {
+      min-width: 0;
+      max-width: 100%;
+    }
     img.auth-image {
+      max-width: 100%;
+      height: auto;
+      object-fit: contain;
       image-rendering: -webkit-optimize-contrast;
       image-rendering: crisp-edges;
     }
@@ -112,6 +119,40 @@
     .auth-page .auth-layout,
     .auth-page .auth-layout > * {
       min-width: 0;
+    }
+
+    /* Auth pages: browser-normalization (scoped, keeps layout consistent) */
+    .auth-page *,
+    .auth-page *::before,
+    .auth-page *::after {
+      box-sizing: border-box;
+    }
+
+    /* Ensure consistent form control rendering across browsers (esp. iOS Safari) */
+    .auth-page input[type="text"],
+    .auth-page input[type="email"],
+    .auth-page input[type="password"],
+    .auth-page input[type="tel"] {
+      -webkit-appearance: none;
+      appearance: none;
+      border-radius: 0;
+      font: inherit;
+      line-height: 1.2;
+    }
+
+    .auth-page button {
+      font: inherit;
+    }
+
+    .auth-page img.auth-image {
+      display: block;
+    }
+
+    /* Desktop/tablet browsers: split leftover vertical space evenly (prevents bigger bottom gap) */
+    @media (min-width: 768px) {
+      .auth-page {
+        justify-content: center;
+      }
     }
     .auth-form-card,
     .auth-form-card .auth-card-content,
@@ -132,6 +173,10 @@
         padding-top: 0.75rem;
       }
       .auth-form-card .signup-card-content {
+        padding-top: 0.375rem;
+        padding-bottom: 0.375rem;
+      }
+      .auth-form-card .auth-card-content {
         padding-top: 0.375rem;
         padding-bottom: 0.375rem;
       }
@@ -187,6 +232,7 @@
 
       .auth-image-col {
         margin-top: 1.5rem;
+        overflow: hidden;
       }
     }
 
@@ -216,6 +262,11 @@
       .auth-card-content {
         gap: 0.5rem;
       }
+      /* 375px–425px: keep login content clearly inside inner card */
+      .login-card .auth-card-content {
+        padding-left: 1rem;
+        padding-right: 1rem;
+      }
     }
 
     /* Mobile + 150% zoom: prevent overlap (WB_012) */
@@ -227,6 +278,11 @@
       }
       .auth-card-content {
         gap: 0.75rem;
+      }
+      /* Login-only: slightly more inner padding so content stays visually inside card */
+      .login-card .auth-card-content {
+        padding-left: 1rem;
+        padding-right: 1rem;
       }
       .auth-card-content > * + * {
         margin-top: 0.25rem;
@@ -251,6 +307,28 @@
       }
     }
 
+    /* iOS Safari: match normal mobile layout and avoid overlaps (including 150% zoom) */
+    @supports (-webkit-touch-callout: none) {
+      @media (max-width: 500px) {
+        #loginPage .login-card-inner {
+          padding-top: 0.5rem;
+          padding-bottom: 0.5rem;
+        }
+        #loginPage .login-card-inner h1 {
+          margin-bottom: 0.5rem;
+        }
+        #loginPage .login-remember-forgot {
+          margin-top: 0.75rem;
+        }
+        #loginPage button[type="submit"] {
+          margin-top: 0.75rem;
+        }
+        #loginPage .login-card-inner > p {
+          margin-top: 0.75rem;
+        }
+      }
+    }
+
     /* Very small screens (320px–380px) and all zoom, extra gap under card */
     @media (max-width: 380px) {
       .auth-page {
@@ -266,12 +344,17 @@
         max-height: 22vh;
         margin-top: 1.25rem; /* explicit gap between card and illustration */
       }
+      /* Keep signup padding as before; only add extra for login */
       .auth-card-content,
       .auth-form-card .signup-card-content {
         padding-left: 0.5rem;
         padding-right: 0.5rem;
-        padding-top: 0.125rem;
-        padding-bottom: 0.125rem;
+        padding-top: 0.25rem;
+        padding-bottom: 0.25rem;
+      }
+      .login-card .auth-card-content {
+        padding-left: 1rem;
+        padding-right: 1rem;
       }
       .font-welcome-heading {
         letter-spacing: 0.1em;
@@ -371,6 +454,12 @@
       if (name === "") {
         nameError.innerText = "Name is required";
         valid = false;
+      } else if (name.length < 2) {
+        nameError.innerText = "Name must be at least 2 characters";
+        valid = false;
+      } else if (!/^[a-zA-Z\s]+$/.test(name)) {
+        nameError.innerText = "Name must contain only letters";
+        valid = false;
       }
       if (!validateEmail(email)) {
         emailError.innerText = "Enter valid email";
@@ -447,12 +536,14 @@
       if (formError) formError.innerText = "";
 
       let valid = true;
-      if (!validateEmail(email)) {
-        emailError.innerText = "Enter valid email";
+      var isEmail = validateEmail(email);
+      var isMobileLogin = isMobile(email);
+      if (!isEmail && !isMobileLogin) {
+        emailError.innerText = "Enter valid email or mobile number";
         valid = false;
       }
-      if (password.length < 6) {
-        passwordError.innerText = "Password must be 6+ characters";
+      if (!password || password.length < 8) {
+        passwordError.innerText = "Enter valid password";
         valid = false;
       }
       if (!valid) return;
@@ -987,7 +1078,7 @@
     <div class="w-full max-w-6xl mx-auto flex flex-col lg:flex-row gap-6 sm:gap-6 lg:gap-8 auth-layout">
       <!-- CARD FIRST ON MOBILE (TOP), RIGHT ON DESKTOP -->
       <div class="w-full lg:w-1/2 flex justify-center order-1 lg:order-2">
-        <div class="relative overflow-hidden w-full max-w-[520px] bg-gradient-to-b from-[#5f82e8] via-[#3f66c9] to-[#021a46] rounded-[10px] px-4 sm:px-6 lg:px-10 flex flex-col login-card auth-form-card">
+        <div class="relative overflow-hidden w-full max-w-[520px] bg-gradient-to-b from-[#5f82e8] via-[#3f66c9] to-[#021a46] rounded-[10px] px-6 sm:px-10 flex flex-col login-card auth-form-card">
           <div
             class="
               pointer-events-none
@@ -999,7 +1090,7 @@
               bg-gradient-to-b
               from-white/10
               via-black/10
-              to-black/35
+               to-black/35
             "
           ></div>
           <div
@@ -1021,15 +1112,15 @@
             "
           ></div>
 
-          <div class="relative z-10 flex flex-col flex-1 min-h-0 min-w-0 auth-card-content login-card-inner px-3 sm:px-6 pt-2 sm:pt-8 lg:pt-14 pb-2 sm:pb-6 lg:pb-10 text-white text-left">
+          <div class="relative z-10 flex flex-col flex-1 min-h-0 min-w-0 auth-card-content login-card-inner px-4 sm:px-6 pt-2.5 sm:pt-8 pb-2 sm:pb-6 lg:pt-14 lg:pb-10 text-white text-left">
             <!-- WELCOME (WB_005: centered on narrow screens) -->
             <div class="w-full flex justify-center flex-shrink-0 min-w-0">
-            <h1 class="font-welcome-heading text-lg sm:text-xl md:text-2xl lg:text-3xl text-center font-semibold mb-2 sm:mb-4 lg:mb-7 break-words tracking-widest">
+            <h1 class="font-welcome-heading text-lg sm:text-xl md:text-2xl lg:text-3xl text-center font-semibold mb-1 sm:mb-4 lg:mb-7 break-words tracking-widest">
               WELCOME
             </h1>
             </div>
 
-            <div class="flex justify-center mb-2 sm:mb-4 lg:mb-8 flex-shrink-0">
+            <div class="flex justify-center mb-1 sm:mb-4 lg:mb-8 flex-shrink-0">
               <div class="bg-white w-[120px] h-[44px] sm:w-[160px] sm:h-[60px] lg:w-[200px] lg:h-[80px] rounded-[50%] flex items-center justify-center shadow-lg overflow-hidden">
                 <img
                   src="public/stackly-logo.webp"
@@ -1046,8 +1137,8 @@
                   <i class="fa-solid fa-envelope mr-2 sm:mr-4 text-sm opacity-80 flex-shrink-0"></i>
                   <input
                     id="loginEmail"
-                    type="email"
-                    placeholder="Email"
+                    type="text"
+                    placeholder="Email or mobile number"
                     class="bg-transparent outline-none w-full min-w-0 placeholder-white text-sm"
                   />
                 </div>
@@ -1073,7 +1164,7 @@
             </div>
 
             <!-- REMEMBER / FORGOT -->
-            <div class="login-remember-forgot flex flex-wrap items-center justify-between gap-x-4 gap-y-2 mt-2 sm:mt-4 text-xs opacity-90">
+            <div class="login-remember-forgot flex flex-wrap items-center justify-between gap-x-4 gap-y-2 mt-1.5 sm:mt-4 text-xs opacity-90 min-w-0">
               <label class="flex items-center gap-2 cursor-pointer flex-shrink-0">
                 <input
                   type="checkbox"
@@ -1089,14 +1180,14 @@
             <!-- LOGIN BUTTON -->
             <button
               onclick="handleLogin()"
-              class="mt-4 sm:mt-6 lg:mt-8 w-full h-[42px] sm:h-[45px] bg-gradient-to-r from-[#2d8cf0] to-[#5a78c7] rounded-md text-sm font-medium shadow-md hover:opacity-90 transition"
+              class="mt-2 sm:mt-6 lg:mt-8 w-full h-[42px] sm:h-[45px] bg-gradient-to-r from-[#2d8cf0] to-[#5a78c7] rounded-md text-sm font-medium shadow-md hover:opacity-90 transition"
             >
               Login
             </button>
-            <p id="loginFormError" class="error-text mt-2 text-center text-[11px] sm:text-xs"></p>
+            <p id="loginFormError" class="error-text mt-1.5 sm:mt-2 text-center text-[11px] sm:text-xs"></p>
 
             <!-- SIGNUP LINK -->
-            <p class="text-center text-xs mt-2 text-white/80">
+            <p class="text-center text-xs mt-1.5 sm:mt-2 text-white/80">
               Don't have an account?
               <button
                 type="button"
@@ -1125,7 +1216,7 @@
   <div id="forgotPage" class="hidden min-h-screen bg-white flex items-center justify-center px-4 sm:px-6 py-6">
     <div class="w-full max-w-6xl flex flex-col lg:flex-row items-center justify-center gap-4 sm:gap-6 lg:gap-12 auth-layout">
       <!-- LEFT: Illustration -->
-      <div class="w-full lg:w-1/2 flex items-center justify-center order-2 lg:order-1">
+      <div class="auth-image-col w-full lg:w-1/2 flex items-center justify-center order-2 lg:order-1">
         <img src="public/password.webp" alt="Password reset illustration" class="auth-image w-[85%] sm:w-[80%] lg:w-[88%] max-w-[480px] object-contain" />
       </div>
       <!-- RIGHT: Forgot password form card (design specs: gradient #234E70 → #282738 + shadow) -->

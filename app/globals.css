@@ -141,6 +141,40 @@ input[type="password"]::-ms-reveal {
   box-sizing: border-box;
 }
 
+/* Auth pages: browser-normalization (scoped, keeps layout consistent) */
+.auth-page *,
+.auth-page *::before,
+.auth-page *::after {
+  box-sizing: border-box;
+}
+
+/* Ensure consistent form control rendering across browsers (esp. iOS Safari) */
+.auth-page input[type="text"],
+.auth-page input[type="email"],
+.auth-page input[type="password"],
+.auth-page input[type="tel"] {
+  -webkit-appearance: none;
+  appearance: none;
+  border-radius: 0;
+  font: inherit;
+  line-height: 1.2;
+}
+
+.auth-page button {
+  font: inherit;
+}
+
+.auth-page .auth-image {
+  display: block;
+}
+
+/* Desktop/tablet browsers: split leftover vertical space evenly (prevents bigger bottom gap) */
+@media (min-width: 768px) {
+  .auth-page {
+    justify-content: center;
+  }
+}
+
 @media (min-width: 1024px) {
   .auth-page .auth-layout {
     max-height: 100%;
@@ -220,8 +254,12 @@ input[type="password"]::-ms-reveal {
     padding-top: 0.75rem;
   }
   .auth-form-card .signup-card-content {
-    padding-top: 0.75rem;
-    padding-bottom: 0.75rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+  .auth-form-card .auth-card-content {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
   }
 }
 
@@ -231,6 +269,11 @@ input[type="password"]::-ms-reveal {
   }
   .auth-card-content {
     gap: 0.5rem;
+  }
+  /* 375px–425px: keep login content clearly inside inner card */
+  .login-card .auth-card-content {
+    padding-left: 1rem;
+    padding-right: 1rem;
   }
 }
 
@@ -243,6 +286,11 @@ input[type="password"]::-ms-reveal {
   }
   .auth-card-content {
     gap: 0.75rem;
+  }
+  /* Login-only: slightly more inner padding so content stays visually inside card */
+  .login-card .auth-card-content {
+    padding-left: 1rem;
+    padding-right: 1rem;
   }
   .font-welcome-heading {
     letter-spacing: 0.15em;
@@ -264,6 +312,28 @@ input[type="password"]::-ms-reveal {
   }
 }
 
+/* iOS Safari: match normal mobile layout and avoid overlaps (including 150% zoom) */
+@supports (-webkit-touch-callout: none) {
+  @media (max-width: 500px) {
+    .login-page .login-card-inner {
+      padding-top: 0.5rem;
+      padding-bottom: 0.5rem;
+    }
+    .login-page .login-card-inner h1 {
+      margin-bottom: 0.5rem;
+    }
+    .login-page .login-remember-forgot {
+      margin-top: 0.75rem;
+    }
+    .login-page button[type="submit"] {
+      margin-top: 0.75rem;
+    }
+    .login-page .login-card-inner > p {
+      margin-top: 0.75rem;
+    }
+  }
+}
+
 /* Very small screens (320px–380px) and all zoom: compact layout, extra gap under card */
 @media (max-width: 380px) {
   .auth-page {
@@ -279,12 +349,17 @@ input[type="password"]::-ms-reveal {
     max-height: 22vh;
     margin-top: 1.25rem; /* explicit gap between card and illustration */
   }
+  /* Keep signup padding as before; only add extra for login */
   .auth-card-content,
   .auth-form-card .signup-card-content {
     padding-left: 0.5rem;
     padding-right: 0.5rem;
-    padding-top: 0.375rem;
-    padding-bottom: 0.375rem;
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+  }
+  .login-card .auth-card-content {
+    padding-left: 1rem;
+    padding-right: 1rem;
   }
   .font-welcome-heading {
     letter-spacing: 0.1em;
@@ -302,8 +377,20 @@ input[type="password"]::-ms-reveal {
   }
 }
 
-/* Image clarity when zooming */
+/* Auth illustration: scale inside container on mobile, no overflow */
+.auth-image-col {
+  min-width: 0;
+  max-width: 100%;
+}
+@media (max-width: 1023px) {
+  .auth-image-col {
+    overflow: hidden;
+  }
+}
 .auth-image {
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
   image-rendering: -webkit-optimize-contrast;
   image-rendering: crisp-edges;
 }
