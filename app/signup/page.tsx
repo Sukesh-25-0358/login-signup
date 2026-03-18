@@ -171,7 +171,7 @@ export default function SignupPage() {
 
             <div className="relative z-10 flex flex-col flex-1 min-h-0 min-w-0 px-4 sm:px-6 pt-2.5 sm:pt-4 pb-2 sm:pb-3 lg:pt-8 lg:pb-6 text-white signup-card-content text-left justify-between">
               <div className="w-full flex justify-center flex-shrink-0 min-w-0">
-                <h1 className="w-full font-welcome-heading text-xl sm:text-2xl text-center font-semibold mb-3 sm:mb-2.5 lg:mb-4 tracking-widest">
+                <h1 className="inline-block font-welcome-heading text-xl sm:text-2xl text-center font-semibold mb-3 sm:mb-2.5 lg:mb-4 tracking-widest">
                   WELCOME
                 </h1>
               </div>
