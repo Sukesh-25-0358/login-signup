@@ -168,7 +168,7 @@ export default function SignupPage() {
             <div className="pointer-events-none absolute inset-0 rounded-[10px] shadow-[inset_20px_0_45px_rgba(0,0,0,0.55),inset_-20px_0_45px_rgba(0,0,0,0.55)]" />
             <div className="pointer-events-none absolute inset-0 rounded-[10px] shadow-[inset_0_0_0_1px_rgba(0,0,0,0.25)]" />
 
-            <div className="relative z-10 flex flex-col flex-1 min-h-0 min-w-0 px-4 sm:px-6 pt-2.5 sm:pt-4 pb-2 sm:pb-3 lg:pt-8 lg:pb-6 text-white signup-card-content text-left">
+            <div className="relative z-10 flex flex-col flex-1 min-h-0 min-w-0 px-4 sm:px-6 pt-2.5 sm:pt-4 pb-2 sm:pb-3 lg:pt-8 lg:pb-6 text-white signup-card-content text-left justify-between">
               <div className="w-full flex justify-center flex-shrink-0">
                 <h1 className="font-welcome-heading text-xl sm:text-2xl text-center font-semibold mb-3 sm:mb-2.5 lg:mb-4 tracking-widest">
                   WELCOME
