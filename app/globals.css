@@ -270,6 +270,16 @@ input[type="password"]::-ms-reveal {
     font-size: 9.5px;
     letter-spacing: -0.04em;
   }
+  /* Give the two long placeholders maximum horizontal room */
+  .login-email-icon {
+    margin-right: 0.375rem !important;
+  }
+  .signup-confirm-icon {
+    margin-right: 0.5rem !important;
+  }
+  .signup-confirm-input {
+    padding-right: 2rem !important; /* reduce space reserved for eye icon */
+  }
   .font-welcome-heading {
     font-size: 1.05rem;
     letter-spacing: 0.18em;
