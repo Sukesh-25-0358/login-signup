@@ -157,7 +157,7 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="auth-page min-h-screen bg-white flex flex-col px-3 sm:px-6 py-3 sm:py-4 overflow-y-auto">
+    <div className="auth-page min-h-screen bg-white flex flex-col px-3 sm:px-6 py-3 sm:py-4 overflow-hidden">
       <div className="w-full max-w-6xl mx-auto flex flex-col lg:flex-row gap-6 sm:gap-6 lg:gap-8 auth-layout">
         {/* Card first on mobile (top), right on desktop */}
         <div className="w-full lg:w-1/2 flex justify-center order-1 lg:order-2">

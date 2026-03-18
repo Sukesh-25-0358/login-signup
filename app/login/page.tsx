@@ -122,7 +122,7 @@ export default function LoginPage() {
     }
   };
   return (
-    <div className="login-page auth-page min-h-screen bg-white flex flex-col px-3 sm:px-6 py-3 sm:py-4 overflow-y-auto">
+    <div className="login-page auth-page min-h-screen bg-white flex flex-col px-3 sm:px-6 py-3 sm:py-4 overflow-hidden">
       <div className="w-full max-w-6xl mx-auto flex flex-col lg:flex-row gap-6 sm:gap-6 lg:gap-8 auth-layout">
         {/* Card first on mobile (top), right on desktop */}
         <div className="w-full lg:w-1/2 flex justify-center order-1 lg:order-2">
@@ -131,7 +131,7 @@ export default function LoginPage() {
             <div className="pointer-events-none absolute inset-0 rounded-[10px] shadow-[inset_20px_0_45px_rgba(0,0,0,0.55),inset_-20px_0_45px_rgba(0,0,0,0.55)]" />
             <div className="pointer-events-none absolute inset-0 rounded-[10px] shadow-[inset_0_0_0_1px_rgba(0,0,0,0.25)]" />
 
-            <div className="relative z-10 flex flex-col flex-1 min-h-0 min-w-0 auth-card-content login-card-inner px-4 sm:px-6 pt-2.5 sm:pt-8 pb-2 sm:pb-6 lg:pt-14 lg:pb-10 text-white text-left justify-center">
+            <div className="relative z-10 flex flex-col flex-1 min-h-0 min-w-0 auth-card-content login-card-inner px-4 sm:px-6 pt-4 sm:pt-8 pb-2 sm:pb-6 lg:pt-14 lg:pb-10 text-white text-left justify-center">
               <div className="min-h-0">
                 <div className="w-full flex justify-center flex-shrink-0 min-w-0">
                   <h1 className="font-welcome-heading text-lg sm:text-xl md:text-2xl lg:text-3xl text-center font-semibold mb-5 sm:mb-4 lg:mb-7 break-words tracking-widest">
