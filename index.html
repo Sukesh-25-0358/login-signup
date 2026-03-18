@@ -207,6 +207,18 @@
       #signupPage .signup-card-content input::placeholder {
         font-size: 12px;
       }
+      #loginPage .login-email-input::placeholder {
+        font-size: 11px;
+        letter-spacing: -0.01em;
+      }
+      #signupPage .signup-confirm-input::placeholder {
+        font-size: 11px;
+        letter-spacing: -0.01em;
+      }
+      .font-welcome-heading {
+        letter-spacing: 0.22em;
+        white-space: nowrap;
+      }
     }
 
     @media (max-width: 360px) {
@@ -218,9 +230,18 @@
         width: calc(92% + 44.16px) !important;
         max-width: 100% !important;
       }
-      #loginPage .login-card-inner input::placeholder {
+      #loginPage .login-email-input::placeholder {
+        font-size: 10px;
+        letter-spacing: -0.03em;
+      }
+      #signupPage .signup-confirm-input::placeholder {
         font-size: 10px;
         letter-spacing: -0.02em;
+      }
+      .font-welcome-heading {
+        font-size: 1.05rem;
+        letter-spacing: 0.18em;
+        white-space: nowrap;
       }
     }
     @media (min-width: 640px) and (max-width: 1023px) {
@@ -1122,7 +1143,7 @@
                     id="signupPassword"
                     type="password"
                     placeholder="Password"
-                    class="bg-transparent outline-none w-full placeholder-white/90 text-sm text-white pr-9"
+                    class="bg-transparent outline-none w-full placeholder-white/90 text-sm text-white pr-9 signup-confirm-input"
                     oninput="updateSignupPasswordToggleVisibility()"
                   />
                   <button type="button" aria-label="Toggle password visibility" class="password-toggle-btn absolute right-2 top-1/2 -translate-y-1/2 text-white/80 hover:text-white p-1 flex-shrink-0" onclick="toggleSignupPasswordVisibility()">
@@ -1287,7 +1308,7 @@
                     id="loginEmail"
                     type="text"
                     placeholder="Email or Mobile number"
-                    class="bg-transparent outline-none w-full min-w-0 placeholder-white text-sm tracking-tight"
+                    class="bg-transparent outline-none w-full min-w-0 placeholder-white text-sm login-email-input"
                   />
                 </div>
                 <p id="loginEmailError" class="error-text mt-0.5 text-[11px] sm:text-xs"></p>

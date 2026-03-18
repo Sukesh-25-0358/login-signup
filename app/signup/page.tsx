@@ -285,7 +285,7 @@ export default function SignupPage() {
                         placeholder="Confirm Password"
                         value={form.confirmPassword}
                         onChange={handleChange("confirmPassword")}
-                        className="bg-transparent outline-none w-full placeholder-white/90 text-sm text-white pr-9"
+                        className="bg-transparent outline-none w-full placeholder-white/90 text-sm text-white pr-9 signup-confirm-input"
                         aria-invalid={!!errors.confirmPassword}
                         aria-describedby={errors.confirmPassword ? "confirmPassword-error" : undefined}
                       />

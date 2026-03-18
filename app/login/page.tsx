@@ -159,7 +159,7 @@ export default function LoginPage() {
                         placeholder="Email or Mobile number"
                         value={form.email}
                         onChange={handleChange("email")}
-                        className="bg-transparent outline-none w-full min-w-0 placeholder-white text-sm tracking-tight"
+                        className="bg-transparent outline-none w-full min-w-0 placeholder-white text-sm login-email-input"
                         aria-invalid={!!errors.email}
                         aria-describedby={
                           errors.email ? "login-email-error" : undefined

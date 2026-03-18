@@ -236,6 +236,18 @@ input[type="password"]::-ms-reveal {
   .signup-card-content input::placeholder {
     font-size: 12px;
   }
+  .login-email-input::placeholder {
+    font-size: 11px;
+    letter-spacing: -0.01em;
+  }
+  .signup-confirm-input::placeholder {
+    font-size: 11px;
+    letter-spacing: -0.01em;
+  }
+  .font-welcome-heading {
+    letter-spacing: 0.22em;
+    white-space: nowrap;
+  }
 }
 
 /* Extreme zoom (≈188–200%): even narrower viewport needs more inner width */
@@ -250,9 +262,18 @@ input[type="password"]::-ms-reveal {
     max-width: 100% !important; /* prevent overflow/crop at extreme zoom */
   }
   /* Login email placeholder is the longest string – shrink a touch more */
-  .login-card-inner input::placeholder {
+  .login-email-input::placeholder {
+    font-size: 10px;
+    letter-spacing: -0.03em;
+  }
+  .signup-confirm-input::placeholder {
     font-size: 10px;
     letter-spacing: -0.02em;
+  }
+  .font-welcome-heading {
+    font-size: 1.05rem;
+    letter-spacing: 0.18em;
+    white-space: nowrap;
   }
 }
 
