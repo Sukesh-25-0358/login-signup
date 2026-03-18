@@ -153,7 +153,7 @@ export default function LoginPage() {
                   <div className="space-y-6 sm:space-y-4 lg:space-y-6 flex-shrink-0">
                   <div className="flex flex-col">
                     <div className="flex items-center border-b border-white/60 pb-2 min-w-0">
-                      <FaEnvelope className="mr-0.5 sm:mr-4 text-sm opacity-80 flex-shrink-0" />
+                      <FaEnvelope className="mr-2 sm:mr-4 text-sm opacity-80 flex-shrink-0" />
                       <input
                         type="text"
                         placeholder="Email or Mobile number"

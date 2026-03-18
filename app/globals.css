@@ -251,7 +251,8 @@ input[type="password"]::-ms-reveal {
   }
   /* Login email placeholder is the longest string – shrink a touch more */
   .login-card-inner input::placeholder {
-    font-size: 11px;
+    font-size: 10px;
+    letter-spacing: -0.02em;
   }
 }
 
