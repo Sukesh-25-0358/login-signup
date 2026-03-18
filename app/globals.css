@@ -230,7 +230,7 @@ input[type="password"]::-ms-reveal {
   .login-card-inner,
   .signup-card-content {
     width: calc(86% + 41.28px) !important;
-    max-width: calc(86% + 41.28px) !important;
+    max-width: 100% !important; /* prevent left-side clipping (looks like content shifts right) */
   }
   .login-card-inner input::placeholder,
   .signup-card-content input::placeholder {
@@ -247,7 +247,7 @@ input[type="password"]::-ms-reveal {
   .login-card-inner,
   .signup-card-content {
     width: calc(92% + 44.16px) !important;
-    max-width: calc(92% + 44.16px) !important;
+    max-width: 100% !important; /* prevent overflow/crop at extreme zoom */
   }
   /* Login email placeholder is the longest string – shrink a touch more */
   .login-card-inner input::placeholder {
