@@ -249,13 +249,13 @@ input[type="password"]::-ms-reveal {
 @media (max-width: 1023px) {
   .auth-page {
     /* Fill the mobile viewport (no extra bottom white), with small top/bottom whitespace */
-    --auth-mobile-vpad: 56px; /* ~1.5cm */
+    --auth-mobile-vpad: 40px;
     height: 100dvh;
     min-height: 100dvh;
     max-height: 100dvh;
     padding-top: var(--auth-mobile-vpad);
     padding-bottom: var(--auth-mobile-vpad);
-    overflow: hidden;
+    overflow-y: auto;
     overflow-x: hidden;
   }
   .auth-page .auth-layout {
