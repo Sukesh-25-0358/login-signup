@@ -148,10 +148,16 @@
       display: block;
     }
 
-    /* Mobile: widen inner light panel on 375/425 widths */
-    @media (min-width: 360px) and (max-width: 500px) {
+    /* Mobile: keep content visually inside inner light panel */
+    @media (max-width: 500px) {
       .auth-inner-panel {
         width: 86% !important;
+      }
+      #loginPage .login-card-inner,
+      #signupPage .signup-card-content {
+        max-width: 86%;
+        margin-left: auto;
+        margin-right: auto;
       }
     }
 
