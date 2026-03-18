@@ -170,12 +170,12 @@ export default function SignupPage() {
 
             <div className="relative z-10 flex flex-col flex-1 min-h-0 min-w-0 px-4 sm:px-6 pt-2.5 sm:pt-4 pb-2 sm:pb-3 lg:pt-8 lg:pb-6 text-white signup-card-content text-left">
               <div className="w-full flex justify-center flex-shrink-0">
-                <h1 className="font-welcome-heading text-xl sm:text-2xl text-center font-semibold mb-1.5 sm:mb-2.5 lg:mb-4 tracking-widest">
+                <h1 className="font-welcome-heading text-xl sm:text-2xl text-center font-semibold mb-3 sm:mb-2.5 lg:mb-4 tracking-widest">
                   WELCOME
                 </h1>
               </div>
 
-              <div className="flex justify-center mb-1.5 sm:mb-2.5 lg:mb-4 flex-shrink-0">
+              <div className="flex justify-center mb-3 sm:mb-2.5 lg:mb-4 flex-shrink-0">
                 <div className="bg-white w-[120px] sm:w-[140px] lg:w-[180px] h-[44px] sm:h-[52px] lg:h-[64px] rounded-[50%] flex items-center justify-center shadow-lg overflow-hidden">
                   <img src="/stackly-logo.webp" alt="Stackly Logo" className="h-3.5 sm:h-4 lg:h-7 object-contain" />
                 </div>

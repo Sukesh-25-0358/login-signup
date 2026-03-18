@@ -134,12 +134,12 @@ export default function LoginPage() {
             <div className="relative z-10 flex flex-col flex-1 min-h-0 min-w-0 auth-card-content login-card-inner px-4 sm:px-6 pt-2.5 sm:pt-8 pb-2 sm:pb-6 lg:pt-14 lg:pb-10 text-white text-left justify-center">
               <div className="min-h-0">
                 <div className="w-full flex justify-center flex-shrink-0 min-w-0">
-                  <h1 className="font-welcome-heading text-lg sm:text-xl md:text-2xl lg:text-3xl text-center font-semibold mb-1 sm:mb-4 lg:mb-7 break-words tracking-widest">
+                  <h1 className="font-welcome-heading text-lg sm:text-xl md:text-2xl lg:text-3xl text-center font-semibold mb-5 sm:mb-4 lg:mb-7 break-words tracking-widest">
                     WELCOME
                   </h1>
                 </div>
 
-                <div className="flex justify-center mb-1 sm:mb-4 lg:mb-8 flex-shrink-0">
+                <div className="flex justify-center mb-8 sm:mb-4 lg:mb-8 flex-shrink-0">
                   <div className="bg-white w-[120px] h-[44px] sm:w-[160px] sm:h-[60px] lg:w-[200px] lg:h-[80px] rounded-[50%] flex items-center justify-center shadow-lg overflow-hidden">
                     <img
                       src="/stackly-logo.webp"
@@ -150,7 +150,7 @@ export default function LoginPage() {
                 </div>
 
                 <form onSubmit={handleLogin} noValidate>
-                  <div className="space-y-2 sm:space-y-4 lg:space-y-6 flex-shrink-0">
+                  <div className="space-y-6 sm:space-y-4 lg:space-y-6 flex-shrink-0">
                   <div className="flex flex-col">
                     <div className="flex items-center border-b border-white/60 pb-2 min-w-0">
                       <FaEnvelope className="mr-2 sm:mr-4 text-sm opacity-80 flex-shrink-0" />
@@ -246,7 +246,7 @@ export default function LoginPage() {
                   </div>
                 </div>
 
-                <div className="login-remember-forgot flex flex-wrap items-center justify-between gap-x-4 gap-y-2 mt-1.5 sm:mt-4 text-xs opacity-90 flex-shrink-0 min-w-0">
+                <div className="login-remember-forgot flex flex-wrap items-center justify-between gap-x-4 gap-y-2 mt-5 sm:mt-4 text-xs opacity-90 flex-shrink-0 min-w-0">
                   <label className="flex items-center gap-2 cursor-pointer flex-shrink-0">
                     <input
                       type="checkbox"
@@ -275,7 +275,7 @@ export default function LoginPage() {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="mt-2 sm:mt-6 lg:mt-8 w-full h-[42px] sm:h-[45px] bg-gradient-to-r from-[#2d8cf0] to-[#5a78c7] rounded-md text-sm font-medium shadow-md hover:opacity-90 transition disabled:opacity-60 disabled:cursor-not-allowed flex-shrink-0"
+                    className="mt-6 sm:mt-6 lg:mt-8 w-full h-[42px] sm:h-[45px] bg-gradient-to-r from-[#2d8cf0] to-[#5a78c7] rounded-md text-sm font-medium shadow-md hover:opacity-90 transition disabled:opacity-60 disabled:cursor-not-allowed flex-shrink-0"
                   >
                     {isSubmitting ? "Checking..." : "Login"}
                   </button>
