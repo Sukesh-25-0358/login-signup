@@ -247,47 +247,37 @@ input[type="password"]::-ms-reveal {
 
 /* Mobile: allow outer (page) scroll so no content is missing, with consistent card size */
 @media (max-width: 1023px) {
-  html,
-  body {
-    height: 100%;
-    overflow: hidden; /* hard stop any mobile scroll */
-  }
   .auth-page {
-    --auth-mobile-vpad: clamp(0.5rem, 2vh, 1rem);
+    /* Fill the mobile viewport (no extra bottom white), with small top/bottom whitespace */
+    --auth-mobile-vpad: clamp(12px, 2.5vh, 22px);
     height: 100dvh;
     min-height: 100dvh;
-    max-height: none;
-    overflow: hidden; /* no scroll on mobile */
+    max-height: 100dvh;
+    padding-top: var(--auth-mobile-vpad);
+    padding-bottom: var(--auth-mobile-vpad);
+    overflow-y: auto;
     overflow-x: hidden;
-    padding-top: var(--auth-mobile-vpad) !important;
-    padding-bottom: var(--auth-mobile-vpad) !important;
   }
   .auth-page .auth-layout {
     flex: 1;
-    min-height: 100%;
+    min-height: auto;
     max-height: none;
     gap: 0.75rem;
     max-width: 100%;
     justify-content: center;
-    padding-top: env(safe-area-inset-top);
-    padding-bottom: env(safe-area-inset-bottom);
   }
   .auth-form-card {
     width: 100%;
     max-width: 360px;       /* same width on login & signup */
-    height: calc(
-      100dvh
-      - (2 * var(--auth-mobile-vpad))
-      - env(safe-area-inset-top)
-      - env(safe-area-inset-bottom)
-    );
-    min-height: 0;
+    /* Keep login/signup same baseline, but never exceed viewport height */
+    height: min(560px, calc(100dvh - (2 * var(--auth-mobile-vpad))));
+    min-height: min(560px, calc(100dvh - (2 * var(--auth-mobile-vpad))));
     max-height: none;
     display: flex;
     flex-direction: column;
     margin-top: 0;
     margin-bottom: 0;
-    overflow: hidden;       /* keep box clean (no inner scrollbars) */
+    overflow: visible;      /* never clip; outer page scroll */
   }
   .auth-form-card .auth-card-content,
   .auth-form-card .signup-card-content {
@@ -297,12 +287,27 @@ input[type="password"]::-ms-reveal {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    overflow: hidden;
+    overflow: visible;
   }
 
   /* Mobile: remove bottom illustration entirely */
   .auth-image-col {
     display: none !important;
+  }
+}
+
+/* iOS Safari fallback for dynamic viewport */
+@supports (-webkit-touch-callout: none) {
+  @media (max-width: 1023px) {
+    .auth-page {
+      height: 100svh;
+      min-height: 100svh;
+      max-height: 100svh;
+    }
+    .auth-form-card {
+      height: min(560px, calc(100svh - (2 * var(--auth-mobile-vpad))));
+      min-height: min(560px, calc(100svh - (2 * var(--auth-mobile-vpad))));
+    }
   }
 }
 
