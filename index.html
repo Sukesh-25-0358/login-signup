@@ -402,7 +402,8 @@
         #loginPage .login-email-input,
         #signupPage .signup-confirm-input {
           font-size: 12px !important;
-          -webkit-text-size-adjust: 100%;
+            /* Allow Chrome iOS "Text size" +/- scaling on login/signup pages */
+            -webkit-text-size-adjust: auto;
           white-space: nowrap;
         }
         #loginPage .login-email-input::placeholder {
