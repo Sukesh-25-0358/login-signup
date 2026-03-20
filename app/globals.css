@@ -45,16 +45,16 @@ input[type="password"]::-ms-reveal {
 @media (max-width: 1023px) {
   /* Allow iOS Chrome "Text size" (+/-) on auth pages */
   .auth-page {
-    -webkit-text-size-adjust: initial;
-    text-size-adjust: initial;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
   }
   /* Extra safety: Login/Signup sometimes get stronger iOS text-size rules from inner elements */
   .login-page,
   .signup-page,
   .login-page *,
   .signup-page * {
-    -webkit-text-size-adjust: initial;
-    text-size-adjust: initial;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
   }
 }
 .auth-page .auth-layout,
@@ -412,8 +412,8 @@ input[type="password"]::-ms-reveal {
       min-height: 100svh;
       max-height: none;
       /* Allow iOS Chrome +/- zoom buttons (text scaling). */
-      -webkit-text-size-adjust: initial;
-      text-size-adjust: initial;
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
     }
     .auth-form-card {
       height: auto;
@@ -427,7 +427,7 @@ input[type="password"]::-ms-reveal {
     .signup-confirm-input {
       font-size: 12px !important;
       /* Allow Chrome iOS "Text size" +/- scaling on login/signup pages */
-      -webkit-text-size-adjust: initial;
+      -webkit-text-size-adjust: 100%;
       white-space: nowrap;
     }
     .login-email-input::placeholder {

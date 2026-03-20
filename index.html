@@ -346,16 +346,16 @@
         overflow-x: hidden;
         -webkit-overflow-scrolling: touch;
         /* Allow iOS Chrome "Text size" (+/-) on auth pages */
-        -webkit-text-size-adjust: initial;
-        text-size-adjust: initial;
+        -webkit-text-size-adjust: 100%;
+        text-size-adjust: 100%;
       }
       /* Extra safety: Login/Signup sometimes get stronger iOS text-size rules from inner elements */
       .login-page,
       .signup-page,
       .login-page *,
       .signup-page * {
-        -webkit-text-size-adjust: initial;
-        text-size-adjust: initial;
+        -webkit-text-size-adjust: 100%;
+        text-size-adjust: 100%;
       }
       .auth-page .auth-layout {
         flex: 1;
@@ -401,8 +401,8 @@
           min-height: 100svh;
           max-height: none;
             /* Allow iOS Chrome +/- zoom buttons (text scaling). */
-            -webkit-text-size-adjust: initial;
-            text-size-adjust: initial;
+            -webkit-text-size-adjust: 100%;
+            text-size-adjust: 100%;
         }
         .auth-form-card {
           height: auto;
@@ -415,7 +415,7 @@
         #signupPage .signup-confirm-input {
           font-size: 12px !important;
             /* Allow Chrome iOS "Text size" +/- scaling on login/signup pages */
-          -webkit-text-size-adjust: initial;
+          -webkit-text-size-adjust: 100%;
           white-space: nowrap;
         }
         #loginPage .login-email-input::placeholder {
