@@ -153,13 +153,13 @@ export default function LoginPage() {
                   <div className="space-y-6 sm:space-y-4 lg:space-y-6 flex-shrink-0">
                   <div className="flex flex-col">
                     <div className="flex items-center border-b border-white/60 pb-2 min-w-0">
-                      <FaEnvelope className="mr-2 sm:mr-4 text-sm opacity-80 flex-shrink-0" />
+                      <FaEnvelope className="login-email-icon mr-2 sm:mr-4 text-sm opacity-80 flex-shrink-0" />
                       <input
                         type="text"
                         placeholder="Email or Mobile number"
                         value={form.email}
                         onChange={handleChange("email")}
-                        className="bg-transparent outline-none w-full min-w-0 placeholder-white text-sm tracking-tight"
+                        className="bg-transparent outline-none w-full min-w-0 placeholder-white text-sm tracking-tight login-email-input"
                         aria-invalid={!!errors.email}
                         aria-describedby={
                           errors.email ? "login-email-error" : undefined
