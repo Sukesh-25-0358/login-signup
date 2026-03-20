@@ -272,7 +272,7 @@ input[type="password"]::-ms-reveal {
   }
   /* Give the two long placeholders maximum horizontal room */
   .login-email-icon {
-    margin-right: 0.75rem !important;
+    margin-right: 0.25rem !important;
     font-size: 0.85rem;
   }
   .signup-confirm-icon {
@@ -288,7 +288,7 @@ input[type="password"]::-ms-reveal {
     padding-right: 1rem !important;
   }
   .login-email-input {
-    padding-right: 0.25rem !important;
+    padding-right: 0 !important;
   }
 
   .signup-confirm-input {
