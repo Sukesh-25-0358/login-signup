@@ -244,24 +244,24 @@ export default function LoginPage() {
                       </p>
                     )}
                   </div>
+                </div>
 
-                <div className="login-remember-forgot flex flex-wrap items-stretch sm:items-center justify-between gap-x-3 gap-y-2 text-xs opacity-90 flex-shrink-0 min-w-0 w-full max-w-full">
-                  <label className="flex items-center gap-2 cursor-pointer flex-shrink-0 min-w-0 max-w-full">
+                <div className="login-remember-forgot flex flex-wrap items-center justify-between gap-x-4 gap-y-2 mt-5 sm:mt-4 text-xs opacity-90 flex-shrink-0 min-w-0">
+                  <label className="flex items-center gap-2 cursor-pointer flex-shrink-0">
                     <input
                       type="checkbox"
                       checked={form.rememberMe}
                       onChange={handleChange("rememberMe")}
-                      className="h-3.5 w-3.5 shrink-0 rounded border border-white/60 bg-transparent accent-[#2d8cf0]"
+                      className="h-3.5 w-3.5 rounded border border-white/60 bg-transparent accent-[#2d8cf0]"
                     />
-                    <span className="break-words">Remember me</span>
+                    <span>Remember me</span>
                   </label>
                   <Link
                     href="/forgot-password"
-                    className="forgot-password-link text-white no-underline hover:text-white hover:underline decoration-1 underline-offset-4 text-[13px] flex-shrink-0 min-w-0 max-w-full break-words"
+                    className="forgot-password-link text-white no-underline hover:text-white hover:underline decoration-1 underline-offset-4 text-[13px] flex-shrink-0 min-w-0"
                   >
                     Forgot Password?
                   </Link>
-                </div>
                 </div>
 
                 {errors.form && (

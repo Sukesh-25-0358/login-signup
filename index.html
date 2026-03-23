@@ -207,16 +207,6 @@
         padding-bottom: clamp(1.25rem, 5.5vh, 2.75rem) !important;
         justify-content: flex-start;
       }
-      #loginPage .login-remember-forgot {
-        width: 100%;
-        max-width: 100%;
-        min-width: 0;
-        align-self: stretch;
-      }
-      #loginPage .login-remember-forgot .forgot-password-link {
-        overflow-wrap: anywhere;
-        word-break: break-word;
-      }
       #signupPage .signup-card-content {
         padding-top: clamp(1rem, 3.5vh, 2rem) !important;
         padding-bottom: clamp(1.25rem, 5vh, 2.75rem) !important;
@@ -1385,7 +1375,7 @@
               </div>
             </div>
 
-            <!-- INPUTS + Remember (same stack as React: under password) -->
+            <!-- INPUTS -->
             <div class="space-y-6 sm:space-y-4 lg:space-y-6 flex-shrink-0 w-full min-w-0">
               <div>
                 <div class="flex items-center border-b border-white/60 pb-2 min-w-0">
@@ -1416,19 +1406,20 @@
                 </div>
                 <p id="loginPasswordError" class="error-text mt-0.5 text-[11px] sm:text-xs"></p>
               </div>
+            </div>
 
-            <div class="login-remember-forgot flex flex-wrap items-stretch sm:items-center justify-between gap-x-3 gap-y-2 text-xs opacity-90 min-w-0 w-full max-w-full">
-              <label class="flex items-center gap-2 cursor-pointer flex-shrink-0 min-w-0 max-w-full">
+            <!-- REMEMBER / FORGOT (Forgot on the right — original row) -->
+            <div class="login-remember-forgot flex flex-wrap items-center justify-between gap-x-4 gap-y-2 mt-5 sm:mt-4 text-xs opacity-90 flex-shrink-0 min-w-0">
+              <label class="flex items-center gap-2 cursor-pointer flex-shrink-0">
                 <input
                   type="checkbox"
-                  class="h-3.5 w-3.5 shrink-0 rounded border border-white/60 bg-transparent accent-[#2d8cf0]"
+                  class="h-3.5 w-3.5 rounded border border-white/60 bg-transparent accent-[#2d8cf0]"
                 />
-                <span class="break-words">Remember me</span>
+                <span>Remember me</span>
               </label>
-              <a href="#forgot" onclick="location.hash='forgot'; showPage('forgot'); return false;" class="forgot-password-link cursor-pointer flex-shrink-0 min-w-0 max-w-full break-words">
+              <a href="#forgot" onclick="location.hash='forgot'; showPage('forgot'); return false;" class="forgot-password-link cursor-pointer flex-shrink-0 min-w-0">
                 Forgot Password?
               </a>
-            </div>
             </div>
 
             <!-- LOGIN BUTTON -->

@@ -90,30 +90,10 @@ input[type="password"]::-ms-reveal {
   }
 }
 
-/* Login mobile/tablet: keep flow top-to-bottom (Remember me directly under password) */
+/* Login mobile/tablet: keep flow top-to-bottom */
 @media (max-width: 1023px) {
   .login-page .login-card-inner {
     justify-content: flex-start;
-  }
-  .login-page .login-remember-forgot {
-    width: 100%;
-    max-width: 100%;
-    min-width: 0;
-    align-self: stretch;
-  }
-  .login-page .login-remember-forgot .forgot-password-link {
-    overflow-wrap: anywhere;
-    word-break: break-word;
-  }
-}
-
-/* Mobile + zoom: prevent Remember me / Forgot Password overlap - stack on narrow */
-@media (max-width: 480px) {
-  .login-remember-forgot {
-    flex-direction: column;
-    align-items: flex-start !important;
-    align-content: flex-start;
-    gap: 0.5rem;
   }
 }
 
@@ -557,11 +537,6 @@ input[type="password"]::-ms-reveal {
 @media (max-width: 768px) and (min-resolution: 1.5dppx) {
   .auth-card-content > * {
     margin-bottom: 0.5rem;
-  }
-  .login-remember-forgot {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.5rem;
   }
   .font-welcome-heading {
     letter-spacing: 0.2em;
