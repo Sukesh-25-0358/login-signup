@@ -420,8 +420,9 @@
         max-height: none;
         padding-top: 0;
         padding-bottom: 0;
-        padding-left: max(0.75rem, var(--auth-safe-left));
-        padding-right: max(0.75rem, var(--auth-safe-right));
+        /* Remove white margins on left/right in mobile. */
+        padding-left: 0 !important;
+        padding-right: 0 !important;
         overflow-y: auto;
         overflow-x: hidden;
         -webkit-overflow-scrolling: touch;
@@ -447,8 +448,8 @@
       }
       .auth-form-card {
         width: 100%;
-        max-width: 360px;
-        align-self: center;
+        max-width: 100% !important;
+        align-self: stretch;
         height: auto;
         padding-top: env(safe-area-inset-top, 0px);
         padding-bottom: env(safe-area-inset-bottom, 0px);
@@ -586,8 +587,8 @@
     /* Mobile zoom out (62–85%): inner box only, no scrollbar, content fixed inside */
     @media (max-width: 340px) {
       .auth-page {
-        padding-left: max(0.5rem, env(safe-area-inset-left, 0px));
-        padding-right: max(0.5rem, env(safe-area-inset-right, 0px));
+        padding-left: 0 !important;
+        padding-right: 0 !important;
       }
       .auth-form-card {
         max-width: 100%;
@@ -609,8 +610,8 @@
     /* Very small screens (320px–380px) and all zoom, extra gap under card */
     @media (max-width: 380px) {
       .auth-page {
-        padding-left: max(0.5rem, env(safe-area-inset-left, 0px));
-        padding-right: max(0.5rem, env(safe-area-inset-right, 0px));
+        padding-left: 0 !important;
+        padding-right: 0 !important;
         padding-top: 0;
         padding-bottom: 0;
       }
