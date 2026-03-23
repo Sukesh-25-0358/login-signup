@@ -17,13 +17,13 @@ export const metadata: Metadata = {
   description: "Signup and login UI for Stackly",
 };
 
-/** Edge-to-edge on notched devices; pinch + browser text zoom must stay enabled (esp. iOS Chrome). */
+/**
+ * Do not set maximumScale / minimumScale — iOS Chrome + WCAG require unrestricted zoom.
+ * Tailwind preflight is overridden in globals.css for auth pages (html text-size-adjust).
+ */
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  minimumScale: 0.5,
-  maximumScale: 5,
-  userScalable: true,
   viewportFit: "cover",
 };
 
