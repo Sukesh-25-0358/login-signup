@@ -57,20 +57,26 @@
     }
 
     @media (max-width: 1023px) {
+      #signupPage .signup-card-content .signup-brand-stack {
+        align-items: center;
+        width: 100%;
+      }
       #signupPage .signup-card-content .signup-welcome-title {
         display: block;
-        width: 100%;
+        width: fit-content;
         max-width: 100%;
         margin-left: auto;
         margin-right: auto;
         text-align: center;
         box-sizing: border-box;
-        padding-left: 0.175em;
+        padding-left: 0;
+        padding-right: 0;
+        padding-inline: 0.2em;
       }
     }
     @media (max-width: 400px) {
       #signupPage .signup-card-content .signup-welcome-title {
-        padding-left: 0.06em;
+        padding-inline: 0.12em;
       }
     }
 
@@ -336,12 +342,13 @@
 
       #signupPage .signup-card-content .font-welcome-heading {
         display: block;
-        width: 100%;
+        width: fit-content;
+        max-width: 100%;
+        margin-left: auto;
+        margin-right: auto;
         text-align: center;
         letter-spacing: 0.18em !important;
-        margin-left: 0;
-        margin-right: 0;
-        padding-left: 0.09em;
+        padding-inline: 0.1em;
       }
     }
     @media (min-width: 640px) and (max-width: 1023px) {
@@ -1172,16 +1179,12 @@
           ></div>
 
             <div class="relative z-10 flex flex-col flex-1 min-h-0 min-w-0 px-4 sm:px-6 pt-2 sm:pt-4 pb-1.5 sm:pb-3 lg:pt-8 lg:pb-6 text-white signup-card-content text-left justify-between">
-            <!-- WELCOME (WB_005: centered on narrow screens) -->
-            <div class="w-full flex justify-center flex-shrink-0 min-w-0">
-            <h1 class="signup-welcome-title block w-full max-w-full font-welcome-heading text-xl sm:text-2xl text-center font-semibold mb-3 sm:mb-2.5 lg:mb-4">
-              WELCOME
-            </h1>
-            </div>
-
-            <!-- LOGO (WB_014: aligned with login) -->
-            <div class="flex justify-center mb-3 sm:mb-2.5 lg:mb-4 flex-shrink-0">
-              <div class="bg-white w-[120px] sm:w-[140px] lg:w-[180px] h-[44px] sm:h-[52px] lg:h-[64px] rounded-[50%] flex items-center justify-center shadow-lg overflow-hidden">
+            <!-- WELCOME + logo: same stack so both center on one axis -->
+            <div class="signup-brand-stack flex w-full min-w-0 flex-col items-center flex-shrink-0 mb-3 sm:mb-2.5 lg:mb-4">
+              <h1 class="signup-welcome-title font-welcome-heading text-xl sm:text-2xl font-semibold text-center mb-3 sm:mb-2.5 lg:mb-4 w-fit max-w-full">
+                WELCOME
+              </h1>
+              <div class="bg-white w-[120px] sm:w-[140px] lg:w-[180px] h-[44px] sm:h-[52px] lg:h-[64px] rounded-[50%] flex items-center justify-center shadow-lg overflow-hidden shrink-0">
                 <img src="public/stackly-logo.webp" alt="Stackly Logo" class="h-3.5 sm:h-4 lg:h-7 object-contain" />
               </div>
             </div>

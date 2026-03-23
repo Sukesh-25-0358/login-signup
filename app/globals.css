@@ -75,18 +75,24 @@ input[type="password"]::-ms-reveal {
   min-width: 0;
 }
 
-/* Signup mobile: WELCOME aligned with centered logo (full width + optical letter-spacing fix) */
+/* Signup: WELCOME + logo share one flex column — items-center aligns both to same vertical axis */
 @media (max-width: 1023px) {
+  .signup-card-content .signup-brand-stack {
+    align-items: center;
+    width: 100%;
+  }
   .signup-card-content .signup-welcome-title {
     display: block;
-    width: 100%;
+    width: fit-content;
     max-width: 100%;
     margin-left: auto;
     margin-right: auto;
     text-align: center;
     box-sizing: border-box;
-    /* Letter-spacing adds space after the last glyph; nudge right to match logo center */
-    padding-left: 0.175em;
+    padding-left: 0;
+    padding-right: 0;
+    /* Letter-spaced caps: tiny symmetric inset so optical center matches the logo oval */
+    padding-inline: 0.2em;
   }
 }
 
@@ -100,7 +106,7 @@ input[type="password"]::-ms-reveal {
     letter-spacing: 0.12em;
   }
   .signup-card-content .signup-welcome-title {
-    padding-left: 0.06em;
+    padding-inline: 0.12em;
   }
   .auth-card-content {
     padding-left: 0.75rem;
@@ -374,12 +380,13 @@ input[type="password"]::-ms-reveal {
   /* Signup: prevent WELCOME drift at 190–200% zoom */
   .signup-card-content .font-welcome-heading {
     display: block;
-    width: 100%;
+    width: fit-content;
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
     text-align: center;
     letter-spacing: 0.18em !important;
-    margin-left: 0;
-    margin-right: 0;
-    padding-left: 0.09em;
+    padding-inline: 0.1em;
   }
 }
 
