@@ -35,18 +35,6 @@ body {
   overflow-x: hidden;
 }
 
-/* iOS Safari: stable full-height chain (Android/Chrome ignore -webkit-fill-available) */
-@supports (-webkit-touch-callout: none) {
-  @media (max-width: 1023px) {
-    html {
-      height: -webkit-fill-available;
-    }
-    body {
-      min-height: -webkit-fill-available;
-    }
-  }
-}
-
 /* Hide browser's native password reveal (e.g. Edge) so only our single eye shows */
 input[type="password"]::-ms-reveal {
   display: none !important;
@@ -360,69 +348,94 @@ input[type="password"]::-ms-reveal {
   }
 }
 
-/* Mobile: edge-to-edge feel (no extra top/bottom white bars); scroll only when content overflows */
+/*
+ * Mobile login/signup: lock document scroll + fill the *visible* viewport.
+ * Tailwind min-h-screen uses 100vh — on iOS that’s taller than the screen → extra white + “infinite”
+ * scroll past the end. Fixed .auth-page + overscroll-behavior stops rubber-band whitespace.
+ */
 @media (max-width: 1023px) {
+  html:has(.auth-page) {
+    height: 100%;
+    overflow: hidden;
+    overscroll-behavior: none;
+  }
+  body:has(.auth-page) {
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
+    overscroll-behavior: none;
+  }
+
   .auth-page {
-    /* Safe areas only (notches / home indicator); no arbitrary vertical padding */
     --auth-safe-top: env(safe-area-inset-top, 0px);
     --auth-safe-bottom: env(safe-area-inset-bottom, 0px);
     --auth-safe-left: env(safe-area-inset-left, 0px);
     --auth-safe-right: env(safe-area-inset-right, 0px);
-    height: auto;
-    min-height: 100svh;
-    min-height: 100dvh;
+
+    position: fixed;
+    inset: 0;
+    z-index: 5;
+    width: 100%;
+    margin: 0;
+    /* Kill min-h-screen / 100vh — main cause of iOS bottom “ghost” scroll */
+    min-height: 0 !important;
     max-height: none;
     padding-top: var(--auth-safe-top);
     padding-bottom: var(--auth-safe-bottom);
     padding-left: max(0.75rem, var(--auth-safe-left));
     padding-right: max(0.75rem, var(--auth-safe-right));
+    box-sizing: border-box;
+
+    display: flex;
+    flex-direction: column;
     overflow-y: auto;
     overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
-    /* Prevent iOS from inflating text and breaking flex/line-wrap */
+    overscroll-behavior-y: none;
+    overscroll-behavior-x: none;
+
     -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;
   }
+
   .auth-page .auth-layout {
     flex: 1 1 auto;
+    min-height: 0;
     display: flex;
     flex-direction: column;
-    /* iOS: avoid min(100%, …) — parent height can be “auto” and % resolves badly */
-    min-height: calc(100svh - var(--auth-safe-top) - var(--auth-safe-bottom));
-    max-height: none;
-    gap: 0.5rem;
-    max-width: 100%;
-    /* Top-align so the card can fill the screen; avoids “floating” white gaps */
     justify-content: flex-start;
     align-items: stretch;
+    gap: 0.5rem;
+    max-width: 100%;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
   }
-  /* First column = auth card (image column is second in DOM) */
+
   .auth-page .auth-layout > div:first-child {
     flex: 1 1 auto;
+    min-height: 0;
     display: flex;
     flex-direction: column;
-    /* iOS: min-height:0 can collapse nested flex; keep auto so card always lays out */
-    min-height: auto;
     align-items: stretch;
   }
+
   .auth-form-card {
+    flex: 1 1 auto;
     width: 100%;
-    max-width: 360px;       /* same width on login & signup */
+    max-width: 360px;
     align-self: center;
+    min-height: 0;
     height: auto;
-    /* Match inner area below safe-area padding (border-box on .auth-page) */
-    min-height: calc(100svh - var(--auth-safe-top) - var(--auth-safe-bottom));
-    min-height: calc(100dvh - var(--auth-safe-top) - var(--auth-safe-bottom));
-    max-height: none;
     display: flex;
     flex-direction: column;
     margin-top: 0;
     margin-bottom: 0;
-    overflow: hidden;       /* keep rounded corners/inner panel clean */
+    overflow: hidden;
   }
+
   .auth-form-card .auth-card-content,
   .auth-form-card .signup-card-content {
-    flex: 1;
+    flex: 1 1 auto;
     min-height: 0;
     min-width: 0;
     display: flex;
@@ -431,28 +444,16 @@ input[type="password"]::-ms-reveal {
     overflow: visible;
   }
 
-  /* Mobile: remove bottom illustration entirely */
   .auth-image-col {
     display: none !important;
   }
 }
 
-/*
- * iOS Safari: do NOT use calc(-webkit-fill-available ± env(...)) — it is unreliable
- * and can collapse or oversize the card. html/body -webkit-fill-available chain + svh handles height.
- */
+/* iOS WebKit: reinforce no elastic overscroll on the auth scroller */
 @supports (-webkit-touch-callout: none) {
   @media (max-width: 1023px) {
     .auth-page {
-      height: auto;
-      /* Base height first; -webkit-fill-available last so WebKit uses it when supported */
-      min-height: 100svh;
-      min-height: -webkit-fill-available;
-      max-height: none;
-    }
-    .auth-form-card {
-      height: auto;
-      min-height: calc(100svh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
+      overscroll-behavior-y: none;
     }
   }
 }
