@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, viewport-fit=cover" />
   <title>Stackly Auth</title>
 
   <!-- Tailwind via CDN -->
@@ -21,6 +21,7 @@
     html {
       height: 100%;
       overflow-x: hidden;
+      background: #ffffff;
     }
     body {
       font-family: Arial, Helvetica, sans-serif;
@@ -30,11 +31,10 @@
       overflow-x: hidden;
     }
 
-    /* Tailwind CDN preflight uses html { -webkit-text-size-adjust: 100% } — breaks iOS Chrome text zoom */
-    html:has(.auth-page),
-    body:has(.auth-page) {
-      -webkit-text-size-adjust: auto !important;
-      text-size-adjust: auto !important;
+    @media (max-width: 1023px) {
+      body {
+        overscroll-behavior-y: none;
+      }
     }
 
     /* Hide browser's native password reveal (e.g. Edge) so only our single eye shows */
@@ -350,91 +350,62 @@
       }
     }
 
-    /* Mobile: fixed viewport; avoid overflow:hidden on html/body — WebKit can block text-zoom reflow */
+    /* Mobile: one scroll; flex fill — no stacked min-heights (fixes iOS extra white when overscrolling) */
     @media (max-width: 1023px) {
-      html:has(.auth-page) {
-        height: 100%;
-        overflow-x: hidden;
-        overflow-y: auto;
-        overscroll-behavior: auto;
-      }
-      body:has(.auth-page) {
-        height: 100%;
-        min-height: 0;
-        overflow-x: hidden;
-        overflow-y: auto;
-        overscroll-behavior: auto;
-      }
-
       .auth-page {
         --auth-safe-top: env(safe-area-inset-top, 0px);
         --auth-safe-bottom: env(safe-area-inset-bottom, 0px);
         --auth-safe-left: env(safe-area-inset-left, 0px);
         --auth-safe-right: env(safe-area-inset-right, 0px);
-
-        position: fixed;
-        inset: 0;
-        z-index: 5;
-        width: 100%;
-        margin: 0;
-        min-height: 0 !important;
+        min-height: 100svh;
+        min-height: 100dvh;
         max-height: none;
         padding-top: var(--auth-safe-top);
         padding-bottom: var(--auth-safe-bottom);
         padding-left: max(0.75rem, var(--auth-safe-left));
         padding-right: max(0.75rem, var(--auth-safe-right));
         box-sizing: border-box;
-
-        display: flex;
-        flex-direction: column;
-        overflow-y: auto;
         overflow-x: hidden;
+        overflow-y: auto;
         -webkit-overflow-scrolling: touch;
-        overscroll-behavior-y: none;
-        overscroll-behavior-x: none;
-
-        -webkit-text-size-adjust: auto !important;
-        text-size-adjust: auto !important;
+        overscroll-behavior-y: contain;
+        -webkit-text-size-adjust: 100%;
+        text-size-adjust: 100%;
       }
-
       .auth-page .auth-layout {
         flex: 1 1 auto;
-        min-height: 0;
         display: flex;
         flex-direction: column;
+        min-height: 0;
+        max-height: none;
+        gap: 0;
+        max-width: 100%;
         justify-content: flex-start;
         align-items: stretch;
-        gap: 0.5rem;
-        max-width: 100%;
-        padding-top: 0 !important;
-        padding-bottom: 0 !important;
       }
-
       .auth-page .auth-layout > div:first-child {
         flex: 1 1 auto;
-        min-height: 0;
         display: flex;
         flex-direction: column;
+        min-height: 0;
         align-items: stretch;
       }
-
       .auth-form-card {
-        flex: 1 1 auto;
         width: 100%;
         max-width: 360px;
         align-self: center;
-        min-height: 0;
-        height: auto;
+        flex: 1 0 auto;
         display: flex;
         flex-direction: column;
+        min-height: auto;
+        max-height: none;
         margin-top: 0;
         margin-bottom: 0;
         overflow: hidden;
       }
-
       .auth-form-card .auth-card-content,
       .auth-form-card .signup-card-content {
-        flex: 1 1 auto;
+        flex: 1;
         min-height: 0;
         min-width: 0;
         display: flex;
@@ -443,10 +414,12 @@
         overflow: visible;
       }
 
+      /* Mobile: remove bottom illustration entirely */
       .auth-image-col {
         display: none !important;
       }
 
+      /* iOS: login must not clip inner flex content (overflow:hidden breaks layout) */
       .login-card .auth-card-content {
         overflow: visible !important;
       }
@@ -455,7 +428,7 @@
     @supports (-webkit-touch-callout: none) {
       @media (max-width: 1023px) {
         .auth-page {
-          overscroll-behavior-y: none;
+          overscroll-behavior-y: contain;
         }
       }
     }
@@ -497,8 +470,6 @@
     @media (max-width: 420px) {
       .auth-layout {
         gap: 0.5rem;
-        padding-top: 0.5rem;
-        padding-bottom: 0.5rem;
       }
       .auth-card-content {
         gap: 0.75rem;
@@ -647,11 +618,6 @@
     }
     #forgotPage input::placeholder {
       color: #cccccc;
-    }
-
-    .auth-page {
-      -webkit-text-size-adjust: auto !important;
-      text-size-adjust: auto !important;
     }
   </style>
 </head>
@@ -1141,7 +1107,7 @@
   </script>
 
   <!-- ================= SIGNUP PAGE ================= -->
-  <div id="signupPage" class="hidden auth-page min-h-0 lg:min-h-screen bg-white flex flex-col px-3 sm:px-6 py-0 sm:py-4 overflow-y-auto">
+  <div id="signupPage" class="hidden auth-page min-h-screen bg-white flex flex-col px-3 sm:px-6 py-0 sm:py-4 overflow-y-auto">
     <div class="w-full max-w-6xl mx-auto flex flex-col lg:flex-row gap-6 sm:gap-6 lg:gap-8 auth-layout">
       <!-- CARD FIRST ON MOBILE (TOP), RIGHT ON DESKTOP -->
       <div class="w-full lg:w-1/2 flex justify-center order-1 lg:order-2">
@@ -1344,7 +1310,7 @@
   </div>
 
   <!-- ================= LOGIN PAGE ================= -->
-  <div id="loginPage" class="auth-page min-h-0 lg:min-h-screen bg-white flex flex-col px-3 sm:px-6 py-0 sm:py-4 overflow-y-auto">
+  <div id="loginPage" class="auth-page min-h-screen bg-white flex flex-col px-3 sm:px-6 py-0 sm:py-4 overflow-y-auto">
     <div class="w-full max-w-6xl mx-auto flex flex-col lg:flex-row gap-6 sm:gap-6 lg:gap-8 auth-layout">
       <!-- CARD FIRST ON MOBILE (TOP), RIGHT ON DESKTOP -->
       <div class="w-full lg:w-1/2 flex justify-center order-1 lg:order-2">
