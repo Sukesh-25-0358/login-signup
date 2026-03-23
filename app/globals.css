@@ -82,17 +82,14 @@ input[type="password"]::-ms-reveal {
     width: 100%;
   }
   .signup-card-content .signup-welcome-title {
-    display: block;
-    width: fit-content;
-    max-width: 100%;
+    display: inline-block;
+    width: auto;
+    max-width: none;
     margin-left: auto;
     margin-right: auto;
     text-align: center;
     box-sizing: border-box;
-    padding-left: 0;
-    padding-right: 0;
-    /* Letter-spaced caps: tiny symmetric inset so optical center matches the logo oval */
-    padding-inline: 0.2em;
+    padding-inline: 0;
   }
 }
 
@@ -106,7 +103,9 @@ input[type="password"]::-ms-reveal {
     letter-spacing: 0.12em;
   }
   .signup-card-content .signup-welcome-title {
-    padding-inline: 0.12em;
+    width: auto !important;
+    max-width: none !important;
+    padding-inline: 0;
   }
   .auth-card-content {
     padding-left: 0.75rem;
@@ -379,14 +378,14 @@ input[type="password"]::-ms-reveal {
 
   /* Signup: prevent WELCOME drift at 190–200% zoom */
   .signup-card-content .font-welcome-heading {
-    display: block;
-    width: fit-content;
-    max-width: 100%;
+    display: inline-block;
+    width: auto !important;
+    max-width: none !important;
     margin-left: auto;
     margin-right: auto;
     text-align: center;
     letter-spacing: 0.18em !important;
-    padding-inline: 0.1em;
+    padding-inline: 0;
   }
 }
 
