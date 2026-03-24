@@ -413,8 +413,17 @@ input[type="password"]::-ms-reveal {
 
 /* Mobile: edge-to-edge feel (no extra top/bottom white bars); scroll only when content overflows */
 @media (max-width: 1023px) {
+  /* Same gradient as .auth-form-card — outer bg-white + white body would otherwise show as top/bottom strips */
+  html:has(.auth-page),
+  body:has(.auth-page) {
+    background-color: #021a46;
+    background-image: linear-gradient(to bottom, #5f82e8 0%, #3f66c9 50%, #021a46 100%);
+  }
+
   .auth-page {
     /* No top/bottom padding here — avoids white strips (bg-white) on Android & iOS */
+    background-color: #021a46;
+    background-image: linear-gradient(to bottom, #5f82e8 0%, #3f66c9 50%, #021a46 100%);
     --auth-safe-top: env(safe-area-inset-top, 0px);
     --auth-safe-bottom: env(safe-area-inset-bottom, 0px);
     --auth-safe-left: env(safe-area-inset-left, 0px);

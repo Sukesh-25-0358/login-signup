@@ -409,7 +409,15 @@
 
     /* Mobile: no white top/bottom on outer page; safe-area lives inside blue card */
     @media (max-width: 1023px) {
+      html:has(.auth-page),
+      body:has(.auth-page) {
+        background-color: #021a46;
+        background-image: linear-gradient(to bottom, #5f82e8 0%, #3f66c9 50%, #021a46 100%);
+      }
+
       .auth-page {
+        background-color: #021a46;
+        background-image: linear-gradient(to bottom, #5f82e8 0%, #3f66c9 50%, #021a46 100%);
         --auth-safe-top: env(safe-area-inset-top, 0px);
         --auth-safe-bottom: env(safe-area-inset-bottom, 0px);
         --auth-safe-left: env(safe-area-inset-left, 0px);
