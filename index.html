@@ -409,6 +409,17 @@
 
     /* Mobile: no extra top/bottom bands; safe-area lives inside card */
     @media (max-width: 1023px) {
+      html,
+      body {
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        min-height: 100% !important;
+        overflow: hidden !important;
+        overscroll-behavior-y: none;
+        background: linear-gradient(to bottom, #5f82e8 0%, #3f66c9 52%, #021a46 100%) !important;
+      }
       .auth-page {
         justify-content: flex-start;
         align-items: stretch;
@@ -428,7 +439,9 @@
         padding-right: 0 !important;
         overflow-y: auto;
         overflow-x: hidden;
+        overscroll-behavior-y: none;
         -webkit-overflow-scrolling: touch;
+        background: linear-gradient(to bottom, #5f82e8 0%, #3f66c9 52%, #021a46 100%) !important;
       }
       .auth-page .auth-layout {
         flex: 1 1 auto;
@@ -502,6 +515,17 @@
      * touch-first devices regardless of reported width.
      */
     @media (hover: none) and (pointer: coarse) {
+      html,
+      body {
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        min-height: 100% !important;
+        overflow: hidden !important;
+        overscroll-behavior-y: none;
+        background: linear-gradient(to bottom, #5f82e8 0%, #3f66c9 52%, #021a46 100%) !important;
+      }
       .auth-page {
         position: fixed;
         inset: 0;
@@ -514,7 +538,9 @@
         align-items: stretch;
         overflow-y: auto;
         overflow-x: hidden;
+        overscroll-behavior-y: none;
         -webkit-overflow-scrolling: touch;
+        background: linear-gradient(to bottom, #5f82e8 0%, #3f66c9 52%, #021a46 100%) !important;
       }
       .auth-page .auth-layout {
         width: 100% !important;
@@ -534,6 +560,8 @@
         max-width: 100% !important;
         height: 100%;
         min-height: 100%;
+        min-height: 100dvh;
+        height: 100dvh;
         margin: 0;
         border-radius: 0;
       }
