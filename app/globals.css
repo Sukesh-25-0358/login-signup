@@ -420,8 +420,7 @@ input[type="password"]::-ms-reveal {
     width: 100% !important;
     height: 100% !important;
     min-height: 100% !important;
-    overflow: hidden !important;
-    overscroll-behavior-y: none;
+    overflow-x: hidden !important;
     background: linear-gradient(to bottom, #5f82e8 0%, #3f66c9 52%, #021a46 100%) !important;
   }
 
@@ -433,28 +432,26 @@ input[type="password"]::-ms-reveal {
     --auth-safe-bottom: env(safe-area-inset-bottom, 0px);
     --auth-safe-left: env(safe-area-inset-left, 0px);
     --auth-safe-right: env(safe-area-inset-right, 0px);
-    position: fixed;
-    inset: 0;
-    height: 100dvh;
+    position: relative;
+    inset: auto;
+    height: auto;
     min-height: 100dvh;
-    max-height: 100dvh;
+    max-height: none;
     padding-top: 0;
     padding-bottom: 0;
     /* Remove white margins on left/right in mobile. */
     padding-left: 0 !important;
     padding-right: 0 !important;
-    overflow-y: auto;
+    overflow-y: visible;
     overflow-x: hidden;
-    overscroll-behavior-y: none;
-    -webkit-overflow-scrolling: touch;
     background: linear-gradient(to bottom, #5f82e8 0%, #3f66c9 52%, #021a46 100%) !important;
   }
   .auth-page .auth-layout {
     flex: 1 1 auto;
     display: flex;
     flex-direction: column;
-    height: 100%;
-    min-height: 100%;
+    height: auto;
+    min-height: 100dvh;
     max-height: none;
     gap: 0;
     max-width: 100%;
@@ -467,20 +464,20 @@ input[type="password"]::-ms-reveal {
     flex: 1 1 auto;
     display: flex;
     flex-direction: column;
-    height: 100%;
-    min-height: 100%;
+    height: auto;
+    min-height: 100dvh;
     align-items: stretch;
   }
   .auth-form-card {
     width: 100%;
     max-width: 100% !important;       /* edge-to-edge */
     align-self: stretch;
-    height: 100%;
+    height: auto;
     /* Safe area inside the card so content clears notch / home indicator */
     padding-top: env(safe-area-inset-top, 0px);
     padding-bottom: env(safe-area-inset-bottom, 0px);
     /* Full viewport; padding is inside (border-box) */
-    min-height: 100%;
+    min-height: 100dvh;
     max-height: none;
     display: flex;
     flex-direction: column;
@@ -512,13 +509,13 @@ input[type="password"]::-ms-reveal {
 @supports (-webkit-touch-callout: none) {
   @media (max-width: 1023px) {
     .auth-page {
-      height: -webkit-fill-available;
+      height: auto;
       min-height: -webkit-fill-available;
-      max-height: -webkit-fill-available;
+      max-height: none;
     }
     .auth-form-card {
-      height: 100%;
-      min-height: 100%;
+      height: auto;
+      min-height: -webkit-fill-available;
     }
   }
 }
@@ -536,24 +533,21 @@ input[type="password"]::-ms-reveal {
     width: 100% !important;
     height: 100% !important;
     min-height: 100% !important;
-    overflow: hidden !important;
-    overscroll-behavior-y: none;
+    overflow-x: hidden !important;
     background: linear-gradient(to bottom, #5f82e8 0%, #3f66c9 52%, #021a46 100%) !important;
   }
   .auth-page {
-    position: fixed;
-    inset: 0;
-    width: 100vw;
-    height: 100dvh;
+    position: relative;
+    inset: auto;
+    width: 100%;
+    height: auto;
     min-height: 100dvh;
-    max-height: 100dvh;
+    max-height: none;
     padding: 0 !important;
     justify-content: flex-start;
     align-items: stretch;
-    overflow-y: auto;
+    overflow-y: visible;
     overflow-x: hidden;
-    overscroll-behavior-y: none;
-    -webkit-overflow-scrolling: touch;
     background: linear-gradient(to bottom, #5f82e8 0%, #3f66c9 52%, #021a46 100%) !important;
   }
   .auth-page .auth-layout {
@@ -561,21 +555,19 @@ input[type="password"]::-ms-reveal {
     max-width: 100% !important;
     margin: 0 !important;
     gap: 0 !important;
-    height: 100%;
-    min-height: 100%;
+    height: auto;
+    min-height: 100dvh;
   }
   .auth-page .auth-layout > div:first-child {
     width: 100%;
-    height: 100%;
-    min-height: 100%;
+    height: auto;
+    min-height: 100dvh;
   }
   .auth-form-card {
     width: 100%;
     max-width: 100% !important;
-    height: 100%;
-    min-height: 100%;
+    height: auto;
     min-height: 100dvh;
-    height: 100dvh;
     margin: 0;
     border-radius: 0;
   }
