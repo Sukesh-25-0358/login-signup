@@ -411,19 +411,10 @@ input[type="password"]::-ms-reveal {
   }
 }
 
-/* Mobile: edge-to-edge feel (no extra top/bottom white bars); scroll only when content overflows */
+/* Mobile: edge-to-edge feel (no extra top/bottom bars); scroll only when content overflows */
 @media (max-width: 1023px) {
-  /* Same gradient as .auth-form-card — outer bg-white + white body would otherwise show as top/bottom strips */
-  html:has(.auth-page),
-  body:has(.auth-page) {
-    background-color: #021a46;
-    background-image: linear-gradient(to bottom, #5f82e8 0%, #3f66c9 50%, #021a46 100%);
-  }
-
   .auth-page {
-    /* No top/bottom padding here — avoids white strips (bg-white) on Android & iOS */
-    background-color: #021a46;
-    background-image: linear-gradient(to bottom, #5f82e8 0%, #3f66c9 50%, #021a46 100%);
+    /* No top/bottom padding here — avoids strips (bg-white) on Android & iOS */
     --auth-safe-top: env(safe-area-inset-top, 0px);
     --auth-safe-bottom: env(safe-area-inset-bottom, 0px);
     --auth-safe-left: env(safe-area-inset-left, 0px);
@@ -448,9 +439,9 @@ input[type="password"]::-ms-reveal {
     min-height: 100svh;
     min-height: 100dvh;
     max-height: none;
-    gap: 0.5rem;
+    gap: 0;
     max-width: 100%;
-    /* Top-align so the card can fill the screen; avoids “floating” white gaps */
+    /* Top-align so the card can fill the screen; avoids “floating” gaps */
     justify-content: flex-start;
     align-items: stretch;
   }
@@ -459,8 +450,8 @@ input[type="password"]::-ms-reveal {
     flex: 1 1 auto;
     display: flex;
     flex-direction: column;
-    /* min-height:0 collapses some WebKit flex columns when parent height is implicit */
-    min-height: auto;
+    min-height: 100svh;
+    min-height: 100dvh;
     align-items: stretch;
   }
   .auth-form-card {
@@ -468,7 +459,7 @@ input[type="password"]::-ms-reveal {
     max-width: 100% !important;       /* edge-to-edge */
     align-self: stretch;
     height: auto;
-    /* Safe area inside the card (blue) so outer page has no white top/bottom bands */
+    /* Safe area inside the card so content clears notch / home indicator */
     padding-top: env(safe-area-inset-top, 0px);
     padding-bottom: env(safe-area-inset-bottom, 0px);
     /* Full viewport; padding is inside (border-box) */
@@ -479,7 +470,7 @@ input[type="password"]::-ms-reveal {
     flex-direction: column;
     margin-top: 0;
     margin-bottom: 0;
-    overflow: hidden;       /* keep rounded corners/inner panel clean */
+    overflow: hidden;
   }
   .auth-form-card .auth-card-content,
   .auth-form-card .signup-card-content {
