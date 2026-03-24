@@ -420,8 +420,7 @@ input[type="password"]::-ms-reveal {
     width: 100% !important;
     height: 100% !important;
     min-height: 100% !important;
-    overflow-x: hidden !important;
-    overflow-y: auto !important;
+    overflow: hidden !important;
     overscroll-behavior-y: auto;
     background: linear-gradient(to bottom, #5f82e8 0%, #3f66c9 52%, #021a46 100%) !important;
   }
@@ -434,11 +433,11 @@ input[type="password"]::-ms-reveal {
     --auth-safe-bottom: env(safe-area-inset-bottom, 0px);
     --auth-safe-left: env(safe-area-inset-left, 0px);
     --auth-safe-right: env(safe-area-inset-right, 0px);
-    position: relative;
-    inset: auto;
-    height: auto;
+    position: fixed;
+    inset: 0;
+    height: 100dvh;
     min-height: 100dvh;
-    max-height: none;
+    max-height: 100dvh;
     padding-top: 0;
     padding-bottom: 0;
     /* Remove white margins on left/right in mobile. */
@@ -454,8 +453,8 @@ input[type="password"]::-ms-reveal {
     flex: 1 1 auto;
     display: flex;
     flex-direction: column;
-    height: auto;
-    min-height: 100dvh;
+    height: 100%;
+    min-height: 100%;
     max-height: none;
     gap: 0;
     max-width: 100%;
@@ -468,20 +467,20 @@ input[type="password"]::-ms-reveal {
     flex: 1 1 auto;
     display: flex;
     flex-direction: column;
-    height: auto;
-    min-height: 100dvh;
+    height: 100%;
+    min-height: 100%;
     align-items: stretch;
   }
   .auth-form-card {
     width: 100%;
     max-width: 100% !important;       /* edge-to-edge */
     align-self: stretch;
-    height: auto;
+    height: 100%;
     /* Safe area inside the card so content clears notch / home indicator */
     padding-top: env(safe-area-inset-top, 0px);
     padding-bottom: env(safe-area-inset-bottom, 0px);
     /* Full viewport; padding is inside (border-box) */
-    min-height: 100dvh;
+    min-height: 100%;
     max-height: none;
     display: flex;
     flex-direction: column;
@@ -513,13 +512,13 @@ input[type="password"]::-ms-reveal {
 @supports (-webkit-touch-callout: none) {
   @media (max-width: 1023px) {
     .auth-page {
-      height: auto;
+      height: -webkit-fill-available;
       min-height: -webkit-fill-available;
-      max-height: none;
+      max-height: -webkit-fill-available;
     }
     .auth-form-card {
-      height: auto;
-      min-height: -webkit-fill-available;
+      height: 100%;
+      min-height: 100%;
     }
   }
 }
@@ -537,18 +536,17 @@ input[type="password"]::-ms-reveal {
     width: 100% !important;
     height: 100% !important;
     min-height: 100% !important;
-    overflow-x: hidden !important;
-    overflow-y: auto !important;
+    overflow: hidden !important;
     overscroll-behavior-y: auto;
     background: linear-gradient(to bottom, #5f82e8 0%, #3f66c9 52%, #021a46 100%) !important;
   }
   .auth-page {
-    position: relative;
-    inset: auto;
+    position: fixed;
+    inset: 0;
     width: 100vw;
-    height: auto;
+    height: 100dvh;
     min-height: 100dvh;
-    max-height: none;
+    max-height: 100dvh;
     padding: 0 !important;
     justify-content: flex-start;
     align-items: stretch;
@@ -563,20 +561,21 @@ input[type="password"]::-ms-reveal {
     max-width: 100% !important;
     margin: 0 !important;
     gap: 0 !important;
-    height: auto;
-    min-height: 100dvh;
+    height: 100%;
+    min-height: 100%;
   }
   .auth-page .auth-layout > div:first-child {
     width: 100%;
-    height: auto;
-    min-height: 100dvh;
+    height: 100%;
+    min-height: 100%;
   }
   .auth-form-card {
     width: 100%;
     max-width: 100% !important;
-    height: auto;
+    height: 100%;
+    min-height: 100%;
     min-height: 100dvh;
-    min-height: 100dvh;
+    height: 100dvh;
     margin: 0;
     border-radius: 0;
   }

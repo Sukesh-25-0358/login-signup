@@ -47,6 +47,51 @@ export default function LoginPage() {
     };
   }, []);
 
+  useEffect(() => {
+    const page = document.querySelector(".login-page.auth-page") as HTMLElement | null;
+    if (!page) return;
+
+    let startY = 0;
+    let canPull = false;
+    let triggered = false;
+    const threshold = 88;
+
+    const onTouchStart = (event: TouchEvent) => {
+      if (window.innerWidth >= 1024 || event.touches.length !== 1) return;
+      startY = event.touches[0].clientY;
+      canPull = page.scrollTop <= 0;
+      triggered = false;
+    };
+
+    const onTouchMove = (event: TouchEvent) => {
+      if (!canPull || triggered || window.innerWidth >= 1024) return;
+      const deltaY = event.touches[0].clientY - startY;
+      if (deltaY > threshold && page.scrollTop <= 0) {
+        triggered = true;
+        window.location.reload();
+      } else if (deltaY < 0) {
+        canPull = false;
+      }
+    };
+
+    const onTouchEnd = () => {
+      canPull = false;
+      triggered = false;
+    };
+
+    page.addEventListener("touchstart", onTouchStart, { passive: true });
+    page.addEventListener("touchmove", onTouchMove, { passive: true });
+    page.addEventListener("touchend", onTouchEnd);
+    page.addEventListener("touchcancel", onTouchEnd);
+
+    return () => {
+      page.removeEventListener("touchstart", onTouchStart);
+      page.removeEventListener("touchmove", onTouchMove);
+      page.removeEventListener("touchend", onTouchEnd);
+      page.removeEventListener("touchcancel", onTouchEnd);
+    };
+  }, []);
+
   const validate = (values: LoginFormState): LoginFormErrors => {
     const newErrors: LoginFormErrors = {};
 
