@@ -148,21 +148,21 @@ export default function PlanningPage() {
                 className="flex h-5 w-5 items-center justify-center rounded-full bg-white border-0 p-0 m-0 cursor-pointer sm:h-6 sm:w-6"
                 aria-label="Open quick action 1"
               >
-                <img src="/logoplan.png" alt="" className="h-3.5 w-3.5 object-contain sm:h-4 sm:w-4" />
+                <img src="/logoplan.webp" alt="" className="h-3.5 w-3.5 object-contain sm:h-4 sm:w-4" />
               </button>
               <button
                 type="button"
                 className="flex h-5 w-5 items-center justify-center rounded-full bg-white border-0 p-0 m-0 cursor-pointer sm:h-6 sm:w-6"
                 aria-label="Open quick action 2"
               >
-                <img src="/logoplan2.png" alt="" className="h-3.5 w-3.5 object-contain sm:h-4 sm:w-4" />
+                <img src="/logoplan2.webp" alt="" className="h-3.5 w-3.5 object-contain sm:h-4 sm:w-4" />
               </button>
               <button
                 type="button"
                 className="flex h-5 w-5 items-center justify-center rounded-full bg-white border-0 p-0 m-0 cursor-pointer sm:h-6 sm:w-6"
                 aria-label="Open quick action 3"
               >
-                <img src="/logoplan3.png" alt="" className="h-3.5 w-3.5 object-contain sm:h-4 sm:w-4" />
+                <img src="/logoplan3.webp" alt="" className="h-3.5 w-3.5 object-contain sm:h-4 sm:w-4" />
               </button>
             </div>
 
@@ -172,21 +172,21 @@ export default function PlanningPage() {
                 className="flex h-6 w-6 items-center justify-center rounded-full bg-white border-0 p-0 m-0 cursor-pointer"
                 aria-label="Quick action 1"
               >
-                <img src="/logoplan.png" alt="" className="h-4 w-4 object-contain" />
+                <img src="/logoplan.webp" alt="" className="h-4 w-4 object-contain" />
               </button>
               <button
                 type="button"
                 className="flex h-6 w-6 items-center justify-center rounded-full bg-white border-0 p-0 m-0 cursor-pointer"
                 aria-label="Quick action 2"
               >
-                <img src="/logoplan2.png" alt="" className="h-4 w-4 object-contain" />
+                <img src="/logoplan2.webp" alt="" className="h-4 w-4 object-contain" />
               </button>
               <button
                 type="button"
                 className="flex h-6 w-6 items-center justify-center rounded-full bg-white border-0 p-0 m-0 cursor-pointer"
                 aria-label="Quick action 3"
               >
-                <img src="/logoplan3.png" alt="" className="h-4 w-4 object-contain" />
+                <img src="/logoplan3.webp" alt="" className="h-4 w-4 object-contain" />
               </button>
             </div>
 
@@ -202,7 +202,7 @@ export default function PlanningPage() {
                 aria-haspopup="true"
               >
                 <img
-                  src="/photo.png"
+                  src="/photo.webp"
                   alt=""
                   className="h-7 w-7 rounded-full object-cover"
                 />
