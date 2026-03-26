@@ -96,7 +96,19 @@ export default function PlanningPage() {
     <main className="min-h-screen bg-[#efefef]">
       <nav className="w-full bg-[#06224C]">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-2 px-3 py-3 sm:gap-3 sm:flex-nowrap sm:px-6">
-          <div className="flex min-w-0 flex-shrink-0 items-center">
+          <div className="flex min-w-0 flex-shrink-0 items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setMobileMenuOpen((v) => !v)}
+              className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-white/25 text-white md:hidden"
+              aria-label="Toggle navigation menu"
+              aria-expanded={mobileMenuOpen}
+            >
+              <svg width="16" height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+                <path d="M3 5.5H17M3 10H17M3 14.5H17" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+              </svg>
+            </button>
+
             <div className="flex h-8 min-w-[92px] items-center justify-center overflow-hidden rounded-[50%] bg-white px-3 sm:h-9 sm:min-w-[104px]">
               <img
                 src="/stackly-logo.webp"
@@ -130,18 +142,6 @@ export default function PlanningPage() {
           </div>
 
           <div className="ml-auto flex flex-wrap shrink-0 items-center gap-2 sm:gap-3">
-            <button
-              type="button"
-              onClick={() => setMobileMenuOpen((v) => !v)}
-              className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-white/25 text-white md:hidden"
-              aria-label="Toggle navigation menu"
-              aria-expanded={mobileMenuOpen}
-            >
-              <svg width="16" height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
-                <path d="M3 5.5H17M3 10H17M3 14.5H17" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-              </svg>
-            </button>
-
             <div className="flex items-center gap-1 md:hidden">
               <button
                 type="button"

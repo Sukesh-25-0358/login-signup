@@ -1488,7 +1488,20 @@
   <div id="planningPage" class="hidden min-h-screen bg-[#efefef] px-2 py-2 sm:px-4 sm:py-4">
     <nav class="w-full bg-[#06224C]">
       <div class="mx-auto flex max-w-6xl flex-wrap items-center gap-2 px-3 py-3 sm:gap-3 sm:flex-nowrap sm:px-6">
-        <div class="flex min-w-0 flex-shrink-0 items-center">
+        <div class="flex min-w-0 flex-shrink-0 items-center gap-2">
+          <button
+            type="button"
+            id="planningMobileMenuBtn"
+            onclick="togglePlanningMobileMenu(event)"
+            class="inline-flex h-8 w-8 items-center justify-center rounded-md border border-white/25 text-white md:hidden"
+            aria-label="Toggle navigation menu"
+            aria-expanded="false"
+          >
+            <svg width="16" height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M3 5.5H17M3 10H17M3 14.5H17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            </svg>
+          </button>
+
           <div class="flex h-8 min-w-[92px] items-center justify-center overflow-hidden rounded-[50%] bg-white px-3 sm:h-9 sm:min-w-[104px]">
             <img src="./public/stackly-logo.webp" alt="Stackly logo" class="h-[18px] w-auto sm:h-[20px]" />
           </div>
@@ -1505,19 +1518,6 @@
         </div>
 
         <div id="planningMobileWrap" class="ml-auto flex flex-wrap shrink-0 items-center gap-2 sm:gap-3">
-          <button
-            type="button"
-            id="planningMobileMenuBtn"
-            onclick="togglePlanningMobileMenu(event)"
-            class="inline-flex h-8 w-8 items-center justify-center rounded-md border border-white/25 text-white md:hidden"
-            aria-label="Toggle navigation menu"
-            aria-expanded="false"
-          >
-            <svg width="16" height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-              <path d="M3 5.5H17M3 10H17M3 14.5H17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-            </svg>
-          </button>
-
           <div class="flex items-center gap-1 md:hidden">
             <button type="button" class="flex h-5 w-5 items-center justify-center rounded-full bg-white border-0 p-0 m-0 cursor-pointer sm:h-6 sm:w-6" aria-label="Open quick action 1">
               <img src="./public/logoplan.png" alt="" class="h-3.5 w-3.5 object-contain sm:h-4 sm:w-4" />
