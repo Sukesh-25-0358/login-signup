@@ -1487,7 +1487,7 @@
   <!-- ================= PLANNING PAGE ================= -->
   <div id="planningPage" class="hidden min-h-screen bg-[#efefef] px-2 py-2 sm:px-4 sm:py-4">
     <nav class="w-full bg-[#06224C]">
-      <div class="mx-auto flex max-w-6xl items-center gap-2 px-3 py-3 sm:gap-3 sm:px-6">
+      <div class="mx-auto flex max-w-6xl flex-wrap items-center gap-2 px-3 py-3 sm:gap-3 sm:flex-nowrap sm:px-6">
         <div class="flex min-w-0 flex-shrink-0 items-center">
           <div class="flex h-8 min-w-[92px] items-center justify-center overflow-hidden rounded-[50%] bg-white px-3 sm:h-9 sm:min-w-[104px]">
             <img src="./public/stackly-logo.webp" alt="Stackly logo" class="h-[18px] w-auto sm:h-[20px]" />
@@ -1504,7 +1504,7 @@
           </nav>
         </div>
 
-        <div id="planningMobileWrap" class="ml-auto flex shrink-0 items-center gap-2 sm:gap-3">
+        <div id="planningMobileWrap" class="ml-auto flex flex-wrap shrink-0 items-center gap-2 sm:gap-3">
           <button
             type="button"
             id="planningMobileMenuBtn"
@@ -1518,35 +1518,35 @@
             </svg>
           </button>
 
-          <div class="flex items-center gap-1.5 md:hidden">
-            <button type="button" class="flex h-6 w-6 items-center justify-center rounded-full bg-white" aria-label="Open quick action 1">
-              <img src="./public/logoplan.png" alt="" class="h-4 w-4 object-contain" />
+          <div class="flex items-center gap-1 md:hidden">
+            <button type="button" class="flex h-5 w-5 items-center justify-center rounded-full bg-white border-0 p-0 m-0 cursor-pointer sm:h-6 sm:w-6" aria-label="Open quick action 1">
+              <img src="./public/logoplan.png" alt="" class="h-3.5 w-3.5 object-contain sm:h-4 sm:w-4" />
             </button>
-            <button type="button" class="flex h-6 w-6 items-center justify-center rounded-full bg-white" aria-label="Open quick action 2">
-              <img src="./public/logoplan2.png" alt="" class="h-4 w-4 object-contain" />
+            <button type="button" class="flex h-5 w-5 items-center justify-center rounded-full bg-white border-0 p-0 m-0 cursor-pointer sm:h-6 sm:w-6" aria-label="Open quick action 2">
+              <img src="./public/logoplan2.png" alt="" class="h-3.5 w-3.5 object-contain sm:h-4 sm:w-4" />
             </button>
-            <button type="button" class="flex h-6 w-6 items-center justify-center rounded-full bg-white" aria-label="Open quick action 3">
-              <img src="./public/logoplan3.png" alt="" class="h-4 w-4 object-contain" />
+            <button type="button" class="flex h-5 w-5 items-center justify-center rounded-full bg-white border-0 p-0 m-0 cursor-pointer sm:h-6 sm:w-6" aria-label="Open quick action 3">
+              <img src="./public/logoplan3.png" alt="" class="h-3.5 w-3.5 object-contain sm:h-4 sm:w-4" />
             </button>
           </div>
 
           <div class="hidden items-center gap-2 lg:flex">
-            <span class="flex h-6 w-6 items-center justify-center rounded-full bg-white">
+            <button type="button" class="flex h-6 w-6 items-center justify-center rounded-full bg-white border-0 p-0 m-0 cursor-pointer" aria-label="Quick action 1">
               <img src="./public/logoplan.png" alt="" class="h-4 w-4 object-contain" />
-            </span>
-            <span class="flex h-6 w-6 items-center justify-center rounded-full bg-white">
+            </button>
+            <button type="button" class="flex h-6 w-6 items-center justify-center rounded-full bg-white border-0 p-0 m-0 cursor-pointer" aria-label="Quick action 2">
               <img src="./public/logoplan2.png" alt="" class="h-4 w-4 object-contain" />
-            </span>
-            <span class="flex h-6 w-6 items-center justify-center rounded-full bg-white">
+            </button>
+            <button type="button" class="flex h-6 w-6 items-center justify-center rounded-full bg-white border-0 p-0 m-0 cursor-pointer" aria-label="Quick action 3">
               <img src="./public/logoplan3.png" alt="" class="h-4 w-4 object-contain" />
-            </span>
+            </button>
           </div>
 
           <div id="planningProfileWrap" class="relative">
-            <button type="button" id="planningProfileToggle" class="hidden items-center gap-2 lg:flex" aria-expanded="false" aria-haspopup="true" onclick="togglePlanningProfileMenu(event)">
+            <button type="button" id="planningProfileToggle" class="items-center gap-2 lg:flex" aria-expanded="false" aria-haspopup="true" onclick="togglePlanningProfileMenu(event)">
               <img src="./public/photo.png" alt="" class="h-7 w-7 rounded-full object-cover" />
               <span id="planningDisplayUserName" class="max-w-[140px] truncate text-left text-[11px] text-white sm:max-w-[180px]">Pentakota Srinivas</span>
-              <svg width="10" height="10" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" class="shrink-0 text-white/90">
+              <svg width="10" height="10" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" class="hidden shrink-0 text-white/90 sm:block">
                 <path d="M3.5 5L6 7.5L8.5 5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" opacity="0.85" />
               </svg>
             </button>

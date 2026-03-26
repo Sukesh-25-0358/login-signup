@@ -95,7 +95,7 @@ export default function PlanningPage() {
   return (
     <main className="min-h-screen bg-[#efefef]">
       <nav className="w-full bg-[#06224C]">
-        <div className="mx-auto flex max-w-6xl items-center gap-2 px-3 py-3 sm:gap-3 sm:px-6">
+        <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-2 px-3 py-3 sm:gap-3 sm:flex-nowrap sm:px-6">
           <div className="flex min-w-0 flex-shrink-0 items-center">
             <div className="flex h-8 min-w-[92px] items-center justify-center overflow-hidden rounded-[50%] bg-white px-3 sm:h-9 sm:min-w-[104px]">
               <img
@@ -129,7 +129,7 @@ export default function PlanningPage() {
             </nav>
           </div>
 
-          <div className="ml-auto flex shrink-0 items-center gap-2 sm:gap-3">
+          <div className="ml-auto flex flex-wrap shrink-0 items-center gap-2 sm:gap-3">
             <button
               type="button"
               onClick={() => setMobileMenuOpen((v) => !v)}
@@ -142,28 +142,52 @@ export default function PlanningPage() {
               </svg>
             </button>
 
-            <div className="flex items-center gap-1.5 md:hidden">
-              <button type="button" className="flex h-6 w-6 items-center justify-center rounded-full bg-white" aria-label="Open quick action 1">
-                <img src="/logoplan.png" alt="" className="h-4 w-4 object-contain" />
+            <div className="flex items-center gap-1 md:hidden">
+              <button
+                type="button"
+                className="flex h-5 w-5 items-center justify-center rounded-full bg-white border-0 p-0 m-0 cursor-pointer sm:h-6 sm:w-6"
+                aria-label="Open quick action 1"
+              >
+                <img src="/logoplan.png" alt="" className="h-3.5 w-3.5 object-contain sm:h-4 sm:w-4" />
               </button>
-              <button type="button" className="flex h-6 w-6 items-center justify-center rounded-full bg-white" aria-label="Open quick action 2">
-                <img src="/logoplan2.png" alt="" className="h-4 w-4 object-contain" />
+              <button
+                type="button"
+                className="flex h-5 w-5 items-center justify-center rounded-full bg-white border-0 p-0 m-0 cursor-pointer sm:h-6 sm:w-6"
+                aria-label="Open quick action 2"
+              >
+                <img src="/logoplan2.png" alt="" className="h-3.5 w-3.5 object-contain sm:h-4 sm:w-4" />
               </button>
-              <button type="button" className="flex h-6 w-6 items-center justify-center rounded-full bg-white" aria-label="Open quick action 3">
-                <img src="/logoplan3.png" alt="" className="h-4 w-4 object-contain" />
+              <button
+                type="button"
+                className="flex h-5 w-5 items-center justify-center rounded-full bg-white border-0 p-0 m-0 cursor-pointer sm:h-6 sm:w-6"
+                aria-label="Open quick action 3"
+              >
+                <img src="/logoplan3.png" alt="" className="h-3.5 w-3.5 object-contain sm:h-4 sm:w-4" />
               </button>
             </div>
 
             <div className="hidden items-center gap-2 lg:flex">
-              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-white">
+              <button
+                type="button"
+                className="flex h-6 w-6 items-center justify-center rounded-full bg-white border-0 p-0 m-0 cursor-pointer"
+                aria-label="Quick action 1"
+              >
                 <img src="/logoplan.png" alt="" className="h-4 w-4 object-contain" />
-              </span>
-              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-white">
+              </button>
+              <button
+                type="button"
+                className="flex h-6 w-6 items-center justify-center rounded-full bg-white border-0 p-0 m-0 cursor-pointer"
+                aria-label="Quick action 2"
+              >
                 <img src="/logoplan2.png" alt="" className="h-4 w-4 object-contain" />
-              </span>
-              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-white">
+              </button>
+              <button
+                type="button"
+                className="flex h-6 w-6 items-center justify-center rounded-full bg-white border-0 p-0 m-0 cursor-pointer"
+                aria-label="Quick action 3"
+              >
                 <img src="/logoplan3.png" alt="" className="h-4 w-4 object-contain" />
-              </span>
+              </button>
             </div>
 
             <div className="relative" ref={profileWrapRef}>
@@ -173,7 +197,7 @@ export default function PlanningPage() {
                   e.stopPropagation();
                   setProfileOpen((o) => !o);
                 }}
-                className="hidden items-center gap-2 lg:flex"
+                className="items-center gap-2 lg:flex"
                 aria-expanded={profileOpen}
                 aria-haspopup="true"
               >
@@ -192,7 +216,7 @@ export default function PlanningPage() {
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
                   aria-hidden
-                  className={`shrink-0 text-white/90 transition-transform ${profileOpen ? "rotate-180" : ""}`}
+                  className={`hidden shrink-0 text-white/90 transition-transform sm:block ${profileOpen ? "rotate-180" : ""}`}
                 >
                   <path
                     d="M3.5 5L6 7.5L8.5 5"
