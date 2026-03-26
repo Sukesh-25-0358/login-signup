@@ -48,6 +48,16 @@ export default function LoginPage() {
     };
   }, []);
 
+  // Mobile outer-scroll lock should apply only to login/signup screens.
+  useEffect(() => {
+    document.documentElement.classList.add("auth-visible");
+    document.body.classList.add("auth-visible");
+    return () => {
+      document.documentElement.classList.remove("auth-visible");
+      document.body.classList.remove("auth-visible");
+    };
+  }, []);
+
   useEffect(() => {
     const page = document.querySelector(".login-page.auth-page") as HTMLElement | null;
     if (!page) return;
