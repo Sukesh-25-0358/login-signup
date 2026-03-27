@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { FaCheckCircle } from "react-icons/fa";
 
@@ -70,6 +71,7 @@ const plans = [
 ];
 
 export default function PlanningPage() {
+  const router = useRouter();
   const [activeNav, setActiveNav] = useState<NavId>("billing");
   const [profileOpen, setProfileOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -92,7 +94,11 @@ export default function PlanningPage() {
     setMobileMenuOpen(false);
     if (id === "billing") {
       plansSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      return;
     }
+    window.setTimeout(() => {
+      router.push("/page-not-found");
+    }, 140);
   }
 
   return (
@@ -292,7 +298,7 @@ export default function PlanningPage() {
 
               <div className="mt-3 flex justify-center">
                 <Link
-                  href="/login"
+                  href="/page-not-found"
                   className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#06224C] to-[#1A5BBC] px-5 py-2.5 text-[11px] font-semibold text-white hover:opacity-90 sm:text-xs"
                 >
                   <span>Start Your Free Plan</span>
@@ -420,7 +426,7 @@ export default function PlanningPage() {
                     </ul>
 
                     <Link
-                      href="/login"
+                      href="/page-not-found"
                       className="mt-4 block rounded-full bg-gradient-to-r from-[#06224C] to-[#1A5BBC] py-2 text-center text-sm font-semibold text-white shadow-sm transition-colors transition-opacity duration-200 group-hover:bg-none group-hover:bg-white group-hover:text-[#154fa2] group-hover:opacity-100 hover:bg-none hover:bg-white hover:text-[#154fa2]"
                     >
                       Purchase Plan
