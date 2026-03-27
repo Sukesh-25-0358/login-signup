@@ -392,7 +392,7 @@ export default function PlanningPage() {
                     className="group relative rounded border border-[#d8e1ec] bg-white p-4 text-[#17335c] shadow-sm transition-all duration-200 hover:border-transparent hover:bg-gradient-to-b hover:from-[#06224C] hover:to-[#1A5BBC] hover:text-white hover:shadow-md"
                   >
                     {plan.isRecommended && (
-                      <div className="absolute right-2 top-2 z-10 rounded-[3px] border border-white/10 bg-[#1A5BBC] px-2 py-0.5 text-[8px] font-bold leading-3 text-white shadow-[0_2px_6px_rgba(0,0,0,0.12)] transition-colors group-hover:border-[#06224C]/40 group-hover:bg-white group-hover:text-[#06224C] hover:border-[#06224C]/40 hover:bg-white hover:text-[#06224C]">
+                      <div className="absolute right-0 top-0 z-10 rounded-bl-md border border-white/10 bg-[#1A5BBC] px-3 py-1.5 text-[9px] font-extrabold leading-none tracking-wide text-white shadow-[0_2px_6px_rgba(0,0,0,0.12)] transition-colors group-hover:border-[#06224C]/40 group-hover:bg-white group-hover:text-[#06224C] hover:border-[#06224C]/40 hover:bg-white hover:text-[#06224C]">
                         RECOMMENDED
                       </div>
                     )}
