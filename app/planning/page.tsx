@@ -112,7 +112,7 @@ export default function PlanningPage() {
   return (
     <main className="planning-page min-h-[100dvh] w-full bg-[#efefef] overflow-x-hidden">
       <nav className="w-full bg-[#06224C]">
-        <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-2 px-3 py-3 sm:gap-3 sm:px-6 xl:flex-nowrap">
+        <div className="flex w-full flex-wrap items-center gap-2 px-3 py-3 sm:gap-3 sm:px-8 xl:flex-nowrap">
           <div className="flex min-w-0 flex-shrink-0 items-center gap-2">
             <button
               type="button"
@@ -180,10 +180,10 @@ export default function PlanningPage() {
                 aria-label="Notifications"
               >
                 <img
-                  src="/logoplan3.webp"
+                  src="/logoplan3-hi.webp"
                   alt=""
-                  width={112}
-                  height={144}
+                  width={140}
+                  height={180}
                   draggable={false}
                   className={`${planningHeaderNotifyImgClass} h-[18px] w-auto max-h-[18px]`}
                 />
@@ -211,10 +211,10 @@ export default function PlanningPage() {
                 aria-label="Notifications"
               >
                 <img
-                  src="/logoplan3.webp"
+                  src="/logoplan3-hi.webp"
                   alt=""
-                  width={112}
-                  height={144}
+                  width={140}
+                  height={180}
                   draggable={false}
                   className={`${planningHeaderNotifyImgClass} h-4 w-auto max-h-4`}
                 />
