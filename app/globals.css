@@ -69,6 +69,13 @@ body:has(> main.planning-page) {
   }
 }
 
+/* Recommended badge overlap guard (only mobile and desktop 150-200% zoom) */
+@media (max-width: 640px), (hover: hover) and (pointer: fine) and (min-resolution: 1.5dppx) and (max-resolution: 2.1dppx) {
+  .planning-recommended-card {
+    padding-top: 2rem !important;
+  }
+}
+
 /* Desktop zoom fallback (roughly 150-200%): show hamburger + compact menu for planning header */
 @media (hover: hover) and (pointer: fine) and (max-width: 1024px) and (min-resolution: 1.5dppx) and (max-resolution: 2.1dppx) {
   .planning-zoom-show-hamburger {
