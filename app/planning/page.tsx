@@ -25,9 +25,34 @@ type NavId = (typeof NAV_ITEMS)[number]["id"];
 const planningHeaderQuickIconBtn =
   "flex items-center justify-center rounded-full border border-transparent bg-white p-0 m-0 cursor-pointer shadow-sm transition-all duration-150 ease-out hover:border-white/50 hover:bg-slate-100 hover:shadow-md hover:shadow-black/20 hover:ring-2 hover:ring-white/60 active:scale-[0.96] active:bg-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#06224C]";
 
-/** Notification bell — asset is hi-res lossless WebP (112×144); constrain height + w-auto keeps 14:18 aspect for crisp downscaling */
-const planningHeaderNotifyImgClass =
-  "pointer-events-none shrink-0 select-none object-contain object-center";
+/** Vector bell — stays sharp at any zoom/DPR (unlike raster WebP) */
+function PlanningHeaderBellIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden
+      shapeRendering="geometricPrecision"
+    >
+      <path
+        d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M10.3 21a1.94 1.94 0 0 0 3.4 0"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
 
 const plans = [
   {
@@ -35,6 +60,9 @@ const plans = [
     oldPrice: "$80",
     newPrice: "$40",
     saveText: "Save 50%",
+    yearlyOldPrice: "$960",
+    yearlyNewPrice: "$400",
+    yearlySaveText: "Save 58%",
     features: [
       "Free domain for 1 year",
       "20 GB storage space",
@@ -48,6 +76,9 @@ const plans = [
     oldPrice: "$300",
     newPrice: "$150",
     saveText: "Save 50%",
+    yearlyOldPrice: "$3,600",
+    yearlyNewPrice: "$1,500",
+    yearlySaveText: "Save 58%",
     isRecommended: true,
     features: [
       "Free domain for 1 year",
@@ -65,6 +96,9 @@ const plans = [
     oldPrice: "$400",
     newPrice: "$280",
     saveText: "Save 30%",
+    yearlyOldPrice: "$4,800",
+    yearlyNewPrice: "$3,360",
+    yearlySaveText: "Save 30%",
     features: [
       "Free domain for 1 year",
       "300 GB storage space",
@@ -179,14 +213,7 @@ export default function PlanningPage() {
                 className={`${planningHeaderQuickIconBtn} h-8 w-8 touch-manipulation`}
                 aria-label="Notifications"
               >
-                <img
-                  src="/logoplan3-hi.webp"
-                  alt=""
-                  width={140}
-                  height={180}
-                  draggable={false}
-                  className={`${planningHeaderNotifyImgClass} h-[18px] w-auto max-h-[18px]`}
-                />
+                <PlanningHeaderBellIcon className="pointer-events-none h-[18px] w-[18px] shrink-0 text-[#06224C]" />
               </button>
             </div>
 
@@ -210,14 +237,7 @@ export default function PlanningPage() {
                 className={`${planningHeaderQuickIconBtn} h-6 w-6`}
                 aria-label="Notifications"
               >
-                <img
-                  src="/logoplan3-hi.webp"
-                  alt=""
-                  width={140}
-                  height={180}
-                  draggable={false}
-                  className={`${planningHeaderNotifyImgClass} h-4 w-auto max-h-4`}
-                />
+                <PlanningHeaderBellIcon className="pointer-events-none h-4 w-4 shrink-0 text-[#06224C]" />
               </button>
             </div>
 
@@ -428,19 +448,23 @@ export default function PlanningPage() {
                     <div className="mb-1.5 flex items-center justify-between gap-2">
                       <div>
                         <h2 className="text-base font-bold leading-tight transition-colors group-hover:text-white">{plan.name}</h2>
-                        <p className="mt-0.5 text-xs leading-tight text-[#1e3a5c] transition-colors group-hover:text-white">Per month</p>
+                        <p className="mt-0.5 text-xs leading-tight text-[#1e3a5c] transition-colors group-hover:text-white">
+                          {billingYearly ? "Per year" : "Per month"}
+                        </p>
                       </div>
                     </div>
 
                     <div className="mb-1.5 flex items-end justify-between gap-2">
                       <div className="flex min-w-0 items-end gap-1.5">
-                        <div className="text-sm font-bold text-[#0f172a] line-through transition-colors group-hover:text-white">{plan.oldPrice}</div>
+                        <div className="text-sm font-bold text-[#0f172a] line-through transition-colors group-hover:text-white">
+                          {billingYearly ? plan.yearlyOldPrice : plan.oldPrice}
+                        </div>
                         <div className="text-[10px] font-semibold leading-tight text-[#2d4a6e] transition-colors group-hover:text-white">
-                          {plan.saveText}
+                          {billingYearly ? plan.yearlySaveText : plan.saveText}
                         </div>
                       </div>
                       <div className="relative -top-2 mr-3 shrink-0 rounded border border-[#94b4e0] bg-[#e8f0fc] px-3.5 py-1.5 text-xl font-bold leading-none text-[#082a5c] transition-colors group-hover:border-white/30 group-hover:bg-white group-hover:text-[#0f3e87]">
-                        {plan.newPrice}
+                        {billingYearly ? plan.yearlyNewPrice : plan.newPrice}
                       </div>
                     </div>
                     <div className="mb-2 h-px w-full bg-[#dbe3ef] transition-colors group-hover:bg-white/30" />

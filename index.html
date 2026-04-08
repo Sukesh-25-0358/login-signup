@@ -832,13 +832,18 @@
     var PLANNING_DISPLAY_USER_NAME = "Pentakota Srinivas";
 
     function initPlanningHeader() {
+      var sw = document.getElementById("planningBillingSwitch");
+      if (sw) {
+        planningApplyPlanPrices(sw.getAttribute("aria-checked") === "true");
+      }
       var el = document.getElementById("planningDisplayUserName");
-      if (!el) return;
-      try {
-        var name = localStorage.getItem("stacklyDisplayName");
-        el.textContent = name && String(name).trim() ? String(name).trim() : PLANNING_DISPLAY_USER_NAME;
-      } catch (e) {
-        el.textContent = PLANNING_DISPLAY_USER_NAME;
+      if (el) {
+        try {
+          var name = localStorage.getItem("stacklyDisplayName");
+          el.textContent = name && String(name).trim() ? String(name).trim() : PLANNING_DISPLAY_USER_NAME;
+        } catch (e) {
+          el.textContent = PLANNING_DISPLAY_USER_NAME;
+        }
       }
       setPlanningNavActive("billing");
     }
@@ -925,6 +930,42 @@
       }
     });
 
+    /** Monthly / yearly totals for plan cards (must match app/planning/page.tsx) */
+    var PLANNING_PLAN_PRICES = {
+      monthly: [
+        { period: "Per month", old: "$80", save: "Save 50%", new: "$40" },
+        { period: "Per month", old: "$300", save: "Save 50%", new: "$150" },
+        { period: "Per month", old: "$400", save: "Save 30%", new: "$280" }
+      ],
+      yearly: [
+        { period: "Per year", old: "$960", save: "Save 58%", new: "$400" },
+        { period: "Per year", old: "$3,600", save: "Save 58%", new: "$1,500" },
+        { period: "Per year", old: "$4,800", save: "Save 30%", new: "$3,360" }
+      ]
+    };
+
+    function planningApplyPlanPrices(yearly) {
+      var tier = yearly ? "yearly" : "monthly";
+      var rows = PLANNING_PLAN_PRICES[tier];
+      var ids = [
+        { period: "planningPriceBasicPeriod", old: "planningPriceBasicOld", save: "planningPriceBasicSave", chip: "planningPriceBasicNew" },
+        { period: "planningPriceBusinessPeriod", old: "planningPriceBusinessOld", save: "planningPriceBusinessSave", chip: "planningPriceBusinessNew" },
+        { period: "planningPriceAdvancedPeriod", old: "planningPriceAdvancedOld", save: "planningPriceAdvancedSave", chip: "planningPriceAdvancedNew" }
+      ];
+      for (var i = 0; i < 3; i++) {
+        var p = rows[i];
+        var el = ids[i];
+        var nodePeriod = document.getElementById(el.period);
+        var nodeOld = document.getElementById(el.old);
+        var nodeSave = document.getElementById(el.save);
+        var nodeNew = document.getElementById(el.chip);
+        if (nodePeriod) nodePeriod.textContent = p.period;
+        if (nodeOld) nodeOld.textContent = p.old;
+        if (nodeSave) nodeSave.textContent = p.save;
+        if (nodeNew) nodeNew.textContent = p.new;
+      }
+    }
+
     function planningSetBilling(yearly) {
       var sw = document.getElementById("planningBillingSwitch");
       var knob = document.getElementById("planningBillingKnob");
@@ -936,6 +977,7 @@
       knob.classList.toggle("translate-x-6", yearly);
       lm.classList.toggle("planning-billing-label--active", !yearly);
       ly.classList.toggle("planning-billing-label--active", yearly);
+      planningApplyPlanPrices(yearly);
     }
 
     function planningToggleBilling() {
@@ -1547,7 +1589,10 @@
               <img src="./public/logoplan2.webp" alt="" class="h-[17px] w-[17px] object-contain" />
             </button>
             <button type="button" class="flex h-8 w-8 touch-manipulation items-center justify-center rounded-full border border-transparent bg-white p-0 m-0 cursor-pointer shadow-sm transition-all duration-150 ease-out hover:border-white/50 hover:bg-slate-100 hover:shadow-md hover:shadow-black/20 hover:ring-2 hover:ring-white/60 active:scale-[0.96] active:bg-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#06224C]" aria-label="Notifications">
-              <img src="./public/logoplan3-hi.webp" alt="" width="140" height="180" draggable="false" class="pointer-events-none h-[18px] w-auto max-h-[18px] shrink-0 select-none object-contain object-center" />
+              <svg class="pointer-events-none h-[18px] w-[18px] shrink-0 text-[#06224C]" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" shape-rendering="geometricPrecision">
+                <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
             </button>
           </div>
 
@@ -1559,7 +1604,10 @@
               <img src="./public/logoplan2.webp" alt="" class="h-4 w-4 object-contain" />
             </button>
             <button type="button" class="flex h-6 w-6 items-center justify-center rounded-full border border-transparent bg-white p-0 m-0 cursor-pointer shadow-sm transition-all duration-150 ease-out hover:border-white/50 hover:bg-slate-100 hover:shadow-md hover:shadow-black/20 hover:ring-2 hover:ring-white/60 active:scale-[0.96] active:bg-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#06224C]" aria-label="Notifications">
-              <img src="./public/logoplan3-hi.webp" alt="" width="140" height="180" draggable="false" class="pointer-events-none h-4 w-auto max-h-4 shrink-0 select-none object-contain object-center" />
+              <svg class="pointer-events-none h-4 w-4 shrink-0 text-[#06224C]" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" shape-rendering="geometricPrecision">
+                <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
             </button>
           </div>
 
@@ -1667,15 +1715,15 @@
               <div class="mb-1.5 flex items-center justify-between gap-2">
                 <div>
                   <h2 class="text-base font-bold leading-tight transition-colors group-hover:text-white">Basic</h2>
-                  <p class="mt-0.5 text-xs leading-tight text-[#1e3a5c] transition-colors group-hover:text-white">Per month</p>
+                  <p id="planningPriceBasicPeriod" class="mt-0.5 text-xs leading-tight text-[#1e3a5c] transition-colors group-hover:text-white">Per month</p>
                 </div>
               </div>
               <div class="mb-1.5 flex items-end justify-between gap-2">
                 <div class="flex min-w-0 items-end gap-1.5">
-                  <div class="text-sm font-bold text-[#0f172a] line-through transition-colors group-hover:text-white">$80</div>
-                  <div class="text-[10px] font-semibold leading-tight text-[#2d4a6e] transition-colors group-hover:text-white">Save 50%</div>
+                  <div id="planningPriceBasicOld" class="text-sm font-bold text-[#0f172a] line-through transition-colors group-hover:text-white">$80</div>
+                  <div id="planningPriceBasicSave" class="text-[10px] font-semibold leading-tight text-[#2d4a6e] transition-colors group-hover:text-white">Save 50%</div>
                 </div>
-                <div class="relative -top-2 mr-3 shrink-0 rounded border border-[#94b4e0] bg-[#e8f0fc] px-3.5 py-1.5 text-xl font-bold leading-none text-[#082a5c] transition-colors group-hover:border-white/30 group-hover:bg-white group-hover:text-[#0f3e87]">$40</div>
+                <div id="planningPriceBasicNew" class="relative -top-2 mr-3 shrink-0 rounded border border-[#94b4e0] bg-[#e8f0fc] px-3.5 py-1.5 text-xl font-bold leading-none text-[#082a5c] transition-colors group-hover:border-white/30 group-hover:bg-white group-hover:text-[#0f3e87]">$40</div>
               </div>
               <div class="mb-2 h-px w-full bg-[#dbe3ef] transition-colors group-hover:bg-white/30"></div>
               <ul class="space-y-1 text-xs leading-snug text-[#0f172a] transition-colors group-hover:text-white sm:text-sm sm:leading-snug">
@@ -1698,15 +1746,15 @@
               <div class="mb-1.5 flex items-center justify-between gap-2">
                 <div>
                   <h2 class="text-base font-bold leading-tight transition-colors group-hover:text-white">Business Plan</h2>
-                  <p class="mt-0.5 text-xs leading-tight text-[#1e3a5c] transition-colors group-hover:text-white">Per month</p>
+                  <p id="planningPriceBusinessPeriod" class="mt-0.5 text-xs leading-tight text-[#1e3a5c] transition-colors group-hover:text-white">Per month</p>
                 </div>
               </div>
               <div class="mb-1.5 flex items-end justify-between gap-2">
                 <div class="flex min-w-0 items-end gap-1.5">
-                  <div class="text-sm font-bold text-[#0f172a] line-through transition-colors group-hover:text-white">$300</div>
-                  <div class="text-[10px] font-semibold leading-tight text-[#2d4a6e] transition-colors group-hover:text-white">Save 50%</div>
+                  <div id="planningPriceBusinessOld" class="text-sm font-bold text-[#0f172a] line-through transition-colors group-hover:text-white">$300</div>
+                  <div id="planningPriceBusinessSave" class="text-[10px] font-semibold leading-tight text-[#2d4a6e] transition-colors group-hover:text-white">Save 50%</div>
                 </div>
-                <div class="relative -top-2 mr-3 shrink-0 rounded border border-[#94b4e0] bg-[#e8f0fc] px-3.5 py-1.5 text-xl font-bold leading-none text-[#082a5c] transition-colors group-hover:border-white/30 group-hover:bg-white group-hover:text-[#0f3e87]">$150</div>
+                <div id="planningPriceBusinessNew" class="relative -top-2 mr-3 shrink-0 rounded border border-[#94b4e0] bg-[#e8f0fc] px-3.5 py-1.5 text-xl font-bold leading-none text-[#082a5c] transition-colors group-hover:border-white/30 group-hover:bg-white group-hover:text-[#0f3e87]">$150</div>
               </div>
               <div class="mb-2 h-px w-full bg-[#dbe3ef] transition-colors group-hover:bg-white/30"></div>
               <ul class="space-y-1 text-xs leading-snug text-[#0f172a] transition-colors group-hover:text-white sm:text-sm sm:leading-snug">
@@ -1729,15 +1777,15 @@
               <div class="mb-1.5 flex items-center justify-between gap-2">
                 <div>
                   <h2 class="text-base font-bold leading-tight transition-colors group-hover:text-white">Advanced</h2>
-                  <p class="mt-0.5 text-xs leading-tight text-[#1e3a5c] transition-colors group-hover:text-white">Per month</p>
+                  <p id="planningPriceAdvancedPeriod" class="mt-0.5 text-xs leading-tight text-[#1e3a5c] transition-colors group-hover:text-white">Per month</p>
                 </div>
               </div>
               <div class="mb-1.5 flex items-end justify-between gap-2">
                 <div class="flex min-w-0 items-end gap-1.5">
-                  <div class="text-sm font-bold text-[#0f172a] line-through transition-colors group-hover:text-white">$400</div>
-                  <div class="text-[10px] font-semibold leading-tight text-[#2d4a6e] transition-colors group-hover:text-white">Save 30%</div>
+                  <div id="planningPriceAdvancedOld" class="text-sm font-bold text-[#0f172a] line-through transition-colors group-hover:text-white">$400</div>
+                  <div id="planningPriceAdvancedSave" class="text-[10px] font-semibold leading-tight text-[#2d4a6e] transition-colors group-hover:text-white">Save 30%</div>
                 </div>
-                <div class="relative -top-2 mr-3 shrink-0 rounded border border-[#94b4e0] bg-[#e8f0fc] px-3.5 py-1.5 text-xl font-bold leading-none text-[#082a5c] transition-colors group-hover:border-white/30 group-hover:bg-white group-hover:text-[#0f3e87]">$280</div>
+                <div id="planningPriceAdvancedNew" class="relative -top-2 mr-3 shrink-0 rounded border border-[#94b4e0] bg-[#e8f0fc] px-3.5 py-1.5 text-xl font-bold leading-none text-[#082a5c] transition-colors group-hover:border-white/30 group-hover:bg-white group-hover:text-[#0f3e87]">$280</div>
               </div>
               <div class="mb-2 h-px w-full bg-[#dbe3ef] transition-colors group-hover:bg-white/30"></div>
               <ul class="space-y-1 text-xs leading-snug text-[#0f172a] transition-colors group-hover:text-white sm:text-sm sm:leading-snug">
