@@ -49,48 +49,12 @@ body:has(> main.planning-page) {
   overflow-wrap: anywhere;
   word-break: break-word;
 }
+.planning-recommended-content-offset {
+  margin-top: 0.85rem;
+}
 @media (max-width: 420px) {
   .planning-invoice-row {
     grid-template-columns: 78px 10px minmax(0, 1fr) !important;
-  }
-}
-
-/* Plan card price chip: prevent overlap on mobile and desktop high zoom */
-.planning-price-chip {
-  white-space: nowrap;
-}
-@media (max-width: 640px), (hover: hover) and (pointer: fine) and (min-resolution: 1.5dppx) and (max-resolution: 2.1dppx) {
-  .planning-price-chip {
-    top: 0 !important;
-    margin-right: 0 !important;
-    font-size: 0.95rem !important;
-    line-height: 1 !important;
-    padding: 0.35rem 0.55rem !important;
-  }
-}
-
-/* Recommended badge overlap guard (only mobile and desktop 150-200% zoom) */
-@media (max-width: 640px), (hover: hover) and (pointer: fine) and (min-resolution: 1.5dppx) and (max-resolution: 2.1dppx) {
-  .planning-recommended-card {
-    padding-top: 2rem !important;
-  }
-  .planning-recommended-title-wrap {
-    padding-right: 5.6rem !important;
-  }
-  .planning-recommended-badge {
-    right: 0.2rem !important;
-    top: 0.2rem !important;
-    padding: 0.22rem 0.4rem !important;
-    font-size: 8px !important;
-    line-height: 1 !important;
-    letter-spacing: 0.02em !important;
-  }
-}
-
-/* Desktop zoom fallback for browsers where dppx media query is unreliable */
-@media (hover: hover) and (pointer: fine) and (max-width: 1400px) {
-  .planning-recommended-card {
-    padding-top: 2.4rem !important;
   }
 }
 
@@ -104,6 +68,10 @@ body:has(> main.planning-page) {
   }
   .planning-zoom-show-mobile-menu:not(.hidden) {
     display: block !important;
+  }
+  /* Prevent badge/title overlap on recommended card at desktop 150-200% zoom */
+  .planning-recommended-card {
+    padding-top: 1.85rem !important;
   }
 }
 

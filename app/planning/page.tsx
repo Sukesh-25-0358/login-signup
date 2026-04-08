@@ -528,15 +528,17 @@ export default function PlanningPage() {
                 {plans.map((plan) => (
                   <article
                     key={plan.name}
-                    className={`group relative flex h-full min-h-0 flex-col rounded border border-[#d8e1ec] bg-white p-4 text-[#0f172a] shadow-sm transition-all duration-200 hover:border-transparent hover:bg-gradient-to-b hover:from-[#06224C] hover:to-[#1A5BBC] hover:text-white hover:shadow-md sm:p-4 ${plan.isRecommended ? "planning-recommended-card" : ""}`}
+                    className={`group relative flex h-full min-h-0 flex-col rounded border border-[#d8e1ec] bg-white p-4 text-[#0f172a] shadow-sm transition-all duration-200 hover:border-transparent hover:bg-gradient-to-b hover:from-[#06224C] hover:to-[#1A5BBC] hover:text-white hover:shadow-md sm:p-4 ${
+                      plan.isRecommended ? "planning-recommended-card" : ""
+                    }`}
                   >
                     {plan.isRecommended && (
                       <div className="planning-recommended-badge absolute right-0 top-0 z-10 rounded-bl-md border border-white/10 bg-[#1A5BBC] px-3 py-1.5 text-[9px] font-extrabold leading-none tracking-wide text-white shadow-[0_2px_6px_rgba(0,0,0,0.12)] transition-colors group-hover:border-[#06224C]/40 group-hover:bg-white group-hover:text-[#06224C] hover:border-[#06224C]/40 hover:bg-white hover:text-[#06224C]">
                         RECOMMENDED
                       </div>
                     )}
-                    <div className="mb-1.5 flex items-center justify-between gap-2">
-                      <div className={plan.isRecommended ? "planning-recommended-title-wrap" : ""}>
+                    <div className={`mb-1.5 flex items-center justify-between gap-2 ${plan.isRecommended ? "planning-recommended-content-offset" : ""}`}>
+                      <div>
                         <h2 className="text-base font-bold leading-tight transition-colors group-hover:text-white">{plan.name}</h2>
                         <p className="mt-0.5 text-xs leading-tight text-[#1e3a5c] transition-colors group-hover:text-white">
                           {billingYearly ? "Per year" : "Per month"}
@@ -553,7 +555,7 @@ export default function PlanningPage() {
                           {billingYearly ? plan.yearlySaveText : plan.saveText}
                         </div>
                       </div>
-                      <div className="planning-price-chip relative -top-1 mr-1 shrink-0 rounded border border-[#94b4e0] bg-[#e8f0fc] px-2.5 py-1 text-base font-bold leading-none text-[#082a5c] transition-colors group-hover:border-white/30 group-hover:bg-white group-hover:text-[#0f3e87] sm:-top-2 sm:mr-3 sm:px-3.5 sm:py-1.5 sm:text-xl">
+                      <div className="relative top-0 mr-1 shrink-0 rounded border border-[#94b4e0] bg-[#e8f0fc] px-2 py-1 text-base font-bold leading-none text-[#082a5c] transition-colors sm:-top-2 sm:mr-3 sm:px-3.5 sm:py-1.5 sm:text-xl group-hover:border-white/30 group-hover:bg-white group-hover:text-[#0f3e87]">
                         {billingYearly ? plan.yearlyNewPrice : plan.newPrice}
                       </div>
                     </div>
