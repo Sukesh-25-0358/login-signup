@@ -132,6 +132,27 @@
       #planningHistoryView .planning-history-track { max-width: 100% !important; }
       #planningHistoryView .planning-history-table-wrap { max-width: 100% !important; }
       #planningHistoryView table { min-width: 470px; }
+      #planningInvoiceView .planning-invoice-row {
+        grid-template-columns: 78px 10px minmax(0, 1fr) !important;
+      }
+      #planningInvoiceView .planning-invoice-value {
+        overflow-wrap: anywhere !important;
+        word-break: break-word !important;
+      }
+    }
+
+    /* Plan card price chip: prevent overlap on mobile and desktop high zoom */
+    .planning-price-chip {
+      white-space: nowrap;
+    }
+    @media (max-width: 640px), (hover: hover) and (pointer: fine) and (min-resolution: 1.5dppx) and (max-resolution: 2.1dppx) {
+      .planning-price-chip {
+        top: 0 !important;
+        margin-right: 0 !important;
+        font-size: 0.95rem !important;
+        line-height: 1 !important;
+        padding: 0.35rem 0.55rem !important;
+      }
     }
 
     /* Desktop zoom fallback (roughly 150-200%): show hamburger + compact menu for planning header */
@@ -1863,7 +1884,7 @@
                   <div id="planningPriceBasicOld" class="text-sm font-bold text-[#0f172a] line-through transition-colors group-hover:text-white">$80</div>
                   <div id="planningPriceBasicSave" class="text-[10px] font-semibold leading-tight text-[#2d4a6e] transition-colors group-hover:text-white">Save 50%</div>
                 </div>
-                <div id="planningPriceBasicNew" class="relative -top-2 mr-3 shrink-0 rounded border border-[#94b4e0] bg-[#e8f0fc] px-3.5 py-1.5 text-xl font-bold leading-none text-[#082a5c] transition-colors group-hover:border-white/30 group-hover:bg-white group-hover:text-[#0f3e87]">$40</div>
+                <div id="planningPriceBasicNew" class="planning-price-chip relative -top-1 mr-1 shrink-0 rounded border border-[#94b4e0] bg-[#e8f0fc] px-2.5 py-1 text-base font-bold leading-none text-[#082a5c] transition-colors group-hover:border-white/30 group-hover:bg-white group-hover:text-[#0f3e87] sm:-top-2 sm:mr-3 sm:px-3.5 sm:py-1.5 sm:text-xl">$40</div>
               </div>
               <div class="mb-2 h-px w-full bg-[#dbe3ef] transition-colors group-hover:bg-white/30"></div>
               <ul class="space-y-1 text-xs leading-snug text-[#0f172a] transition-colors group-hover:text-white sm:text-sm sm:leading-snug">
@@ -1894,7 +1915,7 @@
                   <div id="planningPriceBusinessOld" class="text-sm font-bold text-[#0f172a] line-through transition-colors group-hover:text-white">$300</div>
                   <div id="planningPriceBusinessSave" class="text-[10px] font-semibold leading-tight text-[#2d4a6e] transition-colors group-hover:text-white">Save 50%</div>
                 </div>
-                <div id="planningPriceBusinessNew" class="relative -top-2 mr-3 shrink-0 rounded border border-[#94b4e0] bg-[#e8f0fc] px-3.5 py-1.5 text-xl font-bold leading-none text-[#082a5c] transition-colors group-hover:border-white/30 group-hover:bg-white group-hover:text-[#0f3e87]">$150</div>
+                <div id="planningPriceBusinessNew" class="planning-price-chip relative -top-1 mr-1 shrink-0 rounded border border-[#94b4e0] bg-[#e8f0fc] px-2.5 py-1 text-base font-bold leading-none text-[#082a5c] transition-colors group-hover:border-white/30 group-hover:bg-white group-hover:text-[#0f3e87] sm:-top-2 sm:mr-3 sm:px-3.5 sm:py-1.5 sm:text-xl">$150</div>
               </div>
               <div class="mb-2 h-px w-full bg-[#dbe3ef] transition-colors group-hover:bg-white/30"></div>
               <ul class="space-y-1 text-xs leading-snug text-[#0f172a] transition-colors group-hover:text-white sm:text-sm sm:leading-snug">
@@ -1925,7 +1946,7 @@
                   <div id="planningPriceAdvancedOld" class="text-sm font-bold text-[#0f172a] line-through transition-colors group-hover:text-white">$400</div>
                   <div id="planningPriceAdvancedSave" class="text-[10px] font-semibold leading-tight text-[#2d4a6e] transition-colors group-hover:text-white">Save 30%</div>
                 </div>
-                <div id="planningPriceAdvancedNew" class="relative -top-2 mr-3 shrink-0 rounded border border-[#94b4e0] bg-[#e8f0fc] px-3.5 py-1.5 text-xl font-bold leading-none text-[#082a5c] transition-colors group-hover:border-white/30 group-hover:bg-white group-hover:text-[#0f3e87]">$280</div>
+                <div id="planningPriceAdvancedNew" class="planning-price-chip relative -top-1 mr-1 shrink-0 rounded border border-[#94b4e0] bg-[#e8f0fc] px-2.5 py-1 text-base font-bold leading-none text-[#082a5c] transition-colors group-hover:border-white/30 group-hover:bg-white group-hover:text-[#0f3e87] sm:-top-2 sm:mr-3 sm:px-3.5 sm:py-1.5 sm:text-xl">$280</div>
               </div>
               <div class="mb-2 h-px w-full bg-[#dbe3ef] transition-colors group-hover:bg-white/30"></div>
               <ul class="space-y-1 text-xs leading-snug text-[#0f172a] transition-colors group-hover:text-white sm:text-sm sm:leading-snug">
@@ -1977,18 +1998,18 @@
           </div>
           <div class="space-y-8 px-8 py-7">
             <div class="mx-auto w-full max-w-2xl space-y-4 text-[15px]">
-              <div style="display:grid;grid-template-columns:96px 14px minmax(0,1fr);align-items:center;"><span>Invoice ID</span><span>:</span><span id="planningInvoiceId">INV-000000</span></div>
-              <div style="display:grid;grid-template-columns:96px 14px minmax(0,1fr);align-items:center;"><span>Date</span><span>:</span><span id="planningInvoiceDate">Apr 08, 2026</span></div>
-              <div style="display:grid;grid-template-columns:96px 14px minmax(0,1fr);align-items:center;"><span>Plan</span><span>:</span><span id="planningInvoicePlan">Basic (Monthly)</span></div>
-              <div style="display:grid;grid-template-columns:96px 14px minmax(0,1fr);align-items:center;"><span>Amount</span><span>:</span><span id="planningInvoiceAmount">$40</span></div>
+              <div class="planning-invoice-row" style="display:grid;grid-template-columns:96px 14px minmax(0,1fr);align-items:center;"><span>Invoice ID</span><span>:</span><span id="planningInvoiceId" class="planning-invoice-value">INV-000000</span></div>
+              <div class="planning-invoice-row" style="display:grid;grid-template-columns:96px 14px minmax(0,1fr);align-items:center;"><span>Date</span><span>:</span><span id="planningInvoiceDate" class="planning-invoice-value">Apr 08, 2026</span></div>
+              <div class="planning-invoice-row" style="display:grid;grid-template-columns:96px 14px minmax(0,1fr);align-items:center;"><span>Plan</span><span>:</span><span id="planningInvoicePlan" class="planning-invoice-value">Basic (Monthly)</span></div>
+              <div class="planning-invoice-row" style="display:grid;grid-template-columns:96px 14px minmax(0,1fr);align-items:center;"><span>Amount</span><span>:</span><span id="planningInvoiceAmount" class="planning-invoice-value">$40</span></div>
             </div>
             <div class="border-t border-white/15 pt-6">
               <h3 class="mx-auto mb-5 w-full max-w-2xl text-[30px] font-semibold">Billing Information</h3>
               <div class="mx-auto w-full max-w-2xl space-y-4 text-[15px]">
-                <div style="display:grid;grid-template-columns:96px 14px minmax(0,1fr);align-items:center;"><span>Name</span><span>:</span><span id="planningInvoiceName">Pentakota Srinivas</span></div>
-                <div style="display:grid;grid-template-columns:96px 14px minmax(0,1fr);align-items:center;"><span>Email</span><span>:</span><span id="planningInvoiceEmail">srinu@gmail.com</span></div>
-                <div style="display:grid;grid-template-columns:96px 14px minmax(0,1fr);align-items:center;"><span>Contact No</span><span>:</span><span id="planningInvoiceContact">9848xxxx19</span></div>
-                <div style="display:grid;grid-template-columns:96px 14px minmax(0,1fr);align-items:center;"><span>Address</span><span>:</span><span id="planningInvoiceAddress">Chennai - 636008</span></div>
+                <div class="planning-invoice-row" style="display:grid;grid-template-columns:96px 14px minmax(0,1fr);align-items:center;"><span>Name</span><span>:</span><span id="planningInvoiceName" class="planning-invoice-value">Pentakota Srinivas</span></div>
+                <div class="planning-invoice-row" style="display:grid;grid-template-columns:96px 14px minmax(0,1fr);align-items:center;"><span>Email</span><span>:</span><span id="planningInvoiceEmail" class="planning-invoice-value">srinu@gmail.com</span></div>
+                <div class="planning-invoice-row" style="display:grid;grid-template-columns:96px 14px minmax(0,1fr);align-items:center;"><span>Contact No</span><span>:</span><span id="planningInvoiceContact" class="planning-invoice-value">9848xxxx19</span></div>
+                <div class="planning-invoice-row" style="display:grid;grid-template-columns:96px 14px minmax(0,1fr);align-items:center;"><span>Address</span><span>:</span><span id="planningInvoiceAddress" class="planning-invoice-value">Chennai - 636008</span></div>
               </div>
             </div>
           </div>

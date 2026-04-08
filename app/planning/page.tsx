@@ -553,7 +553,7 @@ export default function PlanningPage() {
                           {billingYearly ? plan.yearlySaveText : plan.saveText}
                         </div>
                       </div>
-                      <div className="relative -top-2 mr-3 shrink-0 rounded border border-[#94b4e0] bg-[#e8f0fc] px-3.5 py-1.5 text-xl font-bold leading-none text-[#082a5c] transition-colors group-hover:border-white/30 group-hover:bg-white group-hover:text-[#0f3e87]">
+                      <div className="planning-price-chip relative -top-1 mr-1 shrink-0 rounded border border-[#94b4e0] bg-[#e8f0fc] px-2.5 py-1 text-base font-bold leading-none text-[#082a5c] transition-colors group-hover:border-white/30 group-hover:bg-white group-hover:text-[#0f3e87] sm:-top-2 sm:mr-3 sm:px-3.5 sm:py-1.5 sm:text-xl">
                         {billingYearly ? plan.yearlyNewPrice : plan.newPrice}
                       </div>
                     </div>
@@ -669,18 +669,18 @@ export default function PlanningPage() {
                 </div>
                 <div className="space-y-6 px-4 py-6 sm:space-y-8 sm:px-8 sm:py-7">
                   <div className="mx-auto w-full max-w-2xl space-y-3 text-xs sm:space-y-4 sm:text-[15px]">
-                    <div style={{ display: "grid", gridTemplateColumns: "96px 14px minmax(0,1fr)", alignItems: "center" }} className="sm:[grid-template-columns:140px_24px_1fr]"><span>Invoice ID</span><span>:</span><span className="break-words">{invoiceData.invoiceId}</span></div>
-                    <div style={{ display: "grid", gridTemplateColumns: "96px 14px minmax(0,1fr)", alignItems: "center" }} className="sm:[grid-template-columns:140px_24px_1fr]"><span>Date</span><span>:</span><span className="break-words">{invoiceData.date}</span></div>
-                    <div style={{ display: "grid", gridTemplateColumns: "96px 14px minmax(0,1fr)", alignItems: "center" }} className="sm:[grid-template-columns:140px_24px_1fr]"><span>Plan</span><span>:</span><span className="break-words">{invoiceData.planName}</span></div>
-                    <div style={{ display: "grid", gridTemplateColumns: "96px 14px minmax(0,1fr)", alignItems: "center" }} className="sm:[grid-template-columns:140px_24px_1fr]"><span>Amount</span><span>:</span><span className="break-words">{invoiceData.amount}</span></div>
+                    <div className="planning-invoice-row" style={{ display: "grid", gridTemplateColumns: "96px 14px minmax(0,1fr)", alignItems: "center" }}><span>Invoice ID</span><span>:</span><span className="planning-invoice-value break-words">{invoiceData.invoiceId}</span></div>
+                    <div className="planning-invoice-row" style={{ display: "grid", gridTemplateColumns: "96px 14px minmax(0,1fr)", alignItems: "center" }}><span>Date</span><span>:</span><span className="planning-invoice-value break-words">{invoiceData.date}</span></div>
+                    <div className="planning-invoice-row" style={{ display: "grid", gridTemplateColumns: "96px 14px minmax(0,1fr)", alignItems: "center" }}><span>Plan</span><span>:</span><span className="planning-invoice-value break-words">{invoiceData.planName}</span></div>
+                    <div className="planning-invoice-row" style={{ display: "grid", gridTemplateColumns: "96px 14px minmax(0,1fr)", alignItems: "center" }}><span>Amount</span><span>:</span><span className="planning-invoice-value break-words">{invoiceData.amount}</span></div>
                   </div>
                   <div className="pt-6" style={{ borderTop: "1px solid rgba(255,255,255,0.15)" }}>
                     <h3 className="mx-auto mb-4 w-full max-w-2xl text-xl font-semibold sm:mb-5 sm:text-[30px]">Billing Information</h3>
                     <div className="mx-auto w-full max-w-2xl space-y-3 text-xs sm:space-y-4 sm:text-[15px]">
-                      <div style={{ display: "grid", gridTemplateColumns: "96px 14px minmax(0,1fr)", alignItems: "center" }} className="sm:[grid-template-columns:140px_24px_1fr]"><span>Name</span><span>:</span><span className="break-words">{invoiceData.name}</span></div>
-                      <div style={{ display: "grid", gridTemplateColumns: "96px 14px minmax(0,1fr)", alignItems: "center" }} className="sm:[grid-template-columns:140px_24px_1fr]"><span>Email</span><span>:</span><span className="break-words">{invoiceData.email}</span></div>
-                      <div style={{ display: "grid", gridTemplateColumns: "96px 14px minmax(0,1fr)", alignItems: "center" }} className="sm:[grid-template-columns:140px_24px_1fr]"><span>Contact No</span><span>:</span><span className="break-words">{invoiceData.contactNo}</span></div>
-                      <div style={{ display: "grid", gridTemplateColumns: "96px 14px minmax(0,1fr)", alignItems: "center" }} className="sm:[grid-template-columns:140px_24px_1fr]"><span>Address</span><span>:</span><span className="break-words">{invoiceData.address}</span></div>
+                      <div className="planning-invoice-row" style={{ display: "grid", gridTemplateColumns: "96px 14px minmax(0,1fr)", alignItems: "center" }}><span>Name</span><span>:</span><span className="planning-invoice-value break-words">{invoiceData.name}</span></div>
+                      <div className="planning-invoice-row" style={{ display: "grid", gridTemplateColumns: "96px 14px minmax(0,1fr)", alignItems: "center" }}><span>Email</span><span>:</span><span className="planning-invoice-value break-words">{invoiceData.email}</span></div>
+                      <div className="planning-invoice-row" style={{ display: "grid", gridTemplateColumns: "96px 14px minmax(0,1fr)", alignItems: "center" }}><span>Contact No</span><span>:</span><span className="planning-invoice-value break-words">{invoiceData.contactNo}</span></div>
+                      <div className="planning-invoice-row" style={{ display: "grid", gridTemplateColumns: "96px 14px minmax(0,1fr)", alignItems: "center" }}><span>Address</span><span>:</span><span className="planning-invoice-value break-words">{invoiceData.address}</span></div>
                     </div>
                   </div>
                 </div>

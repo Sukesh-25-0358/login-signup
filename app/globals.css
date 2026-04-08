@@ -41,6 +41,34 @@ body:has(> main.planning-page) {
   background-color: #efefef;
 }
 
+/* Planning invoice mobile safety: prevent clipping/overlap at 100-200% zoom */
+.planning-invoice-row {
+  grid-template-columns: 96px 14px minmax(0, 1fr) !important;
+}
+.planning-invoice-value {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+@media (max-width: 420px) {
+  .planning-invoice-row {
+    grid-template-columns: 78px 10px minmax(0, 1fr) !important;
+  }
+}
+
+/* Plan card price chip: prevent overlap on mobile and desktop high zoom */
+.planning-price-chip {
+  white-space: nowrap;
+}
+@media (max-width: 640px), (hover: hover) and (pointer: fine) and (min-resolution: 1.5dppx) and (max-resolution: 2.1dppx) {
+  .planning-price-chip {
+    top: 0 !important;
+    margin-right: 0 !important;
+    font-size: 0.95rem !important;
+    line-height: 1 !important;
+    padding: 0.35rem 0.55rem !important;
+  }
+}
+
 /* Desktop zoom fallback (roughly 150-200%): show hamburger + compact menu for planning header */
 @media (hover: hover) and (pointer: fine) and (max-width: 1024px) and (min-resolution: 1.5dppx) and (max-resolution: 2.1dppx) {
   .planning-zoom-show-hamburger {
