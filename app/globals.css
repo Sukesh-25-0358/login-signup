@@ -72,7 +72,19 @@ body:has(> main.planning-page) {
 /* Recommended badge overlap guard (only mobile and desktop 150-200% zoom) */
 @media (max-width: 640px), (hover: hover) and (pointer: fine) and (min-resolution: 1.5dppx) and (max-resolution: 2.1dppx) {
   .planning-recommended-card {
-    padding-top: 2rem !important;
+    padding-top: 2.6rem !important;
+  }
+  .planning-recommended-badge {
+    padding: 0.3rem 0.55rem !important;
+    font-size: 8px !important;
+    line-height: 1 !important;
+  }
+}
+
+/* Desktop zoom fallback for browsers where dppx media query is unreliable */
+@media (hover: hover) and (pointer: fine) and (max-width: 1400px) {
+  .planning-recommended-card {
+    padding-top: 2.4rem !important;
   }
 }
 
