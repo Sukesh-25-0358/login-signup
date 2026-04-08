@@ -546,8 +546,8 @@ export default function PlanningPage() {
                       </div>
                     </div>
 
-                    <div className="mb-1.5 flex items-start justify-between gap-2 sm:items-end">
-                      <div className="flex min-w-0 flex-col items-start gap-0.5 sm:flex-row sm:items-end sm:gap-1.5">
+                    <div className="mb-1.5 flex items-start justify-between gap-2 lg:items-end">
+                      <div className="flex min-w-0 flex-wrap items-end gap-x-1.5 gap-y-0.5 pr-1">
                         <div className="text-sm font-bold text-[#0f172a] line-through transition-colors group-hover:text-white">
                           {billingYearly ? plan.yearlyOldPrice : plan.oldPrice}
                         </div>
@@ -555,7 +555,7 @@ export default function PlanningPage() {
                           {billingYearly ? plan.yearlySaveText : plan.saveText}
                         </div>
                       </div>
-                      <div className="relative top-0 mr-1 shrink-0 rounded border border-[#94b4e0] bg-[#e8f0fc] px-2 py-1 text-base font-bold leading-none text-[#082a5c] transition-colors sm:-top-2 sm:mr-3 sm:px-3.5 sm:py-1.5 sm:text-xl group-hover:border-white/30 group-hover:bg-white group-hover:text-[#0f3e87]">
+                      <div className="relative top-0 mr-1 shrink-0 rounded border border-[#94b4e0] bg-[#e8f0fc] px-2 py-1 text-base font-bold leading-none text-[#082a5c] transition-colors lg:-top-2 lg:mr-3 lg:px-3.5 lg:py-1.5 lg:text-xl group-hover:border-white/30 group-hover:bg-white group-hover:text-[#0f3e87]">
                         {billingYearly ? plan.yearlyNewPrice : plan.newPrice}
                       </div>
                     </div>
