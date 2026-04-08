@@ -109,6 +109,31 @@
       transition: transform 0.2s ease;
     }
 
+    /* Planning purchase flow (payment/invoice/history): mobile + 100-200% zoom safety */
+    #planningPaymentView,
+    #planningInvoiceView,
+    #planningHistoryView {
+      box-sizing: border-box;
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+    }
+    #planningPaymentView *,
+    #planningInvoiceView *,
+    #planningHistoryView * {
+      box-sizing: border-box;
+      min-width: 0;
+    }
+    @media (max-width: 640px) {
+      #planningPaymentView { max-width: 100% !important; }
+      #planningInvoiceView { max-width: 100% !important; }
+      #planningHistoryView { max-width: 100% !important; }
+      #planningHistoryView h2 { font-size: 1.5rem !important; }
+      #planningHistoryView .planning-history-track { max-width: 100% !important; }
+      #planningHistoryView .planning-history-table-wrap { max-width: 100% !important; }
+      #planningHistoryView table { min-width: 470px; }
+    }
+
     /* Desktop zoom fallback (roughly 150-200%): show hamburger + compact menu for planning header */
     @media (hover: hover) and (pointer: fine) and (max-width: 1024px) and (min-resolution: 1.5dppx) and (max-resolution: 2.1dppx) {
       .planning-zoom-show-hamburger {
@@ -1952,18 +1977,18 @@
           </div>
           <div class="space-y-8 px-8 py-7">
             <div class="mx-auto w-full max-w-2xl space-y-4 text-[15px]">
-              <div style="display:grid;grid-template-columns:140px 24px 1fr;align-items:center;"><span>Invoice ID</span><span>:</span><span id="planningInvoiceId">INV-000000</span></div>
-              <div style="display:grid;grid-template-columns:140px 24px 1fr;align-items:center;"><span>Date</span><span>:</span><span id="planningInvoiceDate">Apr 08, 2026</span></div>
-              <div style="display:grid;grid-template-columns:140px 24px 1fr;align-items:center;"><span>Plan</span><span>:</span><span id="planningInvoicePlan">Basic (Monthly)</span></div>
-              <div style="display:grid;grid-template-columns:140px 24px 1fr;align-items:center;"><span>Amount</span><span>:</span><span id="planningInvoiceAmount">$40</span></div>
+              <div style="display:grid;grid-template-columns:96px 14px minmax(0,1fr);align-items:center;"><span>Invoice ID</span><span>:</span><span id="planningInvoiceId">INV-000000</span></div>
+              <div style="display:grid;grid-template-columns:96px 14px minmax(0,1fr);align-items:center;"><span>Date</span><span>:</span><span id="planningInvoiceDate">Apr 08, 2026</span></div>
+              <div style="display:grid;grid-template-columns:96px 14px minmax(0,1fr);align-items:center;"><span>Plan</span><span>:</span><span id="planningInvoicePlan">Basic (Monthly)</span></div>
+              <div style="display:grid;grid-template-columns:96px 14px minmax(0,1fr);align-items:center;"><span>Amount</span><span>:</span><span id="planningInvoiceAmount">$40</span></div>
             </div>
             <div class="border-t border-white/15 pt-6">
               <h3 class="mx-auto mb-5 w-full max-w-2xl text-[30px] font-semibold">Billing Information</h3>
               <div class="mx-auto w-full max-w-2xl space-y-4 text-[15px]">
-                <div style="display:grid;grid-template-columns:140px 24px 1fr;align-items:center;"><span>Name</span><span>:</span><span id="planningInvoiceName">Pentakota Srinivas</span></div>
-                <div style="display:grid;grid-template-columns:140px 24px 1fr;align-items:center;"><span>Email</span><span>:</span><span id="planningInvoiceEmail">srinu@gmail.com</span></div>
-                <div style="display:grid;grid-template-columns:140px 24px 1fr;align-items:center;"><span>Contact No</span><span>:</span><span id="planningInvoiceContact">9848xxxx19</span></div>
-                <div style="display:grid;grid-template-columns:140px 24px 1fr;align-items:center;"><span>Address</span><span>:</span><span id="planningInvoiceAddress">Chennai - 636008</span></div>
+                <div style="display:grid;grid-template-columns:96px 14px minmax(0,1fr);align-items:center;"><span>Name</span><span>:</span><span id="planningInvoiceName">Pentakota Srinivas</span></div>
+                <div style="display:grid;grid-template-columns:96px 14px minmax(0,1fr);align-items:center;"><span>Email</span><span>:</span><span id="planningInvoiceEmail">srinu@gmail.com</span></div>
+                <div style="display:grid;grid-template-columns:96px 14px minmax(0,1fr);align-items:center;"><span>Contact No</span><span>:</span><span id="planningInvoiceContact">9848xxxx19</span></div>
+                <div style="display:grid;grid-template-columns:96px 14px minmax(0,1fr);align-items:center;"><span>Address</span><span>:</span><span id="planningInvoiceAddress">Chennai - 636008</span></div>
               </div>
             </div>
           </div>
@@ -1973,14 +1998,14 @@
         </div>
 
         <div id="planningHistoryView" class="hidden mx-auto my-6 w-full p-4 text-white" style="max-width:560px;border-radius:8px;background:linear-gradient(180deg,#2f6dca 0%,#0a2a5f 100%);box-shadow:0 2px 0 rgba(0,0,0,0.28);border:2px solid #8aa0c1;">
-          <div class="mx-auto mb-4 flex w-full max-w-[470px] items-center justify-between pb-4" style="border-bottom:1px solid rgba(255,255,255,0.17);">
+          <div class="planning-history-track mx-auto mb-4 flex w-full max-w-[470px] items-center justify-between pb-4" style="border-bottom:1px solid rgba(255,255,255,0.17);">
             <h2 class="text-[34px] font-bold leading-tight tracking-[0.2px]">Billing History</h2>
             <div class="flex items-center overflow-hidden rounded-md bg-white" style="color:#1f2937;font-size:10px;line-height:1.2;box-shadow:0 0 0 1px rgba(15,23,42,0.08);">
               <button type="button" style="border-right:1px solid #e2e8f0;padding:7px 10px;color:#1f2937;">All Invoices</button>
               <button type="button" style="padding:7px 10px;color:#1f2937;">This Year ▾</button>
             </div>
           </div>
-          <div class="mx-auto w-full max-w-[470px] overflow-x-auto rounded-md bg-white" style="box-shadow:inset 0 0 0 1px rgba(15,23,42,0.08);">
+          <div class="planning-history-table-wrap mx-auto w-full max-w-[470px] overflow-x-auto rounded-md bg-white" style="box-shadow:inset 0 0 0 1px rgba(15,23,42,0.08);">
             <table class="w-full min-w-[470px] text-left" style="font-size:10.5px;color:#0f172a;">
               <thead class="bg-[#f3f4f6] text-[11px] font-semibold text-[#1f2937]" style="border-bottom:2px solid #d1d5db;">
                 <tr>

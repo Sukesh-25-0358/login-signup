@@ -594,16 +594,16 @@ export default function PlanningPage() {
                   boxShadow: "0 2px 0 rgba(0,0,0,0.2)",
                 }}
               >
-                <div className="border-b border-white/20 px-6 py-8 text-center">
-                  <h2 className="text-3xl font-bold">Secure Payment</h2>
-                  <p className="mt-2 text-sm text-white/85">Enter your payment details to Upgrade</p>
+                <div className="border-b border-white/20 px-4 py-6 text-center sm:px-6 sm:py-8">
+                  <h2 className="text-2xl font-bold sm:text-3xl">Secure Payment</h2>
+                  <p className="mt-2 text-xs text-white/85 sm:text-sm">Enter your payment details to Upgrade</p>
                 </div>
-                <div className="mx-auto w-full px-6 py-8" style={{ maxWidth: 430 }}>
+                <div className="mx-auto w-full px-4 py-6 sm:px-6 sm:py-8" style={{ maxWidth: 430 }}>
                   <input
                     value={cardNumber}
                     onChange={(e) => setCardNumber(e.target.value)}
                     placeholder="Card Number"
-                    className="mb-4 block w-full rounded border border-white/40 bg-transparent px-3 py-2 text-sm text-white placeholder:text-white/70 focus:outline-none"
+                    className="mb-4 block w-full rounded border border-white/40 bg-transparent px-3 py-2 text-xs text-white placeholder:text-white/70 focus:outline-none sm:text-sm"
                     style={{ width: "100%" }}
                   />
                   <div className="mb-6 grid grid-cols-2 gap-2" style={{ width: "100%" }}>
@@ -611,17 +611,17 @@ export default function PlanningPage() {
                       value={cardExpiry}
                       onChange={(e) => setCardExpiry(e.target.value)}
                       placeholder="MM/YY"
-                      className="rounded border border-white/40 bg-transparent px-3 py-2 text-sm text-white placeholder:text-white/70 focus:outline-none"
+                      className="rounded border border-white/40 bg-transparent px-3 py-2 text-xs text-white placeholder:text-white/70 focus:outline-none sm:text-sm"
                     />
                     <input
                       value={cardCvv}
                       onChange={(e) => setCardCvv(e.target.value)}
                       placeholder="Cvv"
-                      className="rounded border border-white/40 bg-transparent px-3 py-2 text-sm text-white placeholder:text-white/70 focus:outline-none"
+                      className="rounded border border-white/40 bg-transparent px-3 py-2 text-xs text-white placeholder:text-white/70 focus:outline-none sm:text-sm"
                     />
                   </div>
 
-                  <div className="space-y-4 text-sm">
+                  <div className="space-y-3 text-xs sm:space-y-4 sm:text-sm">
                     <label className="flex items-center gap-2">
                       <input type="radio" name="pm" checked={paymentMethod === "paypal"} onChange={() => setPaymentMethod("paypal")} />
                       Paypal
@@ -640,12 +640,12 @@ export default function PlanningPage() {
                     </label>
                   </div>
                 </div>
-                <div className="border-t border-white/20 px-6 py-6 text-center">
+                <div className="border-t border-white/20 px-4 py-5 text-center sm:px-6 sm:py-6">
                   <button
                     type="button"
                     onClick={handleCompletePayment}
                     disabled={paymentLoading}
-                    className="inline-flex min-w-[180px] items-center justify-center rounded bg-white px-6 py-2 text-sm font-semibold text-[#1f2937] disabled:opacity-70"
+                    className="inline-flex min-w-[160px] items-center justify-center rounded bg-white px-5 py-2 text-xs font-semibold text-[#1f2937] disabled:opacity-70 sm:min-w-[180px] sm:px-6 sm:text-sm"
                   >
                     {paymentLoading ? "Processing payment..." : "Complete Payment"}
                   </button>
@@ -664,31 +664,31 @@ export default function PlanningPage() {
                   boxShadow: "0 2px 0 rgba(0,0,0,0.25)",
                 }}
               >
-                <div className="px-8 py-6 text-center" style={{ borderBottom: "1px solid rgba(255,255,255,0.15)" }}>
-                  <h2 className="text-[36px] font-bold leading-tight">Invoice Details</h2>
+                <div className="px-4 py-5 text-center sm:px-8 sm:py-6" style={{ borderBottom: "1px solid rgba(255,255,255,0.15)" }}>
+                  <h2 className="text-2xl font-bold leading-tight sm:text-[36px]">Invoice Details</h2>
                 </div>
-                <div className="space-y-8 px-8 py-7">
-                  <div className="mx-auto w-full max-w-2xl space-y-4 text-[15px]">
-                    <div style={{ display: "grid", gridTemplateColumns: "140px 24px 1fr", alignItems: "center" }}><span>Invoice ID</span><span>:</span><span>{invoiceData.invoiceId}</span></div>
-                    <div style={{ display: "grid", gridTemplateColumns: "140px 24px 1fr", alignItems: "center" }}><span>Date</span><span>:</span><span>{invoiceData.date}</span></div>
-                    <div style={{ display: "grid", gridTemplateColumns: "140px 24px 1fr", alignItems: "center" }}><span>Plan</span><span>:</span><span>{invoiceData.planName}</span></div>
-                    <div style={{ display: "grid", gridTemplateColumns: "140px 24px 1fr", alignItems: "center" }}><span>Amount</span><span>:</span><span>{invoiceData.amount}</span></div>
+                <div className="space-y-6 px-4 py-6 sm:space-y-8 sm:px-8 sm:py-7">
+                  <div className="mx-auto w-full max-w-2xl space-y-3 text-xs sm:space-y-4 sm:text-[15px]">
+                    <div style={{ display: "grid", gridTemplateColumns: "96px 14px minmax(0,1fr)", alignItems: "center" }} className="sm:[grid-template-columns:140px_24px_1fr]"><span>Invoice ID</span><span>:</span><span className="break-words">{invoiceData.invoiceId}</span></div>
+                    <div style={{ display: "grid", gridTemplateColumns: "96px 14px minmax(0,1fr)", alignItems: "center" }} className="sm:[grid-template-columns:140px_24px_1fr]"><span>Date</span><span>:</span><span className="break-words">{invoiceData.date}</span></div>
+                    <div style={{ display: "grid", gridTemplateColumns: "96px 14px minmax(0,1fr)", alignItems: "center" }} className="sm:[grid-template-columns:140px_24px_1fr]"><span>Plan</span><span>:</span><span className="break-words">{invoiceData.planName}</span></div>
+                    <div style={{ display: "grid", gridTemplateColumns: "96px 14px minmax(0,1fr)", alignItems: "center" }} className="sm:[grid-template-columns:140px_24px_1fr]"><span>Amount</span><span>:</span><span className="break-words">{invoiceData.amount}</span></div>
                   </div>
                   <div className="pt-6" style={{ borderTop: "1px solid rgba(255,255,255,0.15)" }}>
-                    <h3 className="mx-auto mb-5 w-full max-w-2xl text-[30px] font-semibold">Billing Information</h3>
-                    <div className="mx-auto w-full max-w-2xl space-y-4 text-[15px]">
-                      <div style={{ display: "grid", gridTemplateColumns: "140px 24px 1fr", alignItems: "center" }}><span>Name</span><span>:</span><span>{invoiceData.name}</span></div>
-                      <div style={{ display: "grid", gridTemplateColumns: "140px 24px 1fr", alignItems: "center" }}><span>Email</span><span>:</span><span>{invoiceData.email}</span></div>
-                      <div style={{ display: "grid", gridTemplateColumns: "140px 24px 1fr", alignItems: "center" }}><span>Contact No</span><span>:</span><span>{invoiceData.contactNo}</span></div>
-                      <div style={{ display: "grid", gridTemplateColumns: "140px 24px 1fr", alignItems: "center" }}><span>Address</span><span>:</span><span>{invoiceData.address}</span></div>
+                    <h3 className="mx-auto mb-4 w-full max-w-2xl text-xl font-semibold sm:mb-5 sm:text-[30px]">Billing Information</h3>
+                    <div className="mx-auto w-full max-w-2xl space-y-3 text-xs sm:space-y-4 sm:text-[15px]">
+                      <div style={{ display: "grid", gridTemplateColumns: "96px 14px minmax(0,1fr)", alignItems: "center" }} className="sm:[grid-template-columns:140px_24px_1fr]"><span>Name</span><span>:</span><span className="break-words">{invoiceData.name}</span></div>
+                      <div style={{ display: "grid", gridTemplateColumns: "96px 14px minmax(0,1fr)", alignItems: "center" }} className="sm:[grid-template-columns:140px_24px_1fr]"><span>Email</span><span>:</span><span className="break-words">{invoiceData.email}</span></div>
+                      <div style={{ display: "grid", gridTemplateColumns: "96px 14px minmax(0,1fr)", alignItems: "center" }} className="sm:[grid-template-columns:140px_24px_1fr]"><span>Contact No</span><span>:</span><span className="break-words">{invoiceData.contactNo}</span></div>
+                      <div style={{ display: "grid", gridTemplateColumns: "96px 14px minmax(0,1fr)", alignItems: "center" }} className="sm:[grid-template-columns:140px_24px_1fr]"><span>Address</span><span>:</span><span className="break-words">{invoiceData.address}</span></div>
                     </div>
                   </div>
                 </div>
-                <div className="px-8 py-6 text-center" style={{ borderTop: "1px solid rgba(255,255,255,0.15)" }}>
+                <div className="px-4 py-5 text-center sm:px-8 sm:py-6" style={{ borderTop: "1px solid rgba(255,255,255,0.15)" }}>
                   <button
                     type="button"
                     onClick={() => setPlanningView("history")}
-                    className="inline-flex items-center gap-2 rounded-md bg-white px-6 py-2.5 text-[15px] font-semibold text-[#1f2937]"
+                    className="inline-flex items-center gap-2 rounded-md bg-white px-5 py-2 text-xs font-semibold text-[#1f2937] sm:px-6 sm:py-2.5 sm:text-[15px]"
                   >
                     <span aria-hidden>↓</span>
                     Download Invoice
@@ -699,7 +699,7 @@ export default function PlanningPage() {
 
             {planningView === "history" && (
               <div
-                className="mx-auto my-6 w-full p-4 text-white"
+                className="mx-auto my-4 w-full p-3 text-white sm:my-6 sm:p-4"
                 style={{
                   maxWidth: 560,
                   borderRadius: 8,
@@ -708,8 +708,8 @@ export default function PlanningPage() {
                   border: "2px solid #8aa0c1",
                 }}
               >
-                <div className="mx-auto mb-4 flex w-full max-w-[470px] items-center justify-between pb-4" style={{ borderBottom: "1px solid rgba(255,255,255,0.17)" }}>
-                  <h2 className="text-[34px] font-bold leading-tight tracking-[0.2px]">Billing History</h2>
+                <div className="mx-auto mb-3 flex w-full max-w-[470px] items-center justify-between pb-3 sm:mb-4 sm:pb-4" style={{ borderBottom: "1px solid rgba(255,255,255,0.17)" }}>
+                  <h2 className="text-2xl font-bold leading-tight tracking-[0.2px] sm:text-[34px]">Billing History</h2>
                   <div
                     className="flex items-center overflow-hidden rounded-md bg-white"
                     style={{ color: "#1f2937", fontSize: 10, lineHeight: 1.2, boxShadow: "0 0 0 1px rgba(15,23,42,0.08)" }}
