@@ -546,8 +546,8 @@ export default function PlanningPage() {
                       </div>
                     </div>
 
-                    <div className="mb-1.5 flex items-end justify-between gap-2">
-                      <div className="flex min-w-0 items-end gap-1.5">
+                    <div className="mb-1.5 flex items-start justify-between gap-2 sm:items-end">
+                      <div className="flex min-w-0 flex-col items-start gap-0.5 sm:flex-row sm:items-end sm:gap-1.5">
                         <div className="text-sm font-bold text-[#0f172a] line-through transition-colors group-hover:text-white">
                           {billingYearly ? plan.yearlyOldPrice : plan.oldPrice}
                         </div>
