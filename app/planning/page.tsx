@@ -536,7 +536,7 @@ export default function PlanningPage() {
                       </div>
                     )}
                     <div className="mb-1.5 flex items-center justify-between gap-2">
-                      <div>
+                      <div className={plan.isRecommended ? "planning-recommended-title-wrap" : ""}>
                         <h2 className="text-base font-bold leading-tight transition-colors group-hover:text-white">{plan.name}</h2>
                         <p className="mt-0.5 text-xs leading-tight text-[#1e3a5c] transition-colors group-hover:text-white">
                           {billingYearly ? "Per year" : "Per month"}
