@@ -54,6 +54,25 @@ function PlanningHeaderBellIcon({ className }: { className?: string }) {
   );
 }
 
+function PlanningHeaderHelpIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden shapeRendering="geometricPrecision">
+      <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="2" />
+      <path d="M9.75 9.5a2.25 2.25 0 1 1 3.9 1.55c-.55.57-1.15 1-1.65 1.6-.27.33-.42.7-.42 1.1v.25" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      <circle cx="12" cy="16.8" r="1" fill="currentColor" />
+    </svg>
+  );
+}
+
+function PlanningHeaderSettingsIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden shapeRendering="geometricPrecision">
+      <path d="M12 7.5a4.5 4.5 0 1 0 0 9 4.5 4.5 0 0 0 0-9Z" stroke="currentColor" strokeWidth="2" />
+      <path d="M19 12a7.1 7.1 0 0 0-.07-.95l2.02-1.57-2-3.46-2.48.81a7.5 7.5 0 0 0-1.65-.96L14.4 3h-4.8l-.42 2.87c-.59.23-1.14.55-1.65.96l-2.48-.81-2 3.46 2.02 1.57a7.9 7.9 0 0 0 0 1.9L3.05 14.52l2 3.46 2.48-.81c.5.41 1.06.73 1.65.96L9.6 21h4.8l.42-2.87c.59-.23 1.14-.55 1.65-.96l2.48.81 2-3.46-2.02-1.57c.05-.31.07-.63.07-.95Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" opacity=".9" />
+    </svg>
+  );
+}
+
 const plans = [
   {
     name: "Basic",
@@ -287,14 +306,14 @@ export default function PlanningPage() {
                 className={`${planningHeaderQuickIconBtn} h-8 w-8 touch-manipulation`}
                 aria-label="Help"
               >
-                <img src="/logoplan.webp" alt="" className="h-[17px] w-[17px] object-contain" />
+                <PlanningHeaderHelpIcon className="pointer-events-none h-[17px] w-[17px] shrink-0 text-[#06224C]" />
               </button>
               <button
                 type="button"
                 className={`${planningHeaderQuickIconBtn} h-8 w-8 touch-manipulation`}
                 aria-label="Settings"
               >
-                <img src="/logoplan2.webp" alt="" className="h-[17px] w-[17px] object-contain" />
+                <PlanningHeaderSettingsIcon className="pointer-events-none h-[17px] w-[17px] shrink-0 text-[#06224C]" />
               </button>
               <button
                 type="button"
@@ -311,14 +330,14 @@ export default function PlanningPage() {
                 className={`${planningHeaderQuickIconBtn} h-6 w-6`}
                 aria-label="Help"
               >
-                <img src="/logoplan.webp" alt="" className="h-4 w-4 object-contain" />
+                <PlanningHeaderHelpIcon className="pointer-events-none h-4 w-4 shrink-0 text-[#06224C]" />
               </button>
               <button
                 type="button"
                 className={`${planningHeaderQuickIconBtn} h-6 w-6`}
                 aria-label="Settings"
               >
-                <img src="/logoplan2.webp" alt="" className="h-4 w-4 object-contain" />
+                <PlanningHeaderSettingsIcon className="pointer-events-none h-4 w-4 shrink-0 text-[#06224C]" />
               </button>
               <button
                 type="button"
@@ -433,7 +452,7 @@ export default function PlanningPage() {
                 <button
                   type="button"
                   onClick={() => handlePurchasePlan(plans[0])}
-                  className="inline-flex items-center gap-2 rounded-full border-0 bg-gradient-to-r from-[#06224C] to-[#1A5BBC] px-5 py-2.5 text-[11px] font-semibold text-white no-underline shadow-md transition-all duration-200 ease-out hover:-translate-y-0.5 hover:shadow-xl hover:shadow-[#06224C]/45 hover:ring-2 hover:ring-white/55 active:translate-y-0 active:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/90 sm:text-xs"
+                  className="inline-flex items-center gap-2 rounded-full border-0 bg-gradient-to-r from-[#06224C] to-[#1A5BBC] px-5 py-2.5 text-[11px] font-semibold text-white no-underline shadow-md transition-all duration-200 ease-out hover:-translate-y-0.5 hover:shadow-xl hover:shadow-[#06224C]/45 hover:ring-2 hover:ring-white/55 active:translate-y-0 active:shadow-md focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#f2b541] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0b3268] sm:text-xs"
                 >
                   <span>Start Your Free Plan</span>
                   <span className="flex h-5 w-5 shrink-0 items-center justify-center" aria-hidden>
