@@ -846,6 +846,8 @@
         }
       }
       setPlanningNavActive("billing");
+      planningSetView("plans");
+      planningRenderHistory();
     }
 
     function setPlanningNavActive(navId) {
@@ -943,6 +945,119 @@
         { period: "Per year", old: "$4,800", save: "Save 30%", new: "$3,360" }
       ]
     };
+
+    var planningView = "plans";
+    var planningSelectedPlanIndex = 0;
+    var planningInvoiceData = null;
+    var planningHistory = [
+      { date: "Apr 02 2026", invoiceId: "INV-200987", amount: "$39.00", status: "Paid" },
+      { date: "Mar 15 2026", invoiceId: "INV-121289", amount: "$39.00", status: "Paid" },
+      { date: "Feb 08 2026", invoiceId: "INV-100123", amount: "$39.00", status: "Paid" },
+      { date: "Jan 20 2026", invoiceId: "INV-100154", amount: "$39.00", status: "Paid" },
+      { date: "Dec 20 2025", invoiceId: "INV-101164", amount: "$39.00", status: "Paid" },
+      { date: "Dec 10 2025", invoiceId: "INV-100140", amount: "$0.00", status: "Free" },
+      { date: "Nov 20 2025", invoiceId: "INV-100100", amount: "$0.00", status: "Free" },
+      { date: "Oct 08 2025", invoiceId: "INV-100240", amount: "$0.00", status: "Free" }
+    ];
+
+    function planningSetView(view) {
+      planningView = view;
+      var ids = ["planningPlansView", "planningPaymentView", "planningInvoiceView", "planningHistoryView"];
+      ids.forEach(function (id) {
+        var el = document.getElementById(id);
+        if (!el) return;
+        if ((view === "plans" && id === "planningPlansView") ||
+            (view === "payment" && id === "planningPaymentView") ||
+            (view === "invoice" && id === "planningInvoiceView") ||
+            (view === "history" && id === "planningHistoryView")) {
+          el.classList.remove("hidden");
+        } else {
+          el.classList.add("hidden");
+        }
+      });
+    }
+
+    function planningGetActivePrice(index) {
+      var sw = document.getElementById("planningBillingSwitch");
+      var yearly = sw && sw.getAttribute("aria-checked") === "true";
+      var row = (yearly ? PLANNING_PLAN_PRICES.yearly : PLANNING_PLAN_PRICES.monthly)[index] || PLANNING_PLAN_PRICES.monthly[0];
+      return { amount: row.new, period: yearly ? "Yearly" : "Monthly" };
+    }
+
+    function planningOpenPayment(planIndex) {
+      planningSelectedPlanIndex = planIndex || 0;
+      planningSetView("payment");
+    }
+
+    function planningCompletePayment() {
+      var btn = document.getElementById("planningCompletePaymentBtn");
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = "Processing payment...";
+      }
+      window.setTimeout(function () {
+        var p = planningGetActivePrice(planningSelectedPlanIndex);
+        var names = ["Basic", "Business Plan", "Advanced"];
+        var now = new Date();
+        var invoiceId = "INV-" + Math.floor(100000 + Math.random() * 899999);
+        planningInvoiceData = {
+          invoiceId: invoiceId,
+          date: now.toLocaleDateString("en-US", { month: "short", day: "2-digit", year: "numeric" }),
+          planName: names[planningSelectedPlanIndex] + " (" + p.period + ")",
+          amount: p.amount,
+          name: PLANNING_DISPLAY_USER_NAME,
+          email: "srinu@gmail.com",
+          contactNo: "9848xxxx19",
+          address: "Chennai - 636008"
+        };
+        planningHistory.unshift({
+          date: planningInvoiceData.date,
+          invoiceId: planningInvoiceData.invoiceId,
+          amount: planningInvoiceData.amount,
+          status: "Paid"
+        });
+        planningRenderInvoice();
+        planningRenderHistory();
+        if (btn) {
+          btn.disabled = false;
+          btn.textContent = "Complete Payment";
+        }
+        planningSetView("invoice");
+      }, 2400);
+    }
+
+    function planningRenderInvoice() {
+      if (!planningInvoiceData) return;
+      var map = {
+        planningInvoiceId: planningInvoiceData.invoiceId,
+        planningInvoiceDate: planningInvoiceData.date,
+        planningInvoicePlan: planningInvoiceData.planName,
+        planningInvoiceAmount: planningInvoiceData.amount,
+        planningInvoiceName: planningInvoiceData.name,
+        planningInvoiceEmail: planningInvoiceData.email,
+        planningInvoiceContact: planningInvoiceData.contactNo,
+        planningInvoiceAddress: planningInvoiceData.address
+      };
+      Object.keys(map).forEach(function (id) {
+        var el = document.getElementById(id);
+        if (el) el.textContent = map[id];
+      });
+    }
+
+    function planningRenderHistory() {
+      var tbody = document.getElementById("planningHistoryTbody");
+      if (!tbody) return;
+      tbody.innerHTML = planningHistory.map(function (entry) {
+        var badge = entry.status === "Paid" ? "#4f8f43" : "#667085";
+        return "<tr style='border-top:1px solid #e2e8f0'>"
+          + "<td class='px-3 py-3.5'>" + entry.date + "</td>"
+          + "<td class='px-3 py-3.5'>" + entry.invoiceId + "</td>"
+          + "<td class='px-3 py-3.5'>" + entry.amount + "</td>"
+          + "<td class='px-3 py-3.5'><span class='inline-flex min-w-[56px] justify-center rounded-md px-2 py-1 text-[10px] font-bold text-white' style='background:" + badge + "'>" + entry.status + "</span></td>"
+          + "<td class='px-3 py-3.5'><span class='inline-flex h-6 w-7 items-center justify-center rounded-md text-xs font-bold text-white' style='background:#1e7fd8'>↓</span></td>"
+          + "</tr>";
+      }).join("");
+    }
 
     function planningApplyPlanPrices(yearly) {
       var tier = yearly ? "yearly" : "monthly";
@@ -1644,7 +1759,7 @@
           Upgrade Now: Get - 50% Off on Selected Plans
         </div>
 
-        <div class="rounded bg-[#edf3fb] px-5 py-8 sm:px-8 sm:py-10 md:px-10">
+        <div id="planningPlansView" class="rounded bg-[#edf3fb] px-5 py-8 sm:px-8 sm:py-10 md:px-10">
           <div class="mx-auto w-full max-w-5xl">
           <h1 class="text-center text-3xl font-bold text-[#0b3268] sm:text-[44px] sm:leading-tight">Choose the Best Plan for You</h1>
           <p class="mx-auto mt-4 max-w-2xl text-center text-[13px] font-medium leading-relaxed text-[#0f172a] sm:text-sm md:text-base">Create your website for free and upgrade when you're ready.</p>
@@ -1652,7 +1767,7 @@
           <div class="mt-5 flex justify-center sm:mt-6">
             <button
               type="button"
-              onclick="location.hash='notFound'; showPage('notFound')"
+              onclick="planningOpenPayment(0)"
               class="inline-flex items-center gap-2 rounded-full border-0 bg-gradient-to-r from-[#06224C] to-[#1A5BBC] px-5 py-2.5 text-[11px] font-semibold text-white no-underline shadow-md transition-all duration-200 ease-out hover:-translate-y-0.5 hover:shadow-xl hover:shadow-[#06224C]/45 hover:ring-2 hover:ring-white/55 active:translate-y-0 active:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/90 sm:text-xs"
             >
               <span>Start Your Free Plan</span>
@@ -1734,7 +1849,7 @@
                 <li class="flex items-start gap-1.5"><span class="mt-px text-[10px] text-[#0b3268] transition-colors group-hover:text-white" aria-hidden="true">✓</span><span>2 site collaborators</span></li>
               </ul>
               <div class="mt-2 min-h-0 w-full flex-1 shrink-0" aria-hidden="true"></div>
-              <button type="button" onclick="location.hash='notFound'; showPage('notFound')" class="block w-full shrink-0 rounded-full bg-gradient-to-r from-[#06224C] to-[#1A5BBC] py-2 text-center text-sm font-semibold text-white shadow-sm transition-colors transition-opacity duration-200 group-hover:bg-none group-hover:bg-white group-hover:text-[#154fa2] group-hover:opacity-100 hover:bg-none hover:bg-white hover:text-[#154fa2]">
+              <button type="button" onclick="planningOpenPayment(0)" class="block w-full shrink-0 rounded-full bg-gradient-to-r from-[#06224C] to-[#1A5BBC] py-2 text-center text-sm font-semibold text-white shadow-sm transition-colors transition-opacity duration-200 group-hover:bg-none group-hover:bg-white group-hover:text-[#154fa2] group-hover:opacity-100 hover:bg-none hover:bg-white hover:text-[#154fa2]">
                 Purchase Plan
               </button>
             </article>
@@ -1768,7 +1883,7 @@
                 <li class="flex items-start gap-1.5"><span class="mt-px text-[10px] text-[#0b3268] transition-colors group-hover:text-white" aria-hidden="true">✓</span><span>10 site collaborators</span></li>
               </ul>
               <div class="mt-2 min-h-0 w-full flex-1 shrink-0" aria-hidden="true"></div>
-              <button type="button" onclick="location.hash='notFound'; showPage('notFound')" class="block w-full shrink-0 rounded-full bg-gradient-to-r from-[#06224C] to-[#1A5BBC] py-2 text-center text-sm font-semibold text-white shadow-sm transition-colors transition-opacity duration-200 group-hover:bg-none group-hover:bg-white group-hover:text-[#154fa2] group-hover:opacity-100 hover:bg-none hover:bg-white hover:text-[#154fa2]">
+              <button type="button" onclick="planningOpenPayment(1)" class="block w-full shrink-0 rounded-full bg-gradient-to-r from-[#06224C] to-[#1A5BBC] py-2 text-center text-sm font-semibold text-white shadow-sm transition-colors transition-opacity duration-200 group-hover:bg-none group-hover:bg-white group-hover:text-[#154fa2] group-hover:opacity-100 hover:bg-none hover:bg-white hover:text-[#154fa2]">
                 Purchase Plan
               </button>
             </article>
@@ -1799,10 +1914,85 @@
                 <li class="flex items-start gap-1.5"><span class="mt-px text-[10px] text-[#0b3268] transition-colors group-hover:text-white" aria-hidden="true">✓</span><span>5 site collaborators</span></li>
               </ul>
               <div class="mt-2 min-h-0 w-full flex-1 shrink-0" aria-hidden="true"></div>
-              <button type="button" onclick="location.hash='notFound'; showPage('notFound')" class="block w-full shrink-0 rounded-full bg-gradient-to-r from-[#06224C] to-[#1A5BBC] py-2 text-center text-sm font-semibold text-white shadow-sm transition-colors transition-opacity duration-200 group-hover:bg-none group-hover:bg-white group-hover:text-[#154fa2] group-hover:opacity-100 hover:bg-none hover:bg-white hover:text-[#154fa2]">
+              <button type="button" onclick="planningOpenPayment(2)" class="block w-full shrink-0 rounded-full bg-gradient-to-r from-[#06224C] to-[#1A5BBC] py-2 text-center text-sm font-semibold text-white shadow-sm transition-colors transition-opacity duration-200 group-hover:bg-none group-hover:bg-white group-hover:text-[#154fa2] group-hover:opacity-100 hover:bg-none hover:bg-white hover:text-[#154fa2]">
                 Purchase Plan
               </button>
             </article>
+          </div>
+        </div>
+
+        <div id="planningPaymentView" class="hidden mx-auto w-full max-w-3xl overflow-hidden rounded bg-gradient-to-b from-[#225db5] to-[#0a2a5f] text-white shadow-sm">
+          <div class="border-b border-white/20 px-6 py-8 text-center">
+            <h2 class="text-3xl font-bold">Secure Payment</h2>
+            <p class="mt-2 text-sm text-white/85">Enter your payment details to Upgrade</p>
+          </div>
+          <div class="mx-auto w-full max-w-md px-6 py-8">
+            <input id="planningCardNumber" placeholder="Card Number" class="mb-4 block w-full rounded border border-white/40 bg-transparent px-3 py-2 text-sm text-white placeholder:text-white/70 focus:outline-none" />
+            <div class="mb-6 grid grid-cols-2 gap-2">
+              <input id="planningCardExpiry" placeholder="MM/YY" class="rounded border border-white/40 bg-transparent px-3 py-2 text-sm text-white placeholder:text-white/70 focus:outline-none" />
+              <input id="planningCardCvv" placeholder="Cvv" class="rounded border border-white/40 bg-transparent px-3 py-2 text-sm text-white placeholder:text-white/70 focus:outline-none" />
+            </div>
+            <div class="space-y-4 text-sm">
+              <label class="flex items-center gap-2"><input type="radio" name="planningPm" checked /> Paypal</label>
+              <label class="flex items-center gap-2"><input type="radio" name="planningPm" /> Credit / Debit Card</label>
+              <label class="flex items-center gap-2"><input type="radio" name="planningPm" /> Net Banking</label>
+              <label class="flex items-center gap-2"><input type="radio" name="planningPm" /> Online Payment ( g-pay / Phone pay )</label>
+            </div>
+          </div>
+          <div class="border-t border-white/20 px-6 py-6 text-center">
+            <button id="planningCompletePaymentBtn" type="button" onclick="planningCompletePayment()" class="inline-flex min-w-[180px] items-center justify-center rounded bg-white px-6 py-2 text-sm font-semibold text-[#1f2937]">
+              Complete Payment
+            </button>
+          </div>
+        </div>
+
+        <div id="planningInvoiceView" class="hidden mx-auto w-full max-w-4xl overflow-hidden rounded-[8px] bg-gradient-to-b from-[#2a66be] to-[#0b2a5c] text-white shadow-[0_2px_0_rgba(0,0,0,0.25)]">
+          <div class="border-b border-white/15 px-8 py-6 text-center">
+            <h2 class="text-[36px] font-bold leading-tight">Invoice Details</h2>
+          </div>
+          <div class="space-y-8 px-8 py-7">
+            <div class="mx-auto w-full max-w-2xl space-y-4 text-[15px]">
+              <div style="display:grid;grid-template-columns:140px 24px 1fr;align-items:center;"><span>Invoice ID</span><span>:</span><span id="planningInvoiceId">INV-000000</span></div>
+              <div style="display:grid;grid-template-columns:140px 24px 1fr;align-items:center;"><span>Date</span><span>:</span><span id="planningInvoiceDate">Apr 08, 2026</span></div>
+              <div style="display:grid;grid-template-columns:140px 24px 1fr;align-items:center;"><span>Plan</span><span>:</span><span id="planningInvoicePlan">Basic (Monthly)</span></div>
+              <div style="display:grid;grid-template-columns:140px 24px 1fr;align-items:center;"><span>Amount</span><span>:</span><span id="planningInvoiceAmount">$40</span></div>
+            </div>
+            <div class="border-t border-white/15 pt-6">
+              <h3 class="mx-auto mb-5 w-full max-w-2xl text-[30px] font-semibold">Billing Information</h3>
+              <div class="mx-auto w-full max-w-2xl space-y-4 text-[15px]">
+                <div style="display:grid;grid-template-columns:140px 24px 1fr;align-items:center;"><span>Name</span><span>:</span><span id="planningInvoiceName">Pentakota Srinivas</span></div>
+                <div style="display:grid;grid-template-columns:140px 24px 1fr;align-items:center;"><span>Email</span><span>:</span><span id="planningInvoiceEmail">srinu@gmail.com</span></div>
+                <div style="display:grid;grid-template-columns:140px 24px 1fr;align-items:center;"><span>Contact No</span><span>:</span><span id="planningInvoiceContact">9848xxxx19</span></div>
+                <div style="display:grid;grid-template-columns:140px 24px 1fr;align-items:center;"><span>Address</span><span>:</span><span id="planningInvoiceAddress">Chennai - 636008</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="border-t border-white/15 px-8 py-6 text-center">
+            <button type="button" onclick="planningSetView('history')" class="inline-flex items-center gap-2 rounded-md bg-white px-6 py-2.5 text-[15px] font-semibold text-[#1f2937]"><span aria-hidden>↓</span>Download Invoice</button>
+          </div>
+        </div>
+
+        <div id="planningHistoryView" class="hidden mx-auto my-6 w-full p-4 text-white" style="max-width:560px;border-radius:8px;background:linear-gradient(180deg,#2f6dca 0%,#0a2a5f 100%);box-shadow:0 2px 0 rgba(0,0,0,0.28);border:2px solid #8aa0c1;">
+          <div class="mx-auto mb-4 flex w-full max-w-[470px] items-center justify-between pb-4" style="border-bottom:1px solid rgba(255,255,255,0.17);">
+            <h2 class="text-[34px] font-bold leading-tight tracking-[0.2px]">Billing History</h2>
+            <div class="flex items-center overflow-hidden rounded-md bg-white" style="color:#1f2937;font-size:10px;line-height:1.2;box-shadow:0 0 0 1px rgba(15,23,42,0.08);">
+              <button type="button" style="border-right:1px solid #e2e8f0;padding:7px 10px;color:#1f2937;">All Invoices</button>
+              <button type="button" style="padding:7px 10px;color:#1f2937;">This Year ▾</button>
+            </div>
+          </div>
+          <div class="mx-auto w-full max-w-[470px] overflow-x-auto rounded-md bg-white" style="box-shadow:inset 0 0 0 1px rgba(15,23,42,0.08);">
+            <table class="w-full min-w-[470px] text-left" style="font-size:10.5px;color:#0f172a;">
+              <thead class="bg-[#f3f4f6] text-[11px] font-semibold text-[#1f2937]" style="border-bottom:2px solid #d1d5db;">
+                <tr>
+                  <th class="px-3 py-3.5">Date</th>
+                  <th class="px-3 py-3.5">Invoice ID</th>
+                  <th class="px-3 py-3.5">Amount</th>
+                  <th class="px-3 py-3.5">Status</th>
+                  <th class="px-3 py-3.5">Download</th>
+                </tr>
+              </thead>
+              <tbody id="planningHistoryTbody"></tbody>
+            </table>
           </div>
         </div>
       </section>

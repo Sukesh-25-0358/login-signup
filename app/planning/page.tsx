@@ -112,12 +112,53 @@ const plans = [
   },
 ];
 
+type Plan = (typeof plans)[number];
+type PlanningView = "plans" | "payment" | "invoice" | "history";
+
+type BillingHistoryEntry = {
+  date: string;
+  invoiceId: string;
+  amount: string;
+  status: "Paid" | "Free";
+};
+
+type InvoiceData = {
+  invoiceId: string;
+  date: string;
+  planName: string;
+  amount: string;
+  name: string;
+  email: string;
+  contactNo: string;
+  address: string;
+};
+
+const DEFAULT_BILLING_HISTORY: BillingHistoryEntry[] = [
+  { date: "Apr 02 2026", invoiceId: "INV-200987", amount: "$39.00", status: "Paid" },
+  { date: "Mar 15 2026", invoiceId: "INV-121289", amount: "$39.00", status: "Paid" },
+  { date: "Feb 08 2026", invoiceId: "INV-100123", amount: "$39.00", status: "Paid" },
+  { date: "Jan 20 2026", invoiceId: "INV-100154", amount: "$39.00", status: "Paid" },
+  { date: "Dec 20 2025", invoiceId: "INV-101164", amount: "$39.00", status: "Paid" },
+  { date: "Dec 10 2025", invoiceId: "INV-100140", amount: "$0.00", status: "Free" },
+  { date: "Nov 20 2025", invoiceId: "INV-100100", amount: "$0.00", status: "Free" },
+  { date: "Oct 08 2025", invoiceId: "INV-100240", amount: "$0.00", status: "Free" },
+];
+
 export default function PlanningPage() {
   const router = useRouter();
   const [activeNav, setActiveNav] = useState<NavId>("billing");
   const [profileOpen, setProfileOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [billingYearly, setBillingYearly] = useState(false);
+  const [planningView, setPlanningView] = useState<PlanningView>("plans");
+  const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
+  const [paymentLoading, setPaymentLoading] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState("card");
+  const [cardNumber, setCardNumber] = useState("");
+  const [cardExpiry, setCardExpiry] = useState("");
+  const [cardCvv, setCardCvv] = useState("");
+  const [invoiceData, setInvoiceData] = useState<InvoiceData | null>(null);
+  const [billingHistory, setBillingHistory] = useState<BillingHistoryEntry[]>(DEFAULT_BILLING_HISTORY);
   const plansSectionRef = useRef<HTMLElement>(null);
   const profileWrapRef = useRef<HTMLDivElement>(null);
 
@@ -141,6 +182,53 @@ export default function PlanningPage() {
     window.setTimeout(() => {
       router.push("/page-not-found");
     }, 140);
+  }
+
+  function getActivePrice(plan: Plan) {
+    return {
+      oldPrice: billingYearly ? plan.yearlyOldPrice : plan.oldPrice,
+      newPrice: billingYearly ? plan.yearlyNewPrice : plan.newPrice,
+      saveText: billingYearly ? plan.yearlySaveText : plan.saveText,
+      period: billingYearly ? "Per year" : "Per month",
+    };
+  }
+
+  function handlePurchasePlan(plan: Plan) {
+    setSelectedPlan(plan);
+    setPlanningView("payment");
+    setPaymentLoading(false);
+  }
+
+  function handleCompletePayment() {
+    if (!selectedPlan) return;
+    setPaymentLoading(true);
+    window.setTimeout(() => {
+      const now = new Date();
+      const invoiceId = `INV-${Math.floor(100000 + Math.random() * 899999)}`;
+      const active = getActivePrice(selectedPlan);
+      const createdInvoice: InvoiceData = {
+        invoiceId,
+        date: now.toLocaleDateString("en-US", { month: "short", day: "2-digit", year: "numeric" }),
+        planName: `${selectedPlan.name} ${billingYearly ? "(Yearly)" : "(Monthly)"}`,
+        amount: active.newPrice,
+        name: PLANNING_DISPLAY_USER_NAME,
+        email: "srinu@gmail.com",
+        contactNo: "9848xxxx19",
+        address: "Chennai - 636008",
+      };
+      setInvoiceData(createdInvoice);
+      setBillingHistory((prev) => [
+        {
+          date: createdInvoice.date,
+          invoiceId: createdInvoice.invoiceId,
+          amount: createdInvoice.amount,
+          status: "Paid",
+        },
+        ...prev,
+      ]);
+      setPaymentLoading(false);
+      setPlanningView("invoice");
+    }, 2400);
   }
 
   return (
@@ -331,6 +419,7 @@ export default function PlanningPage() {
               Upgrade Now: Get - 50% Off on Selected Plans
             </div>
 
+            {planningView === "plans" && (
             <div className="rounded bg-[#edf3fb] px-5 py-8 sm:px-8 sm:py-10 md:px-10">
               <div className="mx-auto w-full max-w-5xl">
               <h1 className="text-center text-3xl font-bold text-[#0b3268] sm:text-[44px] sm:leading-tight">
@@ -341,8 +430,9 @@ export default function PlanningPage() {
               </p>
 
               <div className="mt-5 flex justify-center sm:mt-6">
-                <Link
-                  href="/page-not-found"
+                <button
+                  type="button"
+                  onClick={() => handlePurchasePlan(plans[0])}
                   className="inline-flex items-center gap-2 rounded-full border-0 bg-gradient-to-r from-[#06224C] to-[#1A5BBC] px-5 py-2.5 text-[11px] font-semibold text-white no-underline shadow-md transition-all duration-200 ease-out hover:-translate-y-0.5 hover:shadow-xl hover:shadow-[#06224C]/45 hover:ring-2 hover:ring-white/55 active:translate-y-0 active:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/90 sm:text-xs"
                 >
                   <span>Start Your Free Plan</span>
@@ -372,7 +462,7 @@ export default function PlanningPage() {
                       />
                     </svg>
                   </span>
-                </Link>
+                </button>
               </div>
 
               <div className="mt-8 w-full pl-3 sm:pl-5 md:pl-8 lg:pl-10">
@@ -480,16 +570,197 @@ export default function PlanningPage() {
 
                     <div className="mt-2 min-h-0 w-full flex-1 shrink-0" aria-hidden />
 
-                    <Link
-                      href="/page-not-found"
+                    <button
+                      type="button"
+                      onClick={() => handlePurchasePlan(plan)}
                       className="block w-full shrink-0 rounded-full bg-gradient-to-r from-[#06224C] to-[#1A5BBC] py-2 text-center text-sm font-semibold text-white shadow-sm transition-colors transition-opacity duration-200 group-hover:bg-none group-hover:bg-white group-hover:text-[#154fa2] group-hover:opacity-100 hover:bg-none hover:bg-white hover:text-[#154fa2]"
                     >
                       Purchase Plan
-                    </Link>
+                    </button>
                   </article>
                 ))}
               </div>
             </div>
+            )}
+
+            {planningView === "payment" && selectedPlan && (
+              <div
+                className="mx-auto w-full text-white"
+                style={{
+                  maxWidth: 740,
+                  borderRadius: 8,
+                  overflow: "hidden",
+                  background: "linear-gradient(180deg, #2b66be 0%, #0a2a5f 100%)",
+                  boxShadow: "0 2px 0 rgba(0,0,0,0.2)",
+                }}
+              >
+                <div className="border-b border-white/20 px-6 py-8 text-center">
+                  <h2 className="text-3xl font-bold">Secure Payment</h2>
+                  <p className="mt-2 text-sm text-white/85">Enter your payment details to Upgrade</p>
+                </div>
+                <div className="mx-auto w-full px-6 py-8" style={{ maxWidth: 430 }}>
+                  <input
+                    value={cardNumber}
+                    onChange={(e) => setCardNumber(e.target.value)}
+                    placeholder="Card Number"
+                    className="mb-4 block w-full rounded border border-white/40 bg-transparent px-3 py-2 text-sm text-white placeholder:text-white/70 focus:outline-none"
+                    style={{ width: "100%" }}
+                  />
+                  <div className="mb-6 grid grid-cols-2 gap-2" style={{ width: "100%" }}>
+                    <input
+                      value={cardExpiry}
+                      onChange={(e) => setCardExpiry(e.target.value)}
+                      placeholder="MM/YY"
+                      className="rounded border border-white/40 bg-transparent px-3 py-2 text-sm text-white placeholder:text-white/70 focus:outline-none"
+                    />
+                    <input
+                      value={cardCvv}
+                      onChange={(e) => setCardCvv(e.target.value)}
+                      placeholder="Cvv"
+                      className="rounded border border-white/40 bg-transparent px-3 py-2 text-sm text-white placeholder:text-white/70 focus:outline-none"
+                    />
+                  </div>
+
+                  <div className="space-y-4 text-sm">
+                    <label className="flex items-center gap-2">
+                      <input type="radio" name="pm" checked={paymentMethod === "paypal"} onChange={() => setPaymentMethod("paypal")} />
+                      Paypal
+                    </label>
+                    <label className="flex items-center gap-2">
+                      <input type="radio" name="pm" checked={paymentMethod === "card"} onChange={() => setPaymentMethod("card")} />
+                      Credit / Debit Card
+                    </label>
+                    <label className="flex items-center gap-2">
+                      <input type="radio" name="pm" checked={paymentMethod === "netbanking"} onChange={() => setPaymentMethod("netbanking")} />
+                      Net Banking
+                    </label>
+                    <label className="flex items-center gap-2">
+                      <input type="radio" name="pm" checked={paymentMethod === "online"} onChange={() => setPaymentMethod("online")} />
+                      Online Payment ( g-pay / Phone pay )
+                    </label>
+                  </div>
+                </div>
+                <div className="border-t border-white/20 px-6 py-6 text-center">
+                  <button
+                    type="button"
+                    onClick={handleCompletePayment}
+                    disabled={paymentLoading}
+                    className="inline-flex min-w-[180px] items-center justify-center rounded bg-white px-6 py-2 text-sm font-semibold text-[#1f2937] disabled:opacity-70"
+                  >
+                    {paymentLoading ? "Processing payment..." : "Complete Payment"}
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {planningView === "invoice" && invoiceData && (
+              <div
+                className="mx-auto w-full text-white"
+                style={{
+                  maxWidth: 900,
+                  borderRadius: 8,
+                  overflow: "hidden",
+                  background: "linear-gradient(180deg, #2a66be 0%, #0b2a5c 100%)",
+                  boxShadow: "0 2px 0 rgba(0,0,0,0.25)",
+                }}
+              >
+                <div className="px-8 py-6 text-center" style={{ borderBottom: "1px solid rgba(255,255,255,0.15)" }}>
+                  <h2 className="text-[36px] font-bold leading-tight">Invoice Details</h2>
+                </div>
+                <div className="space-y-8 px-8 py-7">
+                  <div className="mx-auto w-full max-w-2xl space-y-4 text-[15px]">
+                    <div style={{ display: "grid", gridTemplateColumns: "140px 24px 1fr", alignItems: "center" }}><span>Invoice ID</span><span>:</span><span>{invoiceData.invoiceId}</span></div>
+                    <div style={{ display: "grid", gridTemplateColumns: "140px 24px 1fr", alignItems: "center" }}><span>Date</span><span>:</span><span>{invoiceData.date}</span></div>
+                    <div style={{ display: "grid", gridTemplateColumns: "140px 24px 1fr", alignItems: "center" }}><span>Plan</span><span>:</span><span>{invoiceData.planName}</span></div>
+                    <div style={{ display: "grid", gridTemplateColumns: "140px 24px 1fr", alignItems: "center" }}><span>Amount</span><span>:</span><span>{invoiceData.amount}</span></div>
+                  </div>
+                  <div className="pt-6" style={{ borderTop: "1px solid rgba(255,255,255,0.15)" }}>
+                    <h3 className="mx-auto mb-5 w-full max-w-2xl text-[30px] font-semibold">Billing Information</h3>
+                    <div className="mx-auto w-full max-w-2xl space-y-4 text-[15px]">
+                      <div style={{ display: "grid", gridTemplateColumns: "140px 24px 1fr", alignItems: "center" }}><span>Name</span><span>:</span><span>{invoiceData.name}</span></div>
+                      <div style={{ display: "grid", gridTemplateColumns: "140px 24px 1fr", alignItems: "center" }}><span>Email</span><span>:</span><span>{invoiceData.email}</span></div>
+                      <div style={{ display: "grid", gridTemplateColumns: "140px 24px 1fr", alignItems: "center" }}><span>Contact No</span><span>:</span><span>{invoiceData.contactNo}</span></div>
+                      <div style={{ display: "grid", gridTemplateColumns: "140px 24px 1fr", alignItems: "center" }}><span>Address</span><span>:</span><span>{invoiceData.address}</span></div>
+                    </div>
+                  </div>
+                </div>
+                <div className="px-8 py-6 text-center" style={{ borderTop: "1px solid rgba(255,255,255,0.15)" }}>
+                  <button
+                    type="button"
+                    onClick={() => setPlanningView("history")}
+                    className="inline-flex items-center gap-2 rounded-md bg-white px-6 py-2.5 text-[15px] font-semibold text-[#1f2937]"
+                  >
+                    <span aria-hidden>↓</span>
+                    Download Invoice
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {planningView === "history" && (
+              <div
+                className="mx-auto my-6 w-full p-4 text-white"
+                style={{
+                  maxWidth: 560,
+                  borderRadius: 8,
+                  background: "linear-gradient(180deg, #2f6dca 0%, #0a2a5f 100%)",
+                  boxShadow: "0 2px 0 rgba(0,0,0,0.28)",
+                  border: "2px solid #8aa0c1",
+                }}
+              >
+                <div className="mx-auto mb-4 flex w-full max-w-[470px] items-center justify-between pb-4" style={{ borderBottom: "1px solid rgba(255,255,255,0.17)" }}>
+                  <h2 className="text-[34px] font-bold leading-tight tracking-[0.2px]">Billing History</h2>
+                  <div
+                    className="flex items-center overflow-hidden rounded-md bg-white"
+                    style={{ color: "#1f2937", fontSize: 10, lineHeight: 1.2, boxShadow: "0 0 0 1px rgba(15,23,42,0.08)" }}
+                  >
+                    <button type="button" style={{ borderRight: "1px solid #e2e8f0", padding: "7px 10px", color: "#1f2937" }}>All Invoices</button>
+                    <button type="button" style={{ padding: "7px 10px", color: "#1f2937" }}>This Year ▾</button>
+                  </div>
+                </div>
+                <div className="mx-auto w-full max-w-[470px] overflow-x-auto rounded-md bg-white" style={{ boxShadow: "inset 0 0 0 1px rgba(15,23,42,0.08)" }}>
+                  <table className="w-full min-w-[470px] text-left" style={{ fontSize: 10.5, color: "#0f172a" }}>
+                    <thead className="bg-[#f3f4f6] text-[11px] font-semibold text-[#1f2937]" style={{ borderBottom: "2px solid #d1d5db" }}>
+                      <tr>
+                        <th className="px-3 py-3.5">Date</th>
+                        <th className="px-3 py-3.5">Invoice ID</th>
+                        <th className="px-3 py-3.5">Amount</th>
+                        <th className="px-3 py-3.5">Status</th>
+                        <th className="px-3 py-3.5">Download</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {billingHistory.map((entry) => (
+                        <tr key={`${entry.invoiceId}-${entry.date}`} style={{ borderTop: "1px solid #e2e8f0" }}>
+                          <td className="px-3 py-3.5">{entry.date}</td>
+                          <td className="px-3 py-3.5">{entry.invoiceId}</td>
+                          <td className="px-3 py-3.5">{entry.amount}</td>
+                          <td className="px-3 py-3.5">
+                            <span
+                              className="inline-flex min-w-[56px] justify-center rounded-md px-2 py-1 text-[10px] font-bold text-white"
+                              style={{ backgroundColor: entry.status === "Paid" ? "#4f8f43" : "#667085" }}
+                            >
+                              {entry.status}
+                            </span>
+                          </td>
+                          <td className="px-3 py-3.5">
+                            <span
+                              className="inline-flex h-6 w-7 items-center justify-center rounded-md text-xs font-bold text-white"
+                              style={{ backgroundColor: "#1e7fd8" }}
+                              aria-hidden
+                            >
+                              <svg width="12" height="12" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M10 4v8m0 0l-3-3m3 3l3-3M5 14h10" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                              </svg>
+                            </span>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
           </section>
         </div>
       </div>
