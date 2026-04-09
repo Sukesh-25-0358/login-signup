@@ -116,7 +116,12 @@
       max-width: 740px;
       min-width: 0;
     }
-    #planningInvoiceView,
+    #planningInvoiceView {
+      box-sizing: border-box;
+      width: 100%;
+      max-width: 740px;
+      min-width: 0;
+    }
     #planningHistoryView {
       box-sizing: border-box;
       width: 100%;
@@ -2017,7 +2022,7 @@
           </div>
         </div>
 
-        <div id="planningInvoiceView" class="hidden mx-auto w-full max-w-4xl overflow-hidden rounded-[8px] bg-gradient-to-b from-[#2a66be] to-[#0b2a5c] text-white shadow-[0_2px_0_rgba(0,0,0,0.25)]">
+        <div id="planningInvoiceView" class="hidden mx-auto w-full text-white" style="max-width:740px;border-radius:8px;overflow:hidden;background:linear-gradient(180deg,#2a66be 0%,#0b2a5c 100%);box-shadow:0 2px 0 rgba(0,0,0,0.25);">
           <div class="border-b border-white/15 px-8 py-6 text-center">
             <h2 class="text-[36px] font-bold leading-tight">Invoice Details</h2>
           </div>
