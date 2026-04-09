@@ -223,6 +223,7 @@ export default function PlanningPage() {
   const [planningView, setPlanningView] = useState<PlanningView>("plans");
   const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
   const [paymentLoading, setPaymentLoading] = useState(false);
+  const [isFreeCheckout, setIsFreeCheckout] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethodId>("card");
   const [paypalEmail, setPaypalEmail] = useState("");
   const [cardNumber, setCardNumber] = useState("");
@@ -272,10 +273,11 @@ export default function PlanningPage() {
     };
   }
 
-  function handlePurchasePlan(plan: Plan) {
+  function handlePurchasePlan(plan: Plan, freeCheckout = false) {
     setSelectedPlan(plan);
     setPlanningView("payment");
     setPaymentLoading(false);
+    setIsFreeCheckout(freeCheckout);
     setPaymentMethod("card");
     setPaypalEmail("");
     setCardNumber("");
@@ -290,6 +292,7 @@ export default function PlanningPage() {
     setPlanningView("plans");
     setSelectedPlan(null);
     setPaymentLoading(false);
+    setIsFreeCheckout(false);
   }
 
   function paymentSubtitle() {
@@ -314,11 +317,12 @@ export default function PlanningPage() {
       const now = new Date();
       const invoiceId = `INV-${Math.floor(100000 + Math.random() * 899999)}`;
       const active = getActivePrice(selectedPlan);
+      const finalAmount = isFreeCheckout ? "$0" : active.newPrice;
       const createdInvoice: InvoiceData = {
         invoiceId,
         date: now.toLocaleDateString("en-US", { month: "short", day: "2-digit", year: "numeric" }),
-        planName: `${selectedPlan.name} ${billingYearly ? "(Yearly)" : "(Monthly)"}`,
-        amount: active.newPrice,
+        planName: `${selectedPlan.name} ${isFreeCheckout ? "(Free)" : billingYearly ? "(Yearly)" : "(Monthly)"}`,
+        amount: finalAmount,
         name: PLANNING_DISPLAY_USER_NAME,
         email: "srinu@gmail.com",
         contactNo: "9848xxxx19",
@@ -330,13 +334,14 @@ export default function PlanningPage() {
           date: createdInvoice.date,
           invoiceId: createdInvoice.invoiceId,
           amount: createdInvoice.amount,
-          status: "Paid",
+          status: isFreeCheckout ? "Free" : "Paid",
         };
         const next = [row, ...prev.filter((e) => e.invoiceId !== row.invoiceId)];
         saveBillingHistoryToStorage(next);
         return next;
       });
       setPaymentLoading(false);
+      setIsFreeCheckout(false);
       setPlanningView("invoice");
     }, 2400);
   }
@@ -542,7 +547,7 @@ export default function PlanningPage() {
               <div className="mt-5 flex justify-center sm:mt-6">
                 <button
                   type="button"
-                  onClick={() => handlePurchasePlan(plans[0])}
+                  onClick={() => handlePurchasePlan(plans[0], true)}
                   className="inline-flex items-center gap-2 rounded-full border-0 bg-gradient-to-r from-[#06224C] to-[#1A5BBC] px-5 py-2.5 text-[11px] font-semibold text-white no-underline shadow-md transition-all duration-200 ease-out hover:-translate-y-0.5 hover:shadow-xl hover:shadow-[#06224C]/45 hover:ring-2 hover:ring-white/55 active:translate-y-0 active:shadow-md focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#f2b541] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0b3268] sm:text-xs"
                 >
                   <span>Start Your Free Plan</span>

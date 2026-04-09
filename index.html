@@ -922,7 +922,7 @@
           btn.setAttribute("aria-current", "page");
           if (mobileBtn) {
             mobileBtn.classList.add("border-[#f0e6d4]", "bg-white/10", "text-white");
-            mobileBtn.classList.remove("border-white/25", "text-white");
+            mobileBtn.classList.remove("border-white/25");
           }
         } else {
           btn.classList.remove("planning-nav-active");
@@ -1010,6 +1010,7 @@
 
     var planningView = "plans";
     var planningSelectedPlanIndex = 0;
+    var planningIsFreeCheckout = false;
     var planningInvoiceData = null;
 
     var PLANNING_BILLING_HISTORY_KEY = "stacklyPlanningBillingHistory";
@@ -1156,8 +1157,9 @@
       planningSyncPaymentMethodUI();
     }
 
-    function planningOpenPayment(planIndex) {
+    function planningOpenPayment(planIndex, freeCheckout) {
       planningSelectedPlanIndex = planIndex || 0;
+      planningIsFreeCheckout = !!freeCheckout;
       planningResetPaymentForm();
       planningSetView("payment");
     }
@@ -1173,11 +1175,12 @@
         var names = ["Basic", "Business Plan", "Advanced"];
         var now = new Date();
         var invoiceId = "INV-" + Math.floor(100000 + Math.random() * 899999);
+        var finalAmount = planningIsFreeCheckout ? "$0" : p.amount;
         planningInvoiceData = {
           invoiceId: invoiceId,
           date: now.toLocaleDateString("en-US", { month: "short", day: "2-digit", year: "numeric" }),
-          planName: names[planningSelectedPlanIndex] + " (" + p.period + ")",
-          amount: p.amount,
+          planName: names[planningSelectedPlanIndex] + " (" + (planningIsFreeCheckout ? "Free" : p.period) + ")",
+          amount: finalAmount,
           name: PLANNING_DISPLAY_USER_NAME,
           email: "srinu@gmail.com",
           contactNo: "9848xxxx19",
@@ -1187,7 +1190,7 @@
           date: planningInvoiceData.date,
           invoiceId: planningInvoiceData.invoiceId,
           amount: planningInvoiceData.amount,
-          status: "Paid"
+          status: planningIsFreeCheckout ? "Free" : "Paid"
         };
         planningHistory = [newRow].concat(
           planningHistory.filter(function (e) {
@@ -1201,6 +1204,7 @@
           btn.disabled = false;
           btn.textContent = "Complete Payment";
         }
+        planningIsFreeCheckout = false;
         planningSetView("invoice");
       }, 2400);
     }
@@ -1960,7 +1964,7 @@
           <div class="mt-5 flex justify-center sm:mt-6">
             <button
               type="button"
-              onclick="planningOpenPayment(0)"
+              onclick="planningOpenPayment(0, true)"
               class="inline-flex items-center gap-2 rounded-full border-0 bg-gradient-to-r from-[#06224C] to-[#1A5BBC] px-5 py-2.5 text-[11px] font-semibold text-white no-underline shadow-md transition-all duration-200 ease-out hover:-translate-y-0.5 hover:shadow-xl hover:shadow-[#06224C]/45 hover:ring-2 hover:ring-white/55 active:translate-y-0 active:shadow-md focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#f2b541] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0b3268] sm:text-xs"
             >
               <span>Start Your Free Plan</span>
