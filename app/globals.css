@@ -68,7 +68,7 @@ body:has(> main.planning-page) {
 }
 
 /* Desktop zoom fallback (roughly 150-200%): show hamburger + compact menu for planning header */
-@media (hover: hover) and (pointer: fine) and (max-width: 1024px) and (min-resolution: 1.5dppx) and (max-resolution: 2.1dppx) {
+@media (hover: hover) and (pointer: fine) and (max-width: 1150px) and (min-resolution: 1.4dppx) {
   .planning-zoom-show-hamburger {
     display: inline-flex !important;
   }

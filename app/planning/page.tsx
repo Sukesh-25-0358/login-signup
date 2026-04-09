@@ -80,7 +80,7 @@ const plans = [
     newPrice: "$40",
     saveText: "Save 50%",
     yearlyOldPrice: "$960",
-    yearlyNewPrice: "$400",
+    yearlyNewPrice: "$403",
     yearlySaveText: "Save 58%",
     features: [
       "Free domain for 1 year",
@@ -96,7 +96,7 @@ const plans = [
     newPrice: "$150",
     saveText: "Save 50%",
     yearlyOldPrice: "$3,600",
-    yearlyNewPrice: "$1,500",
+    yearlyNewPrice: "$1,512",
     yearlySaveText: "Save 58%",
     isRecommended: true,
     features: [
@@ -594,24 +594,20 @@ export default function PlanningPage() {
 
               <div className="mt-8 flex w-full justify-center px-3 sm:px-4">
                 <div className="flex w-full max-w-xl items-center gap-3 sm:gap-5">
-                  <button
-                    type="button"
-                    onClick={() => setBillingYearly(false)}
-                    className={`inline-flex min-h-9 min-w-0 flex-1 cursor-pointer items-center justify-end border-0 bg-transparent py-1.5 pl-2 pr-1 text-right text-sm leading-tight transition-colors sm:pr-2 ${
-                      !billingYearly
-                        ? "font-bold text-[#0c1e36]"
-                        : "font-medium text-[#3d4f63]"
+                  <span
+                    className={`inline-flex min-h-9 min-w-0 flex-1 select-none items-center justify-end py-1.5 pl-2 pr-1 text-right text-sm leading-tight sm:pr-2 ${
+                      !billingYearly ? "font-bold text-[#0c1e36]" : "font-medium text-[#3d4f63]"
                     }`}
                   >
                     Bill Monthly
-                  </button>
+                  </span>
                   <button
                     type="button"
                     role="switch"
                     aria-checked={billingYearly}
                     aria-label="Toggle monthly or yearly billing"
                     onClick={() => setBillingYearly((v) => !v)}
-                    className="relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center self-center rounded-full border border-[#94a3b8] bg-white px-0.5 align-middle"
+                    className="relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center self-center rounded-full border border-[#94a3b8] bg-white px-0.5 align-middle focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#06224C]/40 focus-visible:ring-offset-2"
                   >
                     <span
                       className={`pointer-events-none absolute left-0.5 top-1/2 h-4 w-4 -translate-y-1/2 rounded-full bg-[#06224C] shadow-sm transition-transform duration-200 ${
@@ -619,17 +615,13 @@ export default function PlanningPage() {
                       }`}
                     />
                   </button>
-                  <button
-                    type="button"
-                    onClick={() => setBillingYearly(true)}
-                    className={`inline-flex min-h-9 min-w-0 flex-1 cursor-pointer items-center justify-start border-0 bg-transparent py-1.5 pl-1 pr-2 text-left text-sm leading-tight transition-colors sm:pl-2 ${
-                      billingYearly
-                        ? "font-bold text-[#0c1e36]"
-                        : "font-medium text-[#3d4f63]"
+                  <span
+                    className={`inline-flex min-h-9 min-w-0 flex-1 select-none items-center justify-start py-1.5 pl-1 pr-2 text-left text-sm leading-tight sm:pl-2 ${
+                      billingYearly ? "font-bold text-[#0c1e36]" : "font-medium text-[#3d4f63]"
                     }`}
                   >
                     Bill Yearly
-                  </button>
+                  </span>
                 </div>
               </div>
               </div>
