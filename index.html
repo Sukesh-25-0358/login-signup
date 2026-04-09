@@ -171,7 +171,12 @@
         font-size: 1.55rem !important;
         line-height: 1.15 !important;
       }
+      #planningInvoiceView > div {
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+      }
       #planningHistoryView h2 { font-size: 1.5rem !important; }
+      #planningHistoryView { padding: 0.75rem !important; }
       #planningHistoryView .planning-history-track { max-width: 100% !important; }
       #planningHistoryView .planning-history-table-wrap { max-width: 100% !important; }
       #planningHistoryView table { min-width: 430px; font-size: 10px !important; }
@@ -198,6 +203,12 @@
       }
     }
     @media (max-width: 420px) {
+      #planningPaymentView .grid.grid-cols-2 {
+        grid-template-columns: minmax(0, 1fr) !important;
+      }
+      #planningInvoiceView .planning-invoice-row {
+        grid-template-columns: 78px 10px minmax(0, 1fr) !important;
+      }
       .planning-billing-toggle-wrap {
         justify-content: center !important;
         gap: 0.5rem !important;
