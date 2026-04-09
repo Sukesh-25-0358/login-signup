@@ -135,6 +135,20 @@ type Plan = (typeof plans)[number];
 type PlanningView = "plans" | "payment" | "invoice" | "history";
 type PaymentMethodId = "paypal" | "card" | "netbanking" | "online";
 
+const CARD_NUMBER_MAX_LEN = 19;
+const CARD_CVV_MAX_LEN = 4;
+
+function cardDigitsOnly(value: string, maxLen: number) {
+  return value.replace(/\D/g, "").slice(0, maxLen);
+}
+
+/** Digits only, shown as MM/YY after the month (slash is not a digit; typed / is stripped). */
+function formatCardExpiryMmYy(value: string) {
+  const d = value.replace(/\D/g, "").slice(0, 4);
+  if (d.length <= 2) return d;
+  return `${d.slice(0, 2)}/${d.slice(2)}`;
+}
+
 type BillingHistoryEntry = {
   date: string;
   invoiceId: string;
@@ -164,6 +178,42 @@ const DEFAULT_BILLING_HISTORY: BillingHistoryEntry[] = [
   { date: "Oct 08 2025", invoiceId: "INV-100240", amount: "$0.00", status: "Free" },
 ];
 
+const PLANNING_BILLING_HISTORY_KEY = "stacklyPlanningBillingHistory";
+
+function isBillingHistoryEntry(x: unknown): x is BillingHistoryEntry {
+  if (!x || typeof x !== "object") return false;
+  const o = x as Record<string, unknown>;
+  return (
+    typeof o.date === "string" &&
+    typeof o.invoiceId === "string" &&
+    typeof o.amount === "string" &&
+    (o.status === "Paid" || o.status === "Free")
+  );
+}
+
+function loadBillingHistoryFromStorage(): BillingHistoryEntry[] | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = window.localStorage.getItem(PLANNING_BILLING_HISTORY_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as unknown;
+    if (!Array.isArray(parsed)) return null;
+    const rows = parsed.filter(isBillingHistoryEntry);
+    return rows.length > 0 ? rows : null;
+  } catch {
+    return null;
+  }
+}
+
+function saveBillingHistoryToStorage(entries: BillingHistoryEntry[]) {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.setItem(PLANNING_BILLING_HISTORY_KEY, JSON.stringify(entries));
+  } catch {
+    /* ignore quota / private mode */
+  }
+}
+
 export default function PlanningPage() {
   const router = useRouter();
   const [activeNav, setActiveNav] = useState<NavId>("billing");
@@ -185,6 +235,11 @@ export default function PlanningPage() {
   const [billingHistory, setBillingHistory] = useState<BillingHistoryEntry[]>(DEFAULT_BILLING_HISTORY);
   const plansSectionRef = useRef<HTMLElement>(null);
   const profileWrapRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const stored = loadBillingHistoryFromStorage();
+    if (stored) setBillingHistory(stored);
+  }, []);
 
   useEffect(() => {
     function onDocClick(e: MouseEvent) {
@@ -231,6 +286,12 @@ export default function PlanningPage() {
     setUpiId("");
   }
 
+  function handleBackToPlans() {
+    setPlanningView("plans");
+    setSelectedPlan(null);
+    setPaymentLoading(false);
+  }
+
   function paymentSubtitle() {
     switch (paymentMethod) {
       case "paypal":
@@ -264,15 +325,17 @@ export default function PlanningPage() {
         address: "Chennai - 636008",
       };
       setInvoiceData(createdInvoice);
-      setBillingHistory((prev) => [
-        {
+      setBillingHistory((prev) => {
+        const row: BillingHistoryEntry = {
           date: createdInvoice.date,
           invoiceId: createdInvoice.invoiceId,
           amount: createdInvoice.amount,
           status: "Paid",
-        },
-        ...prev,
-      ]);
+        };
+        const next = [row, ...prev.filter((e) => e.invoiceId !== row.invoiceId)];
+        saveBillingHistoryToStorage(next);
+        return next;
+      });
       setPaymentLoading(false);
       setPlanningView("invoice");
     }, 2400);
@@ -473,7 +536,7 @@ export default function PlanningPage() {
                 Choose the Best Plan for You
               </h1>
               <p className="mx-auto mt-4 max-w-2xl text-center text-[13px] font-medium leading-relaxed text-[#0f172a] sm:text-sm md:text-base">
-                Create your website for free and upgrade when you’re ready.
+                Create your website for free and upgrade when you’re ready
               </p>
 
               <div className="mt-5 flex justify-center sm:mt-6">
@@ -643,9 +706,21 @@ export default function PlanningPage() {
                   boxShadow: "0 2px 0 rgba(0,0,0,0.2)",
                 }}
               >
-                <div className="border-b border-white/20 px-4 py-6 text-center sm:px-6 sm:py-8">
-                  <h2 className="text-2xl font-bold sm:text-3xl">Secure Payment</h2>
-                  <p className="mt-2 text-xs text-white/85 sm:text-sm">{paymentSubtitle()}</p>
+                <div className="border-b border-white/20 px-4 pb-6 pt-4 sm:px-6 sm:pb-8 sm:pt-6">
+                  <div className="mb-4 text-left">
+                    <button
+                      type="button"
+                      onClick={handleBackToPlans}
+                      className="inline-flex items-center gap-1.5 rounded-md px-2 py-1.5 text-xs font-semibold text-white/90 transition-colors hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 sm:text-sm"
+                      aria-label="Back to plans"
+                    >
+                      ← Back to plans
+                    </button>
+                  </div>
+                  <div className="text-center">
+                    <h2 className="text-2xl font-bold sm:text-3xl">Secure Payment</h2>
+                    <p className="mt-2 text-xs text-white/85 sm:text-sm">{paymentSubtitle()}</p>
+                  </div>
                 </div>
                 <div className="mx-auto w-full px-4 py-6 sm:px-6 sm:py-8" style={{ maxWidth: 430 }}>
                   <div className="space-y-3 text-xs sm:space-y-4 sm:text-sm">
@@ -711,9 +786,11 @@ export default function PlanningPage() {
                     {paymentMethod === "card" && (
                       <div>
                         <input
+                          type="text"
                           value={cardNumber}
-                          onChange={(e) => setCardNumber(e.target.value)}
+                          onChange={(e) => setCardNumber(cardDigitsOnly(e.target.value, CARD_NUMBER_MAX_LEN))}
                           inputMode="numeric"
+                          pattern="[0-9]*"
                           autoComplete="cc-number"
                           placeholder="Card Number"
                           className="mb-4 block w-full rounded border border-white/40 bg-transparent px-3 py-2 text-xs text-white placeholder:text-white/70 focus:outline-none sm:text-sm"
@@ -721,17 +798,21 @@ export default function PlanningPage() {
                         />
                         <div className="grid grid-cols-2 gap-2" style={{ width: "100%" }}>
                           <input
+                            type="text"
                             value={cardExpiry}
-                            onChange={(e) => setCardExpiry(e.target.value)}
+                            onChange={(e) => setCardExpiry(formatCardExpiryMmYy(e.target.value))}
                             inputMode="numeric"
+                            pattern="[0-9/]*"
                             autoComplete="cc-exp"
                             placeholder="MM/YY"
                             className="rounded border border-white/40 bg-transparent px-3 py-2 text-xs text-white placeholder:text-white/70 focus:outline-none sm:text-sm"
                           />
                           <input
+                            type="text"
                             value={cardCvv}
-                            onChange={(e) => setCardCvv(e.target.value)}
+                            onChange={(e) => setCardCvv(cardDigitsOnly(e.target.value, CARD_CVV_MAX_LEN))}
                             inputMode="numeric"
+                            pattern="[0-9]*"
                             autoComplete="cc-csc"
                             placeholder="Cvv"
                             className="rounded border border-white/40 bg-transparent px-3 py-2 text-xs text-white placeholder:text-white/70 focus:outline-none sm:text-sm"
@@ -830,8 +911,20 @@ export default function PlanningPage() {
                   boxShadow: "0 2px 0 rgba(0,0,0,0.25)",
                 }}
               >
-                <div className="px-4 py-5 text-center sm:px-8 sm:py-6" style={{ borderBottom: "1px solid rgba(255,255,255,0.15)" }}>
-                  <h2 className="text-2xl font-bold leading-tight sm:text-[36px]">Invoice Details</h2>
+                <div className="px-4 py-5 sm:px-8 sm:py-6" style={{ borderBottom: "1px solid rgba(255,255,255,0.15)" }}>
+                  <div className="mb-4 text-left">
+                    <button
+                      type="button"
+                      onClick={handleBackToPlans}
+                      className="inline-flex items-center gap-1.5 rounded-md px-2 py-1.5 text-xs font-semibold text-white/90 transition-colors hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 sm:text-sm"
+                      aria-label="Back to plans"
+                    >
+                      ← Back to plans
+                    </button>
+                  </div>
+                  <div className="text-center">
+                    <h2 className="text-2xl font-bold leading-tight sm:text-[36px]">Invoice Details</h2>
+                  </div>
                 </div>
                 <div className="space-y-6 px-4 py-6 sm:space-y-8 sm:px-8 sm:py-7">
                   <div className="mx-auto w-full max-w-2xl space-y-3 text-xs sm:space-y-4 sm:text-[15px]">
@@ -874,6 +967,16 @@ export default function PlanningPage() {
                   border: "2px solid #8aa0c1",
                 }}
               >
+                <div className="mx-auto mb-3 w-full max-w-[470px] text-left">
+                  <button
+                    type="button"
+                    onClick={handleBackToPlans}
+                    className="inline-flex items-center gap-1.5 rounded-md px-2 py-1.5 text-xs font-semibold text-white/90 transition-colors hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 sm:text-sm"
+                    aria-label="Back to plans"
+                  >
+                    ← Back to plans
+                  </button>
+                </div>
                 <div className="mx-auto mb-3 flex w-full max-w-[470px] items-center justify-between pb-3 sm:mb-4 sm:pb-4" style={{ borderBottom: "1px solid rgba(255,255,255,0.17)" }}>
                   <h2 className="text-2xl font-bold leading-tight tracking-[0.2px] sm:text-[34px]">Billing History</h2>
                   <div
@@ -896,8 +999,8 @@ export default function PlanningPage() {
                       </tr>
                     </thead>
                     <tbody>
-                      {billingHistory.map((entry) => (
-                        <tr key={`${entry.invoiceId}-${entry.date}`} style={{ borderTop: "1px solid #e2e8f0" }}>
+                      {billingHistory.map((entry, index) => (
+                        <tr key={`${entry.invoiceId}-${entry.date}-${index}`} style={{ borderTop: "1px solid #e2e8f0" }}>
                           <td className="px-3 py-3.5">{entry.date}</td>
                           <td className="px-3 py-3.5">{entry.invoiceId}</td>
                           <td className="px-3 py-3.5">{entry.amount}</td>

@@ -1011,16 +1011,48 @@
     var planningView = "plans";
     var planningSelectedPlanIndex = 0;
     var planningInvoiceData = null;
-    var planningHistory = [
-      { date: "Apr 02 2026", invoiceId: "INV-200987", amount: "$39.00", status: "Paid" },
-      { date: "Mar 15 2026", invoiceId: "INV-121289", amount: "$39.00", status: "Paid" },
-      { date: "Feb 08 2026", invoiceId: "INV-100123", amount: "$39.00", status: "Paid" },
-      { date: "Jan 20 2026", invoiceId: "INV-100154", amount: "$39.00", status: "Paid" },
-      { date: "Dec 20 2025", invoiceId: "INV-101164", amount: "$39.00", status: "Paid" },
-      { date: "Dec 10 2025", invoiceId: "INV-100140", amount: "$0.00", status: "Free" },
-      { date: "Nov 20 2025", invoiceId: "INV-100100", amount: "$0.00", status: "Free" },
-      { date: "Oct 08 2025", invoiceId: "INV-100240", amount: "$0.00", status: "Free" }
-    ];
+
+    var PLANNING_BILLING_HISTORY_KEY = "stacklyPlanningBillingHistory";
+
+    function planningDefaultHistoryRows() {
+      return [
+        { date: "Apr 02 2026", invoiceId: "INV-200987", amount: "$39.00", status: "Paid" },
+        { date: "Mar 15 2026", invoiceId: "INV-121289", amount: "$39.00", status: "Paid" },
+        { date: "Feb 08 2026", invoiceId: "INV-100123", amount: "$39.00", status: "Paid" },
+        { date: "Jan 20 2026", invoiceId: "INV-100154", amount: "$39.00", status: "Paid" },
+        { date: "Dec 20 2025", invoiceId: "INV-101164", amount: "$39.00", status: "Paid" },
+        { date: "Dec 10 2025", invoiceId: "INV-100140", amount: "$0.00", status: "Free" },
+        { date: "Nov 20 2025", invoiceId: "INV-100100", amount: "$0.00", status: "Free" },
+        { date: "Oct 08 2025", invoiceId: "INV-100240", amount: "$0.00", status: "Free" }
+      ];
+    }
+
+    function planningLoadHistoryFromStorage() {
+      try {
+        var raw = localStorage.getItem(PLANNING_BILLING_HISTORY_KEY);
+        if (!raw) return null;
+        var parsed = JSON.parse(raw);
+        if (!Array.isArray(parsed) || parsed.length === 0) return null;
+        var rows = parsed.filter(function (e) {
+          return e && typeof e.date === "string" && typeof e.invoiceId === "string" && typeof e.amount === "string" && (e.status === "Paid" || e.status === "Free");
+        });
+        return rows.length ? rows : null;
+      } catch (e) {
+        return null;
+      }
+    }
+
+    function planningSaveHistoryToStorage() {
+      try {
+        localStorage.setItem(PLANNING_BILLING_HISTORY_KEY, JSON.stringify(planningHistory));
+      } catch (e) {}
+    }
+
+    var planningHistory = planningLoadHistoryFromStorage() || planningDefaultHistoryRows();
+
+    function planningBackToPlans() {
+      planningSetView("plans");
+    }
 
     function planningSetView(view) {
       planningView = view;
@@ -1044,6 +1076,19 @@
       var yearly = sw && sw.getAttribute("aria-checked") === "true";
       var row = (yearly ? PLANNING_PLAN_PRICES.yearly : PLANNING_PLAN_PRICES.monthly)[index] || PLANNING_PLAN_PRICES.monthly[0];
       return { amount: row.new, period: yearly ? "Yearly" : "Monthly" };
+    }
+
+    function planningCardNumberInput(el) {
+      el.value = el.value.replace(/\D/g, "").slice(0, 19);
+    }
+
+    function planningCardExpiryInput(el) {
+      var d = el.value.replace(/\D/g, "").slice(0, 4);
+      el.value = d.length <= 2 ? d : d.slice(0, 2) + "/" + d.slice(2);
+    }
+
+    function planningCardCvvInput(el) {
+      el.value = el.value.replace(/\D/g, "").slice(0, 4);
     }
 
     function planningPaymentSubtitleFor(method) {
@@ -1138,12 +1183,18 @@
           contactNo: "9848xxxx19",
           address: "Chennai - 636008"
         };
-        planningHistory.unshift({
+        var newRow = {
           date: planningInvoiceData.date,
           invoiceId: planningInvoiceData.invoiceId,
           amount: planningInvoiceData.amount,
           status: "Paid"
-        });
+        };
+        planningHistory = [newRow].concat(
+          planningHistory.filter(function (e) {
+            return e.invoiceId !== newRow.invoiceId;
+          })
+        );
+        planningSaveHistoryToStorage();
         planningRenderInvoice();
         planningRenderHistory();
         if (btn) {
@@ -1904,7 +1955,7 @@
         <div id="planningPlansView" class="rounded bg-[#edf3fb] px-5 py-8 sm:px-8 sm:py-10 md:px-10">
           <div class="mx-auto w-full max-w-5xl">
           <h1 class="text-center text-3xl font-bold text-[#0b3268] sm:text-[44px] sm:leading-tight">Choose the Best Plan for You</h1>
-          <p class="mx-auto mt-4 max-w-2xl text-center text-[13px] font-medium leading-relaxed text-[#0f172a] sm:text-sm md:text-base">Create your website for free and upgrade when you're ready.</p>
+          <p class="mx-auto mt-4 max-w-2xl text-center text-[13px] font-medium leading-relaxed text-[#0f172a] sm:text-sm md:text-base">Create your website for free and upgrade when you're ready</p>
 
           <div class="mt-5 flex justify-center sm:mt-6">
             <button
@@ -2064,9 +2115,14 @@
         </div>
 
         <div id="planningPaymentView" class="hidden mx-auto w-full text-white" style="max-width:740px;border-radius:8px;overflow:hidden;background:linear-gradient(180deg,#2b66be 0%,#0a2a5f 100%);box-shadow:0 2px 0 rgba(0,0,0,0.2);">
-          <div class="border-b border-white/20 px-4 py-6 text-center sm:px-6 sm:py-8">
-            <h2 class="text-2xl font-bold sm:text-3xl">Secure Payment</h2>
-            <p id="planningPaymentSubtitle" class="mt-2 text-xs text-white/85 sm:text-sm">Enter your card details to upgrade.</p>
+          <div class="border-b border-white/20 px-4 pb-6 pt-4 sm:px-6 sm:pb-8 sm:pt-6">
+            <div class="mb-4 text-left">
+              <button type="button" onclick="planningBackToPlans()" class="inline-flex items-center gap-1.5 rounded-md px-2 py-1.5 text-xs font-semibold text-white/90 transition-colors hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 sm:text-sm" aria-label="Back to plans">← Back to plans</button>
+            </div>
+            <div class="text-center">
+              <h2 class="text-2xl font-bold sm:text-3xl">Secure Payment</h2>
+              <p id="planningPaymentSubtitle" class="mt-2 text-xs text-white/85 sm:text-sm">Enter your card details to upgrade.</p>
+            </div>
           </div>
           <div class="mx-auto w-full px-4 py-6 sm:px-6 sm:py-8" style="max-width:430px;">
             <div class="space-y-3 text-xs sm:space-y-4 sm:text-sm">
@@ -2093,10 +2149,10 @@
                 <input id="planningPaypalEmail" type="email" inputmode="email" autocomplete="email" placeholder="PayPal email" class="block w-full rounded border border-white/40 bg-transparent px-3 py-2 text-xs text-white placeholder:text-white/70 focus:outline-none sm:text-sm" style="width:100%;" />
               </div>
               <div id="planningPaymentPanelCard">
-                <input id="planningCardNumber" inputmode="numeric" autocomplete="cc-number" placeholder="Card Number" class="mb-4 block w-full rounded border border-white/40 bg-transparent px-3 py-2 text-xs text-white placeholder:text-white/70 focus:outline-none sm:text-sm" style="width:100%;" />
+                <input id="planningCardNumber" type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="cc-number" placeholder="Card Number" class="mb-4 block w-full rounded border border-white/40 bg-transparent px-3 py-2 text-xs text-white placeholder:text-white/70 focus:outline-none sm:text-sm" style="width:100%;" oninput="planningCardNumberInput(this)" />
                 <div class="grid grid-cols-2 gap-2" style="width:100%;">
-                  <input id="planningCardExpiry" inputmode="numeric" autocomplete="cc-exp" placeholder="MM/YY" class="rounded border border-white/40 bg-transparent px-3 py-2 text-xs text-white placeholder:text-white/70 focus:outline-none sm:text-sm" />
-                  <input id="planningCardCvv" inputmode="numeric" autocomplete="cc-csc" placeholder="Cvv" class="rounded border border-white/40 bg-transparent px-3 py-2 text-xs text-white placeholder:text-white/70 focus:outline-none sm:text-sm" />
+                  <input id="planningCardExpiry" type="text" inputmode="numeric" pattern="[0-9/]*" autocomplete="cc-exp" placeholder="MM/YY" class="rounded border border-white/40 bg-transparent px-3 py-2 text-xs text-white placeholder:text-white/70 focus:outline-none sm:text-sm" oninput="planningCardExpiryInput(this)" />
+                  <input id="planningCardCvv" type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="cc-csc" placeholder="Cvv" class="rounded border border-white/40 bg-transparent px-3 py-2 text-xs text-white placeholder:text-white/70 focus:outline-none sm:text-sm" oninput="planningCardCvvInput(this)" />
                 </div>
               </div>
               <div id="planningPaymentPanelNetbanking" class="hidden space-y-3">
@@ -2139,8 +2195,13 @@
         </div>
 
         <div id="planningInvoiceView" class="hidden mx-auto w-full text-white" style="max-width:740px;border-radius:8px;overflow:hidden;background:linear-gradient(180deg,#2a66be 0%,#0b2a5c 100%);box-shadow:0 2px 0 rgba(0,0,0,0.25);">
-          <div class="border-b border-white/15 px-8 py-6 text-center">
-            <h2 class="text-[36px] font-bold leading-tight">Invoice Details</h2>
+          <div class="border-b border-white/15 px-4 py-5 sm:px-8 sm:py-6">
+            <div class="mb-4 text-left">
+              <button type="button" onclick="planningBackToPlans()" class="inline-flex items-center gap-1.5 rounded-md px-2 py-1.5 text-xs font-semibold text-white/90 transition-colors hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 sm:text-sm" aria-label="Back to plans">← Back to plans</button>
+            </div>
+            <div class="text-center">
+              <h2 class="text-[36px] font-bold leading-tight">Invoice Details</h2>
+            </div>
           </div>
           <div class="space-y-8 px-8 py-7">
             <div class="mx-auto w-full max-w-2xl space-y-4 text-[15px]">
@@ -2165,6 +2226,9 @@
         </div>
 
         <div id="planningHistoryView" class="hidden mx-auto my-6 w-full p-4 text-white" style="max-width:560px;border-radius:8px;background:linear-gradient(180deg,#2f6dca 0%,#0a2a5f 100%);box-shadow:0 2px 0 rgba(0,0,0,0.28);border:2px solid #8aa0c1;">
+          <div class="mx-auto mb-3 w-full max-w-[470px] text-left">
+            <button type="button" onclick="planningBackToPlans()" class="inline-flex items-center gap-1.5 rounded-md px-2 py-1.5 text-xs font-semibold text-white/90 transition-colors hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 sm:text-sm" aria-label="Back to plans">← Back to plans</button>
+          </div>
           <div class="planning-history-track mx-auto mb-4 flex w-full max-w-[470px] items-center justify-between pb-4" style="border-bottom:1px solid rgba(255,255,255,0.17);">
             <h2 class="text-[34px] font-bold leading-tight tracking-[0.2px]">Billing History</h2>
             <div class="flex items-center overflow-hidden rounded-md bg-white" style="color:#1f2937;font-size:10px;line-height:1.2;box-shadow:0 0 0 1px rgba(15,23,42,0.08);">
