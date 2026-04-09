@@ -144,6 +144,15 @@
     .planning-recommended-content-offset {
       margin-top: 0;
     }
+    /* Mobile + zoom safety: keep recommended badge clear of title */
+    @media (max-width: 768px) {
+      .planning-recommended-card {
+        padding-top: 2rem !important;
+      }
+      .planning-recommended-content-offset {
+        margin-top: 0.95rem !important;
+      }
+    }
 
     /* Desktop zoom fallback (roughly 150-200%): show hamburger + compact menu for planning header */
     @media (hover: hover) and (pointer: fine) and (max-width: 1024px) and (min-resolution: 1.5dppx) and (max-resolution: 2.1dppx) {
