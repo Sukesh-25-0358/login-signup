@@ -100,14 +100,6 @@
       color: #fff;
       font-weight: 500;
     }
-    /* Force square planning header corners on all devices/GPUs */
-    #planningPage .planning-header-shell,
-    #planningPage .planning-header-row {
-      border-radius: 0 !important;
-      border-top-left-radius: 0 !important;
-      border-bottom-left-radius: 0 !important;
-      clip-path: inset(0 round 0) !important;
-    }
 
     .planning-billing-label--active {
       font-weight: 700;
@@ -179,12 +171,7 @@
         font-size: 1.55rem !important;
         line-height: 1.15 !important;
       }
-      #planningInvoiceView > div {
-        padding-left: 1rem !important;
-        padding-right: 1rem !important;
-      }
       #planningHistoryView h2 { font-size: 1.5rem !important; }
-      #planningHistoryView { padding: 0.75rem !important; }
       #planningHistoryView .planning-history-track { max-width: 100% !important; }
       #planningHistoryView .planning-history-table-wrap { max-width: 100% !important; }
       #planningHistoryView table { min-width: 430px; font-size: 10px !important; }
@@ -211,12 +198,6 @@
       }
     }
     @media (max-width: 420px) {
-      #planningPaymentView .grid.grid-cols-2 {
-        grid-template-columns: minmax(0, 1fr) !important;
-      }
-      #planningInvoiceView .planning-invoice-row {
-        grid-template-columns: 78px 10px minmax(0, 1fr) !important;
-      }
       .planning-billing-toggle-wrap {
         justify-content: center !important;
         gap: 0.5rem !important;
@@ -1995,8 +1976,8 @@
 
   <!-- ================= PLANNING PAGE ================= -->
   <div id="planningPage" class="hidden min-h-[100dvh] w-full bg-[#efefef] overflow-x-hidden">
-    <nav class="planning-header-shell w-full bg-[#06224C]">
-      <div class="planning-header-row flex w-full flex-wrap items-center gap-2 px-3 py-3 sm:gap-3 sm:px-8 xl:flex-nowrap">
+    <nav class="w-full bg-[#06224C]">
+      <div class="flex w-full flex-wrap items-center gap-2 px-3 py-3 sm:gap-3 sm:px-8 xl:flex-nowrap">
         <div class="flex min-w-0 flex-shrink-0 items-center gap-2">
           <button
             type="button"

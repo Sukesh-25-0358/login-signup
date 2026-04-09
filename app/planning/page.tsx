@@ -373,8 +373,8 @@ export default function PlanningPage() {
 
   return (
     <main className="planning-page min-h-[100dvh] w-full bg-[#efefef] overflow-x-hidden">
-      <nav className="planning-header-shell w-full bg-[#06224C]">
-        <div className="planning-header-row flex w-full flex-wrap items-center gap-2 px-3 py-3 sm:gap-3 sm:px-8 xl:flex-nowrap">
+      <nav className="w-full bg-[#06224C]">
+        <div className="flex w-full flex-wrap items-center gap-2 px-3 py-3 sm:gap-3 sm:px-8 xl:flex-nowrap">
           <div className="flex min-w-0 flex-shrink-0 items-center gap-2">
             <button
               type="button"
