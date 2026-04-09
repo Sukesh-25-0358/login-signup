@@ -40,6 +40,14 @@ html:has(body > main.planning-page),
 body:has(> main.planning-page) {
   background-color: #efefef;
 }
+/* Force square planning header corners on all devices/GPUs */
+.planning-page .planning-header-shell,
+.planning-page .planning-header-row {
+  border-radius: 0 !important;
+  border-top-left-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+  clip-path: inset(0 round 0) !important;
+}
 
 /* Planning invoice mobile safety: prevent clipping/overlap at 100-200% zoom */
 .planning-invoice-row {
@@ -167,14 +175,8 @@ body:has(> main.planning-page) {
   }
 }
 
-/* Force square top header edges across laptop/browser differences */
-.planning-top-nav,
-.planning-top-nav-inner {
-  border-radius: 0 !important;
-}
-
 /* Desktop zoom fallback (roughly 150-200%): show hamburger + compact menu for planning header */
-@media (hover: hover) and (pointer: fine) and (max-width: 1400px) and (min-resolution: 1.25dppx) {
+@media (hover: hover) and (pointer: fine) and (max-width: 1150px) and (min-resolution: 1.4dppx) {
   .planning-zoom-show-hamburger {
     display: inline-flex !important;
   }

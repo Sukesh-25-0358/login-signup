@@ -100,6 +100,14 @@
       color: #fff;
       font-weight: 500;
     }
+    /* Force square planning header corners on all devices/GPUs */
+    #planningPage .planning-header-shell,
+    #planningPage .planning-header-row {
+      border-radius: 0 !important;
+      border-top-left-radius: 0 !important;
+      border-bottom-left-radius: 0 !important;
+      clip-path: inset(0 round 0) !important;
+    }
 
     .planning-billing-label--active {
       font-weight: 700;
@@ -245,14 +253,8 @@
       }
     }
 
-    /* Force square top header edges across laptop/browser differences */
-    .planning-top-nav,
-    .planning-top-nav-inner {
-      border-radius: 0 !important;
-    }
-
     /* Desktop zoom fallback (roughly 150-200%): show hamburger + compact menu for planning header */
-    @media (hover: hover) and (pointer: fine) and (max-width: 1400px) and (min-resolution: 1.25dppx) {
+    @media (hover: hover) and (pointer: fine) and (max-width: 1150px) and (min-resolution: 1.4dppx) {
       .planning-zoom-show-hamburger {
         display: inline-flex !important;
       }
@@ -1993,8 +1995,8 @@
 
   <!-- ================= PLANNING PAGE ================= -->
   <div id="planningPage" class="hidden min-h-[100dvh] w-full bg-[#efefef] overflow-x-hidden">
-    <nav class="planning-top-nav w-full bg-[#06224C]">
-      <div class="planning-top-nav-inner flex w-full flex-wrap items-center gap-2 px-3 py-3 sm:gap-3 sm:px-8 xl:flex-nowrap">
+    <nav class="planning-header-shell w-full bg-[#06224C]">
+      <div class="planning-header-row flex w-full flex-wrap items-center gap-2 px-3 py-3 sm:gap-3 sm:px-8 xl:flex-nowrap">
         <div class="flex min-w-0 flex-shrink-0 items-center gap-2">
           <button
             type="button"
