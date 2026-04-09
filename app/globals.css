@@ -167,8 +167,14 @@ body:has(> main.planning-page) {
   }
 }
 
+/* Force square top header edges across laptop/browser differences */
+.planning-top-nav,
+.planning-top-nav-inner {
+  border-radius: 0 !important;
+}
+
 /* Desktop zoom fallback (roughly 150-200%): show hamburger + compact menu for planning header */
-@media (hover: hover) and (pointer: fine) and (max-width: 1150px) and (min-resolution: 1.4dppx) {
+@media (hover: hover) and (pointer: fine) and (max-width: 1400px) and (min-resolution: 1.25dppx) {
   .planning-zoom-show-hamburger {
     display: inline-flex !important;
   }
