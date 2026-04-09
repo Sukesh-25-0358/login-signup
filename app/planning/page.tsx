@@ -598,9 +598,9 @@ export default function PlanningPage() {
               </div>
 
               <div className="mt-8 flex w-full justify-center px-3 sm:px-4">
-                <div className="flex w-full max-w-xl items-center gap-3 sm:gap-5">
+                <div className="planning-billing-toggle-wrap flex w-full max-w-xl items-center gap-3 sm:gap-5">
                   <span
-                    className={`inline-flex min-h-9 min-w-0 flex-1 select-none items-center justify-end py-1.5 pl-2 pr-1 text-right text-sm leading-tight sm:pr-2 ${
+                    className={`planning-billing-label inline-flex min-h-9 min-w-0 flex-1 select-none items-center justify-end py-1.5 pl-2 pr-1 text-right text-sm leading-tight sm:pr-2 ${
                       !billingYearly ? "font-bold text-[#0c1e36]" : "font-medium text-[#3d4f63]"
                     }`}
                   >
@@ -621,7 +621,7 @@ export default function PlanningPage() {
                     />
                   </button>
                   <span
-                    className={`inline-flex min-h-9 min-w-0 flex-1 select-none items-center justify-start py-1.5 pl-1 pr-2 text-left text-sm leading-tight sm:pl-2 ${
+                    className={`planning-billing-label inline-flex min-h-9 min-w-0 flex-1 select-none items-center justify-start py-1.5 pl-1 pr-2 text-left text-sm leading-tight sm:pl-2 ${
                       billingYearly ? "font-bold text-[#0c1e36]" : "font-medium text-[#3d4f63]"
                     }`}
                   >
@@ -653,8 +653,8 @@ export default function PlanningPage() {
                       </div>
                     </div>
 
-                    <div className="mb-1.5 flex items-start justify-between gap-2 lg:items-end">
-                      <div className="flex min-w-0 flex-wrap items-end gap-x-1.5 gap-y-0.5 pr-1">
+                    <div className="planning-price-row mb-1.5 flex items-start justify-between gap-2 lg:items-end">
+                      <div className="planning-price-oldsave flex min-w-0 flex-wrap items-end gap-x-1.5 gap-y-0.5 pr-1">
                         <div className="text-sm font-bold text-[#0f172a] line-through transition-colors group-hover:text-white">
                           {billingYearly ? plan.yearlyOldPrice : plan.oldPrice}
                         </div>
@@ -662,7 +662,7 @@ export default function PlanningPage() {
                           {billingYearly ? plan.yearlySaveText : plan.saveText}
                         </div>
                       </div>
-                      <div className="relative top-0 mr-1 shrink-0 rounded border border-[#94b4e0] bg-[#e8f0fc] px-2 py-1 text-base font-bold leading-none text-[#082a5c] transition-colors lg:-top-2 lg:mr-3 lg:px-3.5 lg:py-1.5 lg:text-xl group-hover:border-white/30 group-hover:bg-white group-hover:text-[#0f3e87]">
+                      <div className="planning-price-chip relative top-0 mr-1 shrink-0 rounded border border-[#94b4e0] bg-[#e8f0fc] px-2 py-1 text-base font-bold leading-none text-[#082a5c] transition-colors lg:-top-2 lg:mr-3 lg:px-3.5 lg:py-1.5 lg:text-xl group-hover:border-white/30 group-hover:bg-white group-hover:text-[#0f3e87]">
                         {billingYearly ? plan.yearlyNewPrice : plan.newPrice}
                       </div>
                     </div>
