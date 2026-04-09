@@ -134,8 +134,8 @@
       box-sizing: border-box;
       min-width: 0;
     }
-    /* Touch-device safety at high zoom: keep plan cards stacked */
-    @media (hover: none) and (pointer: coarse) and (max-width: 1023px) {
+    /* Mobile/tablet safety at high zoom: always keep plan cards stacked */
+    @media (max-width: 1023px) {
       .planning-plans-grid {
         grid-template-columns: minmax(0, 1fr) !important;
       }
