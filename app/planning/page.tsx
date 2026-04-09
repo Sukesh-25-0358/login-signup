@@ -167,6 +167,11 @@ type InvoiceData = {
   address: string;
 };
 
+function historyYearFromDate(date: string) {
+  const m = date.match(/(\d{4})$/);
+  return m ? Number(m[1]) : NaN;
+}
+
 const DEFAULT_BILLING_HISTORY: BillingHistoryEntry[] = [
   { date: "Apr 02 2026", invoiceId: "INV-200987", amount: "$39.00", status: "Paid" },
   { date: "Mar 15 2026", invoiceId: "INV-121289", amount: "$39.00", status: "Paid" },
@@ -234,8 +239,28 @@ export default function PlanningPage() {
   const [upiId, setUpiId] = useState("");
   const [invoiceData, setInvoiceData] = useState<InvoiceData | null>(null);
   const [billingHistory, setBillingHistory] = useState<BillingHistoryEntry[]>(DEFAULT_BILLING_HISTORY);
+  const [historyYearFilter, setHistoryYearFilter] = useState<string>("this");
   const plansSectionRef = useRef<HTMLElement>(null);
   const profileWrapRef = useRef<HTMLDivElement>(null);
+  const currentYear = new Date().getFullYear();
+  const extraHistoryYears = [2024, 2023, 2022, 2021];
+  const historyYears = Array.from(
+    new Set(
+      [
+        currentYear,
+        ...extraHistoryYears,
+        ...billingHistory
+          .map((e) => historyYearFromDate(e.date))
+          .filter((y) => Number.isFinite(y))
+          .map((y) => Number(y)),
+      ],
+    ),
+  ).sort((a, b) => b - a);
+  const activeHistoryYear = historyYearFilter === "this" ? currentYear : Number(historyYearFilter);
+  const filteredBillingHistory =
+    historyYearFilter === "all"
+      ? billingHistory
+      : billingHistory.filter((entry) => historyYearFromDate(entry.date) === activeHistoryYear);
 
   useEffect(() => {
     const stored = loadBillingHistoryFromStorage();
@@ -382,10 +407,10 @@ export default function PlanningPage() {
                   key={item.id}
                   type="button"
                   onClick={() => handleNavClick(item.id)}
-                  className={`shrink-0 border-b-2 pb-0.5 transition-colors ${
+                  className={`shrink-0 rounded-md border-b-2 px-2 py-1 transition-colors ${
                     activeNav === item.id
-                      ? "border-[#f0e6d4] font-medium text-white"
-                      : "border-transparent hover:text-white"
+                      ? "border-[#f0e6d4] bg-white/10 font-medium text-white"
+                      : "border-transparent hover:bg-white/10 hover:text-white"
                   }`}
                   aria-current={activeNav === item.id ? "page" : undefined}
                 >
@@ -694,7 +719,7 @@ export default function PlanningPage() {
 
             {planningView === "payment" && selectedPlan && (
               <div
-                className="mx-auto w-full text-white"
+                className="planning-payment-view mx-auto w-full text-white"
                 style={{
                   maxWidth: 740,
                   borderRadius: 8,
@@ -899,7 +924,7 @@ export default function PlanningPage() {
 
             {planningView === "invoice" && invoiceData && (
               <div
-                className="mx-auto w-full text-white"
+                className="planning-invoice-view mx-auto w-full text-white"
                 style={{
                   maxWidth: 900,
                   borderRadius: 8,
@@ -955,7 +980,7 @@ export default function PlanningPage() {
 
             {planningView === "history" && (
               <div
-                className="mx-auto my-4 w-full p-3 text-white sm:my-6 sm:p-4"
+                className="planning-history-view mx-auto my-4 w-full p-3 text-white sm:my-6 sm:p-4"
                 style={{
                   maxWidth: 560,
                   borderRadius: 8,
@@ -974,17 +999,41 @@ export default function PlanningPage() {
                     ← Back to plans
                   </button>
                 </div>
-                <div className="mx-auto mb-3 flex w-full max-w-[470px] items-center justify-between pb-3 sm:mb-4 sm:pb-4" style={{ borderBottom: "1px solid rgba(255,255,255,0.17)" }}>
+                <div className="planning-history-track mx-auto mb-3 flex w-full max-w-[470px] items-center justify-between pb-3 sm:mb-4 sm:pb-4" style={{ borderBottom: "1px solid rgba(255,255,255,0.17)" }}>
                   <h2 className="text-2xl font-bold leading-tight tracking-[0.2px] sm:text-[34px]">Billing History</h2>
                   <div
                     className="flex items-center overflow-hidden rounded-md bg-white"
                     style={{ color: "#1f2937", fontSize: 10, lineHeight: 1.2, boxShadow: "0 0 0 1px rgba(15,23,42,0.08)" }}
                   >
-                    <button type="button" style={{ borderRight: "1px solid #e2e8f0", padding: "7px 10px", color: "#1f2937" }}>All Invoices</button>
-                    <button type="button" style={{ padding: "7px 10px", color: "#1f2937" }}>This Year ▾</button>
+                    <button
+                      type="button"
+                      onClick={() => setHistoryYearFilter("all")}
+                      style={{
+                        borderRight: "1px solid #e2e8f0",
+                        padding: "7px 10px",
+                        color: "#1f2937",
+                        background: historyYearFilter === "all" ? "#eef2ff" : "transparent",
+                        fontWeight: historyYearFilter === "all" ? 700 : 500,
+                      }}
+                    >
+                      All Invoices
+                    </button>
+                    <select
+                      id="historyYearSelect"
+                      value={historyYearFilter}
+                      onChange={(e) => setHistoryYearFilter(e.target.value)}
+                      style={{ padding: "7px 10px", color: "#1f2937", border: 0, outline: "none", background: "transparent", fontWeight: historyYearFilter === "all" ? 500 : 700 }}
+                    >
+                      <option value="this">This Year</option>
+                      {historyYears.map((year) => (
+                        <option key={year} value={String(year)}>
+                          {year}
+                        </option>
+                      ))}
+                    </select>
                   </div>
                 </div>
-                <div className="mx-auto w-full max-w-[470px] overflow-x-auto rounded-md bg-white" style={{ boxShadow: "inset 0 0 0 1px rgba(15,23,42,0.08)" }}>
+                <div className="planning-history-table-wrap mx-auto w-full max-w-[470px] overflow-x-auto rounded-md bg-white" style={{ boxShadow: "inset 0 0 0 1px rgba(15,23,42,0.08)" }}>
                   <table className="w-full min-w-[470px] text-left" style={{ fontSize: 10.5, color: "#0f172a" }}>
                     <thead className="bg-[#f3f4f6] text-[11px] font-semibold text-[#1f2937]" style={{ borderBottom: "2px solid #d1d5db" }}>
                       <tr>
@@ -996,7 +1045,7 @@ export default function PlanningPage() {
                       </tr>
                     </thead>
                     <tbody>
-                      {billingHistory.map((entry, index) => (
+                      {filteredBillingHistory.map((entry, index) => (
                         <tr key={`${entry.invoiceId}-${entry.date}-${index}`} style={{ borderTop: "1px solid #e2e8f0" }}>
                           <td className="px-3 py-3.5">{entry.date}</td>
                           <td className="px-3 py-3.5">{entry.invoiceId}</td>

@@ -89,10 +89,14 @@
       }
     }
     .planning-nav-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 0.375rem;
       color: #fff;
     }
     .planning-nav-btn.planning-nav-active {
       border-bottom-color: #f0e6d4;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 0.375rem;
       color: #fff;
       font-weight: 500;
     }
@@ -154,10 +158,23 @@
       #planningPaymentView { max-width: 100% !important; }
       #planningInvoiceView { max-width: 100% !important; }
       #planningHistoryView { max-width: 100% !important; }
+      #planningPaymentView,
+      #planningInvoiceView,
+      #planningHistoryView {
+        border-radius: 6px !important;
+      }
+      #planningPaymentView input,
+      #planningPaymentView select {
+        font-size: 12px !important;
+      }
+      #planningInvoiceView h2 {
+        font-size: 1.55rem !important;
+        line-height: 1.15 !important;
+      }
       #planningHistoryView h2 { font-size: 1.5rem !important; }
       #planningHistoryView .planning-history-track { max-width: 100% !important; }
       #planningHistoryView .planning-history-table-wrap { max-width: 100% !important; }
-      #planningHistoryView table { min-width: 470px; }
+      #planningHistoryView table { min-width: 430px; font-size: 10px !important; }
       #planningInvoiceView .planning-invoice-row {
         grid-template-columns: 78px 10px minmax(0, 1fr) !important;
       }
@@ -197,6 +214,9 @@
       .planning-billing-toggle-wrap .planning-billing-label:first-child {
         max-width: 48px;
         white-space: normal !important;
+      }
+      #planningHistoryView table {
+        min-width: 380px !important;
       }
     }
 
@@ -1060,6 +1080,7 @@
     var planningView = "plans";
     var planningSelectedPlanIndex = 0;
     var planningIsFreeCheckout = false;
+    var planningHistoryFilterYear = "this";
     var planningInvoiceData = null;
 
     var PLANNING_BILLING_HISTORY_KEY = "stacklyPlanningBillingHistory";
@@ -1099,6 +1120,58 @@
     }
 
     var planningHistory = planningLoadHistoryFromStorage() || planningDefaultHistoryRows();
+
+    function planningHistoryYearFromDate(dateText) {
+      var m = String(dateText || "").match(/(\d{4})$/);
+      return m ? Number(m[1]) : NaN;
+    }
+
+    function planningGetHistoryYears() {
+      var seen = {};
+      var years = [];
+      [new Date().getFullYear(), 2026, 2025, 2024, 2023, 2022, 2021].forEach(function (y) {
+        if (!seen[y]) {
+          seen[y] = true;
+          years.push(y);
+        }
+      });
+      planningHistory.forEach(function (entry) {
+        var y = planningHistoryYearFromDate(entry.date);
+        if (!Number.isFinite(y) || seen[y]) return;
+        seen[y] = true;
+        years.push(y);
+      });
+      years.sort(function (a, b) { return b - a; });
+      return years;
+    }
+
+    function planningGetActiveHistoryYear() {
+      return planningHistoryFilterYear === "this" ? new Date().getFullYear() : Number(planningHistoryFilterYear);
+    }
+
+    function planningSetHistoryFilterYear(value) {
+      planningHistoryFilterYear = value || "this";
+      planningRenderHistory();
+      planningSyncHistoryYearSelect();
+    }
+
+    function planningSyncHistoryYearSelect() {
+      var sel = document.getElementById("planningHistoryYearSelect");
+      if (!sel) return;
+      var years = planningGetHistoryYears();
+      var opts = "<option value='this'>This Year</option>";
+      years.forEach(function (y) {
+        opts += "<option value='" + y + "'>" + y + "</option>";
+      });
+      sel.innerHTML = opts;
+      sel.value = planningHistoryFilterYear;
+      sel.style.fontWeight = planningHistoryFilterYear === "all" ? "500" : "700";
+      var allBtn = document.getElementById("planningHistoryAllBtn");
+      if (allBtn) {
+        allBtn.style.background = planningHistoryFilterYear === "all" ? "#eef2ff" : "transparent";
+        allBtn.style.fontWeight = planningHistoryFilterYear === "all" ? "700" : "500";
+      }
+    }
 
     function planningBackToPlans() {
       planningSetView("plans");
@@ -1279,7 +1352,12 @@
     function planningRenderHistory() {
       var tbody = document.getElementById("planningHistoryTbody");
       if (!tbody) return;
-      tbody.innerHTML = planningHistory.map(function (entry) {
+      var rows = planningHistoryFilterYear === "all"
+        ? planningHistory
+        : planningHistory.filter(function (entry) {
+            return planningHistoryYearFromDate(entry.date) === planningGetActiveHistoryYear();
+          });
+      tbody.innerHTML = rows.map(function (entry) {
         var badge = entry.status === "Paid" ? "#4f8f43" : "#667085";
         return "<tr style='border-top:1px solid #e2e8f0'>"
           + "<td class='px-3 py-3.5'>" + entry.date + "</td>"
@@ -1289,6 +1367,7 @@
           + "<td class='px-3 py-3.5'><span class='inline-flex h-6 w-7 items-center justify-center rounded-md text-xs font-bold text-white' style='background:#1e7fd8'>↓</span></td>"
           + "</tr>";
       }).join("");
+      planningSyncHistoryYearSelect();
     }
 
     function planningApplyPlanPrices(yearly) {
@@ -2281,8 +2360,10 @@
           <div class="planning-history-track mx-auto mb-4 flex w-full max-w-[470px] items-center justify-between pb-4" style="border-bottom:1px solid rgba(255,255,255,0.17);">
             <h2 class="text-[34px] font-bold leading-tight tracking-[0.2px]">Billing History</h2>
             <div class="flex items-center overflow-hidden rounded-md bg-white" style="color:#1f2937;font-size:10px;line-height:1.2;box-shadow:0 0 0 1px rgba(15,23,42,0.08);">
-              <button type="button" style="border-right:1px solid #e2e8f0;padding:7px 10px;color:#1f2937;">All Invoices</button>
-              <button type="button" style="padding:7px 10px;color:#1f2937;">This Year ▾</button>
+              <button id="planningHistoryAllBtn" type="button" onclick="planningSetHistoryFilterYear('all')" style="border-right:1px solid #e2e8f0;padding:7px 10px;color:#1f2937;">All Invoices</button>
+              <select id="planningHistoryYearSelect" onchange="planningSetHistoryFilterYear(this.value)" style="padding:7px 10px;color:#1f2937;border:0;outline:none;background:transparent;font-weight:700;">
+                <option value="this">This Year</option>
+              </select>
             </div>
           </div>
           <div class="planning-history-table-wrap mx-auto w-full max-w-[470px] overflow-x-auto rounded-md bg-white" style="box-shadow:inset 0 0 0 1px rgba(15,23,42,0.08);">

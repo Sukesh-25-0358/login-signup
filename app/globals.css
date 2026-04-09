@@ -114,6 +114,41 @@ body:has(> main.planning-page) {
   }
 }
 
+/* Payment / invoice / history readability safety up to 200% mobile zoom */
+@media (max-width: 640px) {
+  .planning-payment-view,
+  .planning-invoice-view,
+  .planning-history-view {
+    max-width: 100% !important;
+    border-radius: 6px !important;
+  }
+  .planning-payment-view input,
+  .planning-payment-view select {
+    font-size: 12px !important;
+  }
+  .planning-invoice-view h2 {
+    font-size: 1.55rem !important;
+    line-height: 1.15 !important;
+  }
+  .planning-history-view .planning-history-track {
+    max-width: 100% !important;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .planning-history-view .planning-history-table-wrap {
+    max-width: 100% !important;
+  }
+  .planning-history-view table {
+    min-width: 430px !important;
+    font-size: 10px !important;
+  }
+}
+@media (max-width: 420px) {
+  .planning-history-view table {
+    min-width: 380px !important;
+  }
+}
+
 /* Desktop zoom fallback (roughly 150-200%): show hamburger + compact menu for planning header */
 @media (hover: hover) and (pointer: fine) and (max-width: 1150px) and (min-resolution: 1.4dppx) {
   .planning-zoom-show-hamburger {
