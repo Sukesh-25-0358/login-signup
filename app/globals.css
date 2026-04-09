@@ -78,6 +78,23 @@ body:has(> main.planning-page) {
   }
 }
 @media (max-width: 420px) {
+  .planning-billing-toggle-wrap {
+    justify-content: center !important;
+    gap: 0.5rem !important;
+  }
+  .planning-billing-toggle-wrap .planning-billing-label {
+    flex: 0 0 auto !important;
+    font-size: 11px !important;
+    line-height: 1.05 !important;
+    white-space: nowrap !important;
+    text-align: center !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+  .planning-billing-toggle-wrap .planning-billing-label:first-child {
+    max-width: 48px;
+    white-space: normal !important;
+  }
   .planning-invoice-row {
     grid-template-columns: 78px 10px minmax(0, 1fr) !important;
   }
