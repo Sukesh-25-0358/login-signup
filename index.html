@@ -1046,8 +1046,74 @@
       return { amount: row.new, period: yearly ? "Yearly" : "Monthly" };
     }
 
+    function planningPaymentSubtitleFor(method) {
+      var map = {
+        paypal: "Sign in with PayPal to complete your upgrade.",
+        card: "Enter your card details to upgrade.",
+        netbanking: "Choose your bank and authorize payment.",
+        online: "Pay with UPI — open your app or enter your UPI ID."
+      };
+      return map[method] || "Enter your payment details to Upgrade";
+    }
+
+    function planningGetPaymentMethod() {
+      var r = document.querySelector('input[name="planningPm"]:checked');
+      return r && r.value ? r.value : "card";
+    }
+
+    function planningSyncOnlinePaymentHint() {
+      var hint = document.getElementById("planningOnlinePaymentHint");
+      if (!hint) return;
+      var w = document.querySelector('input[name="planningOnlineWallet"]:checked');
+      var which = w && w.value === "phonepe" ? "phonepe" : "gpay";
+      hint.textContent =
+        which === "gpay"
+          ? "Open Google Pay and approve the request, or pay with your UPI ID above."
+          : "Open PhonePe and approve the request, or pay with your UPI ID above.";
+    }
+
+    function planningSyncPaymentMethodUI() {
+      var method = planningGetPaymentMethod();
+      var sub = document.getElementById("planningPaymentSubtitle");
+      if (sub) sub.textContent = planningPaymentSubtitleFor(method);
+      var panels = {
+        paypal: "planningPaymentPanelPaypal",
+        card: "planningPaymentPanelCard",
+        netbanking: "planningPaymentPanelNetbanking",
+        online: "planningPaymentPanelOnline"
+      };
+      Object.keys(panels).forEach(function (k) {
+        var el = document.getElementById(panels[k]);
+        if (!el) return;
+        if (k === method) el.classList.remove("hidden");
+        else el.classList.add("hidden");
+      });
+      planningSyncOnlinePaymentHint();
+    }
+
+    function planningResetPaymentForm() {
+      var cardRadio = document.querySelector('input[name="planningPm"][value="card"]');
+      if (cardRadio) cardRadio.checked = true;
+      var paypalEmail = document.getElementById("planningPaypalEmail");
+      if (paypalEmail) paypalEmail.value = "";
+      var cn = document.getElementById("planningCardNumber");
+      var ce = document.getElementById("planningCardExpiry");
+      var cv = document.getElementById("planningCardCvv");
+      if (cn) cn.value = "";
+      if (ce) ce.value = "";
+      if (cv) cv.value = "";
+      var nb = document.getElementById("planningNetBank");
+      if (nb) nb.value = "";
+      var upi = document.getElementById("planningUpiId");
+      if (upi) upi.value = "";
+      var gpay = document.querySelector('input[name="planningOnlineWallet"][value="gpay"]');
+      if (gpay) gpay.checked = true;
+      planningSyncPaymentMethodUI();
+    }
+
     function planningOpenPayment(planIndex) {
       planningSelectedPlanIndex = planIndex || 0;
+      planningResetPaymentForm();
       planningSetView("payment");
     }
 
@@ -2000,19 +2066,69 @@
         <div id="planningPaymentView" class="hidden mx-auto w-full text-white" style="max-width:740px;border-radius:8px;overflow:hidden;background:linear-gradient(180deg,#2b66be 0%,#0a2a5f 100%);box-shadow:0 2px 0 rgba(0,0,0,0.2);">
           <div class="border-b border-white/20 px-4 py-6 text-center sm:px-6 sm:py-8">
             <h2 class="text-2xl font-bold sm:text-3xl">Secure Payment</h2>
-            <p class="mt-2 text-xs text-white/85 sm:text-sm">Enter your payment details to Upgrade</p>
+            <p id="planningPaymentSubtitle" class="mt-2 text-xs text-white/85 sm:text-sm">Enter your card details to upgrade.</p>
           </div>
           <div class="mx-auto w-full px-4 py-6 sm:px-6 sm:py-8" style="max-width:430px;">
-            <input id="planningCardNumber" placeholder="Card Number" class="mb-4 block w-full rounded border border-white/40 bg-transparent px-3 py-2 text-xs text-white placeholder:text-white/70 focus:outline-none sm:text-sm" style="width:100%;" />
-            <div class="mb-6 grid grid-cols-2 gap-2" style="width:100%;">
-              <input id="planningCardExpiry" placeholder="MM/YY" class="rounded border border-white/40 bg-transparent px-3 py-2 text-xs text-white placeholder:text-white/70 focus:outline-none sm:text-sm" />
-              <input id="planningCardCvv" placeholder="Cvv" class="rounded border border-white/40 bg-transparent px-3 py-2 text-xs text-white placeholder:text-white/70 focus:outline-none sm:text-sm" />
-            </div>
             <div class="space-y-3 text-xs sm:space-y-4 sm:text-sm">
-              <label class="flex items-center gap-2"><input type="radio" name="planningPm" checked /> Paypal</label>
-              <label class="flex items-center gap-2"><input type="radio" name="planningPm" /> Credit / Debit Card</label>
-              <label class="flex items-center gap-2"><input type="radio" name="planningPm" /> Net Banking</label>
-              <label class="flex items-center gap-2"><input type="radio" name="planningPm" /> Online Payment ( g-pay / Phone pay )</label>
+              <label class="flex cursor-pointer items-center gap-2">
+                <input type="radio" name="planningPm" value="paypal" class="accent-white" onchange="planningSyncPaymentMethodUI()" />
+                Paypal
+              </label>
+              <label class="flex cursor-pointer items-center gap-2">
+                <input type="radio" name="planningPm" value="card" class="accent-white" checked onchange="planningSyncPaymentMethodUI()" />
+                Credit / Debit Card
+              </label>
+              <label class="flex cursor-pointer items-center gap-2">
+                <input type="radio" name="planningPm" value="netbanking" class="accent-white" onchange="planningSyncPaymentMethodUI()" />
+                Net Banking
+              </label>
+              <label class="flex cursor-pointer items-center gap-2">
+                <input type="radio" name="planningPm" value="online" class="accent-white" onchange="planningSyncPaymentMethodUI()" />
+                Online Payment ( g-pay / Phone pay )
+              </label>
+            </div>
+            <div class="mt-5 border-t border-white/15 pt-5 text-xs sm:text-sm">
+              <div id="planningPaymentPanelPaypal" class="hidden space-y-3">
+                <p class="text-white/80">You will be redirected to PayPal to log in and approve this payment.</p>
+                <input id="planningPaypalEmail" type="email" inputmode="email" autocomplete="email" placeholder="PayPal email" class="block w-full rounded border border-white/40 bg-transparent px-3 py-2 text-xs text-white placeholder:text-white/70 focus:outline-none sm:text-sm" style="width:100%;" />
+              </div>
+              <div id="planningPaymentPanelCard">
+                <input id="planningCardNumber" inputmode="numeric" autocomplete="cc-number" placeholder="Card Number" class="mb-4 block w-full rounded border border-white/40 bg-transparent px-3 py-2 text-xs text-white placeholder:text-white/70 focus:outline-none sm:text-sm" style="width:100%;" />
+                <div class="grid grid-cols-2 gap-2" style="width:100%;">
+                  <input id="planningCardExpiry" inputmode="numeric" autocomplete="cc-exp" placeholder="MM/YY" class="rounded border border-white/40 bg-transparent px-3 py-2 text-xs text-white placeholder:text-white/70 focus:outline-none sm:text-sm" />
+                  <input id="planningCardCvv" inputmode="numeric" autocomplete="cc-csc" placeholder="Cvv" class="rounded border border-white/40 bg-transparent px-3 py-2 text-xs text-white placeholder:text-white/70 focus:outline-none sm:text-sm" />
+                </div>
+              </div>
+              <div id="planningPaymentPanelNetbanking" class="hidden space-y-3">
+                <label class="block text-white/90">Select your bank</label>
+                <select id="planningNetBank" class="w-full rounded border border-white/40 bg-[#0a2a5f]/80 px-3 py-2 text-xs text-white focus:outline-none sm:text-sm">
+                  <option value="">Choose bank…</option>
+                  <option value="hdfc">HDFC Bank</option>
+                  <option value="icici">ICICI Bank</option>
+                  <option value="sbi">State Bank of India</option>
+                  <option value="axis">Axis Bank</option>
+                  <option value="kotak">Kotak Mahindra Bank</option>
+                  <option value="other">Other bank</option>
+                </select>
+                <p class="text-[11px] leading-snug text-white/75">You will be taken to your bank&apos;s website to authorize payment, then returned here.</p>
+              </div>
+              <div id="planningPaymentPanelOnline" class="hidden space-y-4">
+                <div class="flex flex-wrap gap-3">
+                  <label class="flex cursor-pointer items-center gap-2">
+                    <input type="radio" name="planningOnlineWallet" value="gpay" class="accent-white" checked onchange="planningSyncOnlinePaymentHint()" />
+                    Google Pay
+                  </label>
+                  <label class="flex cursor-pointer items-center gap-2">
+                    <input type="radio" name="planningOnlineWallet" value="phonepe" class="accent-white" onchange="planningSyncOnlinePaymentHint()" />
+                    PhonePe
+                  </label>
+                </div>
+                <div>
+                  <label class="mb-1.5 block text-white/90">UPI ID</label>
+                  <input id="planningUpiId" type="text" autocomplete="off" placeholder="name@bank / name@upi" class="block w-full rounded border border-white/40 bg-transparent px-3 py-2 text-xs text-white placeholder:text-white/70 focus:outline-none sm:text-sm" style="width:100%;" />
+                  <p id="planningOnlinePaymentHint" class="mt-2 text-[11px] leading-snug text-white/75">Open Google Pay and approve the request, or pay with your UPI ID above.</p>
+                </div>
+              </div>
             </div>
           </div>
           <div class="border-t border-white/20 px-4 py-5 text-center sm:px-6 sm:py-6">

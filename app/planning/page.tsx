@@ -133,6 +133,7 @@ const plans = [
 
 type Plan = (typeof plans)[number];
 type PlanningView = "plans" | "payment" | "invoice" | "history";
+type PaymentMethodId = "paypal" | "card" | "netbanking" | "online";
 
 type BillingHistoryEntry = {
   date: string;
@@ -172,10 +173,14 @@ export default function PlanningPage() {
   const [planningView, setPlanningView] = useState<PlanningView>("plans");
   const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
   const [paymentLoading, setPaymentLoading] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState("card");
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethodId>("card");
+  const [paypalEmail, setPaypalEmail] = useState("");
   const [cardNumber, setCardNumber] = useState("");
   const [cardExpiry, setCardExpiry] = useState("");
   const [cardCvv, setCardCvv] = useState("");
+  const [netBank, setNetBank] = useState("");
+  const [onlineWallet, setOnlineWallet] = useState<"gpay" | "phonepe">("gpay");
+  const [upiId, setUpiId] = useState("");
   const [invoiceData, setInvoiceData] = useState<InvoiceData | null>(null);
   const [billingHistory, setBillingHistory] = useState<BillingHistoryEntry[]>(DEFAULT_BILLING_HISTORY);
   const plansSectionRef = useRef<HTMLElement>(null);
@@ -216,6 +221,29 @@ export default function PlanningPage() {
     setSelectedPlan(plan);
     setPlanningView("payment");
     setPaymentLoading(false);
+    setPaymentMethod("card");
+    setPaypalEmail("");
+    setCardNumber("");
+    setCardExpiry("");
+    setCardCvv("");
+    setNetBank("");
+    setOnlineWallet("gpay");
+    setUpiId("");
+  }
+
+  function paymentSubtitle() {
+    switch (paymentMethod) {
+      case "paypal":
+        return "Sign in with PayPal to complete your upgrade.";
+      case "card":
+        return "Enter your card details to upgrade.";
+      case "netbanking":
+        return "Choose your bank and authorize payment.";
+      case "online":
+        return "Pay with UPI — open your app or enter your UPI ID.";
+      default:
+        return "Enter your payment details to Upgrade";
+    }
   }
 
   function handleCompletePayment() {
@@ -617,48 +645,165 @@ export default function PlanningPage() {
               >
                 <div className="border-b border-white/20 px-4 py-6 text-center sm:px-6 sm:py-8">
                   <h2 className="text-2xl font-bold sm:text-3xl">Secure Payment</h2>
-                  <p className="mt-2 text-xs text-white/85 sm:text-sm">Enter your payment details to Upgrade</p>
+                  <p className="mt-2 text-xs text-white/85 sm:text-sm">{paymentSubtitle()}</p>
                 </div>
                 <div className="mx-auto w-full px-4 py-6 sm:px-6 sm:py-8" style={{ maxWidth: 430 }}>
-                  <input
-                    value={cardNumber}
-                    onChange={(e) => setCardNumber(e.target.value)}
-                    placeholder="Card Number"
-                    className="mb-4 block w-full rounded border border-white/40 bg-transparent px-3 py-2 text-xs text-white placeholder:text-white/70 focus:outline-none sm:text-sm"
-                    style={{ width: "100%" }}
-                  />
-                  <div className="mb-6 grid grid-cols-2 gap-2" style={{ width: "100%" }}>
-                    <input
-                      value={cardExpiry}
-                      onChange={(e) => setCardExpiry(e.target.value)}
-                      placeholder="MM/YY"
-                      className="rounded border border-white/40 bg-transparent px-3 py-2 text-xs text-white placeholder:text-white/70 focus:outline-none sm:text-sm"
-                    />
-                    <input
-                      value={cardCvv}
-                      onChange={(e) => setCardCvv(e.target.value)}
-                      placeholder="Cvv"
-                      className="rounded border border-white/40 bg-transparent px-3 py-2 text-xs text-white placeholder:text-white/70 focus:outline-none sm:text-sm"
-                    />
-                  </div>
-
                   <div className="space-y-3 text-xs sm:space-y-4 sm:text-sm">
-                    <label className="flex items-center gap-2">
-                      <input type="radio" name="pm" checked={paymentMethod === "paypal"} onChange={() => setPaymentMethod("paypal")} />
+                    <label className="flex cursor-pointer items-center gap-2">
+                      <input
+                        type="radio"
+                        name="pm"
+                        className="accent-white"
+                        checked={paymentMethod === "paypal"}
+                        onChange={() => setPaymentMethod("paypal")}
+                      />
                       Paypal
                     </label>
-                    <label className="flex items-center gap-2">
-                      <input type="radio" name="pm" checked={paymentMethod === "card"} onChange={() => setPaymentMethod("card")} />
+                    <label className="flex cursor-pointer items-center gap-2">
+                      <input
+                        type="radio"
+                        name="pm"
+                        className="accent-white"
+                        checked={paymentMethod === "card"}
+                        onChange={() => setPaymentMethod("card")}
+                      />
                       Credit / Debit Card
                     </label>
-                    <label className="flex items-center gap-2">
-                      <input type="radio" name="pm" checked={paymentMethod === "netbanking"} onChange={() => setPaymentMethod("netbanking")} />
+                    <label className="flex cursor-pointer items-center gap-2">
+                      <input
+                        type="radio"
+                        name="pm"
+                        className="accent-white"
+                        checked={paymentMethod === "netbanking"}
+                        onChange={() => setPaymentMethod("netbanking")}
+                      />
                       Net Banking
                     </label>
-                    <label className="flex items-center gap-2">
-                      <input type="radio" name="pm" checked={paymentMethod === "online"} onChange={() => setPaymentMethod("online")} />
+                    <label className="flex cursor-pointer items-center gap-2">
+                      <input
+                        type="radio"
+                        name="pm"
+                        className="accent-white"
+                        checked={paymentMethod === "online"}
+                        onChange={() => setPaymentMethod("online")}
+                      />
                       Online Payment ( g-pay / Phone pay )
                     </label>
+                  </div>
+
+                  <div className="mt-5 border-t border-white/15 pt-5 text-xs sm:text-sm">
+                    {paymentMethod === "paypal" && (
+                      <div className="space-y-3">
+                        <p className="text-white/80">You will be redirected to PayPal to log in and approve this payment.</p>
+                        <input
+                          value={paypalEmail}
+                          onChange={(e) => setPaypalEmail(e.target.value)}
+                          type="email"
+                          inputMode="email"
+                          autoComplete="email"
+                          placeholder="PayPal email"
+                          className="block w-full rounded border border-white/40 bg-transparent px-3 py-2 text-xs text-white placeholder:text-white/70 focus:outline-none sm:text-sm"
+                          style={{ width: "100%" }}
+                        />
+                      </div>
+                    )}
+
+                    {paymentMethod === "card" && (
+                      <div>
+                        <input
+                          value={cardNumber}
+                          onChange={(e) => setCardNumber(e.target.value)}
+                          inputMode="numeric"
+                          autoComplete="cc-number"
+                          placeholder="Card Number"
+                          className="mb-4 block w-full rounded border border-white/40 bg-transparent px-3 py-2 text-xs text-white placeholder:text-white/70 focus:outline-none sm:text-sm"
+                          style={{ width: "100%" }}
+                        />
+                        <div className="grid grid-cols-2 gap-2" style={{ width: "100%" }}>
+                          <input
+                            value={cardExpiry}
+                            onChange={(e) => setCardExpiry(e.target.value)}
+                            inputMode="numeric"
+                            autoComplete="cc-exp"
+                            placeholder="MM/YY"
+                            className="rounded border border-white/40 bg-transparent px-3 py-2 text-xs text-white placeholder:text-white/70 focus:outline-none sm:text-sm"
+                          />
+                          <input
+                            value={cardCvv}
+                            onChange={(e) => setCardCvv(e.target.value)}
+                            inputMode="numeric"
+                            autoComplete="cc-csc"
+                            placeholder="Cvv"
+                            className="rounded border border-white/40 bg-transparent px-3 py-2 text-xs text-white placeholder:text-white/70 focus:outline-none sm:text-sm"
+                          />
+                        </div>
+                      </div>
+                    )}
+
+                    {paymentMethod === "netbanking" && (
+                      <div className="space-y-3">
+                        <label className="block text-white/90">Select your bank</label>
+                        <select
+                          value={netBank}
+                          onChange={(e) => setNetBank(e.target.value)}
+                          className="w-full rounded border border-white/40 bg-[#0a2a5f]/80 px-3 py-2 text-xs text-white focus:outline-none sm:text-sm"
+                        >
+                          <option value="">Choose bank…</option>
+                          <option value="hdfc">HDFC Bank</option>
+                          <option value="icici">ICICI Bank</option>
+                          <option value="sbi">State Bank of India</option>
+                          <option value="axis">Axis Bank</option>
+                          <option value="kotak">Kotak Mahindra Bank</option>
+                          <option value="other">Other bank</option>
+                        </select>
+                        <p className="text-[11px] leading-snug text-white/75">
+                          You will be taken to your bank&apos;s website to authorize payment, then returned here.
+                        </p>
+                      </div>
+                    )}
+
+                    {paymentMethod === "online" && (
+                      <div className="space-y-4">
+                        <div className="flex flex-wrap gap-3">
+                          <label className="flex cursor-pointer items-center gap-2">
+                            <input
+                              type="radio"
+                              name="onlineWallet"
+                              className="accent-white"
+                              checked={onlineWallet === "gpay"}
+                              onChange={() => setOnlineWallet("gpay")}
+                            />
+                            Google Pay
+                          </label>
+                          <label className="flex cursor-pointer items-center gap-2">
+                            <input
+                              type="radio"
+                              name="onlineWallet"
+                              className="accent-white"
+                              checked={onlineWallet === "phonepe"}
+                              onChange={() => setOnlineWallet("phonepe")}
+                            />
+                            PhonePe
+                          </label>
+                        </div>
+                        <div>
+                          <label className="mb-1.5 block text-white/90">UPI ID</label>
+                          <input
+                            value={upiId}
+                            onChange={(e) => setUpiId(e.target.value)}
+                            placeholder="name@bank / name@upi"
+                            autoComplete="off"
+                            className="block w-full rounded border border-white/40 bg-transparent px-3 py-2 text-xs text-white placeholder:text-white/70 focus:outline-none sm:text-sm"
+                            style={{ width: "100%" }}
+                          />
+                          <p className="mt-2 text-[11px] leading-snug text-white/75">
+                            {onlineWallet === "gpay"
+                              ? "Open Google Pay and approve the request, or pay with your UPI ID above."
+                              : "Open PhonePe and approve the request, or pay with your UPI ID above."}
+                          </p>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
                 <div className="border-t border-white/20 px-4 py-5 text-center sm:px-6 sm:py-6">
