@@ -49,6 +49,12 @@ body:has(> main.planning-page) {
   overflow-wrap: anywhere;
   word-break: break-word;
 }
+/* Touch-device safety at high zoom: keep plan cards stacked */
+@media (hover: none) and (pointer: coarse) and (max-width: 1023px) {
+  .planning-plans-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+}
 .planning-recommended-content-offset {
   margin-top: 0.85rem;
 }

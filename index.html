@@ -134,6 +134,12 @@
       box-sizing: border-box;
       min-width: 0;
     }
+    /* Touch-device safety at high zoom: keep plan cards stacked */
+    @media (hover: none) and (pointer: coarse) and (max-width: 1023px) {
+      .planning-plans-grid {
+        grid-template-columns: minmax(0, 1fr) !important;
+      }
+    }
     @media (max-width: 640px) {
       #planningPaymentView { max-width: 100% !important; }
       #planningInvoiceView { max-width: 100% !important; }
@@ -2018,7 +2024,7 @@
           </div>
           </div>
 
-          <div class="mx-auto mt-8 grid w-full max-w-5xl grid-cols-1 gap-5 md:grid-cols-3 md:gap-6 md:items-stretch">
+          <div class="planning-plans-grid mx-auto mt-8 grid w-full max-w-5xl grid-cols-1 gap-5 md:grid-cols-3 md:gap-6 md:items-stretch">
             <article class="group relative flex h-full min-h-0 flex-col rounded border border-[#d8e1ec] bg-white p-4 text-[#0f172a] shadow-sm transition-all duration-200 hover:border-transparent hover:bg-gradient-to-b hover:from-[#06224C] hover:to-[#1A5BBC] hover:text-white hover:shadow-md sm:p-4">
               <div class="mb-1.5 flex items-center justify-between gap-2">
                 <div>

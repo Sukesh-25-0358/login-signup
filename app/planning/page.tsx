@@ -631,7 +631,7 @@ export default function PlanningPage() {
               </div>
               </div>
 
-              <div className="mx-auto mt-8 grid w-full max-w-5xl grid-cols-1 gap-5 md:grid-cols-3 md:gap-6 md:items-stretch">
+              <div className="planning-plans-grid mx-auto mt-8 grid w-full max-w-5xl grid-cols-1 gap-5 md:grid-cols-3 md:gap-6 md:items-stretch">
                 {plans.map((plan) => (
                   <article
                     key={plan.name}
