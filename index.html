@@ -144,25 +144,15 @@
         grid-template-columns: minmax(0, 1fr) !important;
       }
       .planning-billing-toggle-wrap {
-        display: grid !important;
-        grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) !important;
-        align-items: start !important;
         gap: 0.45rem !important;
       }
-      .planning-billing-toggle-wrap .planning-billing-switch {
-        margin-top: 0.25rem !important;
-        align-self: start !important;
-        justify-self: center !important;
-      }
       .planning-billing-toggle-wrap .planning-billing-label {
-        min-width: 0 !important;
-        max-width: none !important;
+        min-width: 0;
         font-size: 12px !important;
-        line-height: 1.25 !important;
-        white-space: normal !important;
-        overflow-wrap: break-word !important;
-        word-break: normal !important;
-        hyphens: manual !important;
+        line-height: 1.2;
+        white-space: normal;
+        overflow-wrap: normal;
+        word-break: normal;
       }
     }
     @media (max-width: 640px) {
@@ -250,11 +240,28 @@
     }
     @media (max-width: 420px) {
       .planning-billing-toggle-wrap {
-        gap: 0.4rem !important;
+        justify-content: center !important;
+        gap: 0.5rem !important;
       }
       .planning-billing-toggle-wrap .planning-billing-label {
+        flex: 0 0 60px !important;
+        width: 60px !important;
+        max-width: 60px !important;
+        min-width: 60px !important;
+        min-height: 2.2rem !important;
+        display: inline-flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+        align-items: center !important;
         font-size: 11px !important;
-        line-height: 1.25 !important;
+        line-height: 1.05 !important;
+        white-space: normal !important;
+        text-align: center !important;
+        padding: 0 !important;
+      }
+      .planning-billing-toggle-wrap .planning-billing-label .planning-billing-label-line {
+        display: block;
+        width: 100%;
       }
       #planningHistoryView table {
         min-width: 320px !important;
@@ -2254,12 +2261,13 @@
           </div>
 
           <div class="mt-8 flex w-full justify-center px-3 sm:px-4">
-            <div class="planning-billing-toggle-wrap grid w-full max-w-xl grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-start gap-2 sm:gap-5">
+            <div class="planning-billing-toggle-wrap flex w-full max-w-xl items-center gap-3 sm:gap-5">
               <span
                 id="planningLabelMonthly"
-                class="planning-billing-label planning-billing-label--active flex min-h-[2.5rem] min-w-0 w-full select-none items-start justify-end py-0.5 pl-2 pr-1 text-right text-sm leading-snug sm:min-h-9 sm:py-1 sm:pr-2"
+                class="planning-billing-label planning-billing-label--active inline-flex min-h-9 min-w-0 flex-1 select-none items-center justify-end py-1.5 pl-2 pr-1 text-right text-sm leading-tight sm:pr-2"
               >
-                Bill Monthly
+                <span class="planning-billing-label-line">Bill</span>
+                <span class="planning-billing-label-line">Monthly</span>
               </span>
               <button
                 type="button"
@@ -2268,7 +2276,7 @@
                 aria-checked="false"
                 aria-label="Toggle monthly or yearly billing"
                 onclick="planningToggleBilling()"
-                class="planning-billing-switch relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center justify-center self-start rounded-full border border-[#94a3b8] bg-white px-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#06224C]/40 focus-visible:ring-offset-2"
+                class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center self-center rounded-full border border-[#94a3b8] bg-white px-0.5 align-middle focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#06224C]/40 focus-visible:ring-offset-2"
               >
                 <span
                   id="planningBillingKnob"
@@ -2277,9 +2285,10 @@
               </button>
               <span
                 id="planningLabelYearly"
-                class="planning-billing-label flex min-h-[2.5rem] min-w-0 w-full select-none items-start justify-start py-0.5 pl-1 pr-2 text-left text-sm leading-snug sm:min-h-9 sm:py-1 sm:pl-2"
+                class="planning-billing-label inline-flex min-h-9 min-w-0 flex-1 select-none items-center justify-start py-1.5 pl-1 pr-2 text-left text-sm leading-tight sm:pl-2"
               >
-                Bill Yearly
+                <span class="planning-billing-label-line">Bill</span>
+                <span class="planning-billing-label-line">Yearly</span>
               </span>
             </div>
           </div>
