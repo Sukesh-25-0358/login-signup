@@ -69,6 +69,12 @@ body:has(> main.planning-page) {
 .planning-recommended-content-offset {
   margin-top: 0.85rem;
 }
+.planning-billing-label .planning-billing-label-line {
+  display: block;
+}
+.planning-billing-label .planning-billing-label-line + .planning-billing-label-line {
+  margin-top: 0.12rem;
+}
 /* Mobile + zoom safety: keep recommended badge clear of title */
 @media (max-width: 768px) {
   .planning-recommended-card {
@@ -93,6 +99,7 @@ body:has(> main.planning-page) {
     flex-direction: column !important;
     justify-content: center !important;
     align-items: center !important;
+    row-gap: 0.12rem !important;
     font-size: 11px !important;
     line-height: 1.05 !important;
     white-space: normal !important;

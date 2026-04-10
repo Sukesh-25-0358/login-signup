@@ -253,6 +253,7 @@
         flex-direction: column !important;
         justify-content: center !important;
         align-items: center !important;
+        row-gap: 0.12rem !important;
         font-size: 11px !important;
         line-height: 1.05 !important;
         white-space: normal !important;
@@ -287,6 +288,12 @@
 
     .planning-recommended-content-offset {
       margin-top: 0;
+    }
+    .planning-billing-label .planning-billing-label-line {
+      display: block;
+    }
+    .planning-billing-label .planning-billing-label-line + .planning-billing-label-line {
+      margin-top: 0.12rem;
     }
     /* Mobile + zoom safety: keep recommended badge clear of title */
     @media (max-width: 768px) {
@@ -2281,7 +2288,7 @@
             <div class="planning-billing-toggle-wrap flex w-full max-w-xl items-center gap-3 sm:gap-5">
               <span
                 id="planningLabelMonthly"
-                class="planning-billing-label planning-billing-label--active inline-flex min-h-9 min-w-0 flex-1 select-none items-center justify-end py-1.5 pl-2 pr-1 text-right text-sm leading-tight sm:pr-2"
+                class="planning-billing-label planning-billing-label--active inline-flex min-h-9 min-w-0 flex-1 select-none items-center justify-end gap-1 py-1.5 pl-2 pr-1 text-right text-sm leading-tight sm:pr-2"
               >
                 <span class="planning-billing-label-line">Bill</span>
                 <span class="planning-billing-label-line">Monthly</span>
@@ -2302,7 +2309,7 @@
               </button>
               <span
                 id="planningLabelYearly"
-                class="planning-billing-label inline-flex min-h-9 min-w-0 flex-1 select-none items-center justify-start py-1.5 pl-1 pr-2 text-left text-sm leading-tight sm:pl-2"
+                class="planning-billing-label inline-flex min-h-9 min-w-0 flex-1 select-none items-center justify-start gap-1 py-1.5 pl-1 pr-2 text-left text-sm leading-tight sm:pl-2"
               >
                 <span class="planning-billing-label-line">Bill</span>
                 <span class="planning-billing-label-line">Yearly</span>
