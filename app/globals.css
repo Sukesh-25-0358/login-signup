@@ -145,9 +145,14 @@ body:has(> main.planning-page) {
     min-width: 0 !important;
     overflow: visible !important;
   }
-  .planning-history-view .planning-history-filter button,
-  .planning-history-view .planning-history-filter select {
+  .planning-history-view .planning-history-filter button {
     min-width: 0 !important;
+  }
+  /* Stacked column + full-width select: show “This Year” at 185–200% mobile zoom */
+  .planning-history-view .planning-history-filter select.planning-history-year-select {
+    font-size: 12px !important;
+    line-height: 1.35 !important;
+    padding-right: 2rem !important;
   }
   .planning-history-view .planning-history-table-wrap {
     max-width: 100% !important;
