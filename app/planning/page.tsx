@@ -999,15 +999,16 @@ export default function PlanningPage() {
                     ← Back to plans
                   </button>
                 </div>
-                <div className="planning-history-track mx-auto mb-3 flex w-full max-w-[470px] items-center justify-between pb-3 sm:mb-4 sm:pb-4" style={{ borderBottom: "1px solid rgba(255,255,255,0.17)" }}>
-                  <h2 className="text-2xl font-bold leading-tight tracking-[0.2px] sm:text-[34px]">Billing History</h2>
+                <div className="planning-history-track mx-auto mb-3 flex w-full max-w-[470px] flex-col gap-3 pb-3 sm:mb-4 sm:flex-row sm:items-center sm:justify-between sm:gap-2 sm:pb-4" style={{ borderBottom: "1px solid rgba(255,255,255,0.17)" }}>
+                  <h2 className="shrink-0 text-xl font-bold leading-tight tracking-[0.2px] sm:text-[34px]">Billing History</h2>
                   <div
-                    className="flex items-center overflow-hidden rounded-md bg-white"
+                    className="planning-history-filter flex min-h-0 w-full min-w-0 flex-1 flex-wrap items-stretch overflow-visible rounded-md bg-white sm:w-auto sm:max-w-none sm:flex-nowrap sm:shrink-0"
                     style={{ color: "#1f2937", fontSize: 10, lineHeight: 1.2, boxShadow: "0 0 0 1px rgba(15,23,42,0.08)" }}
                   >
                     <button
                       type="button"
                       onClick={() => setHistoryYearFilter("all")}
+                      className="min-w-0 flex-1 whitespace-nowrap sm:flex-none"
                       style={{
                         borderRight: "1px solid #e2e8f0",
                         padding: "7px 10px",
@@ -1022,6 +1023,7 @@ export default function PlanningPage() {
                       id="historyYearSelect"
                       value={historyYearFilter}
                       onChange={(e) => setHistoryYearFilter(e.target.value)}
+                      className="min-w-0 flex-1 sm:max-w-[9rem] sm:flex-none"
                       style={{ padding: "7px 10px", color: "#1f2937", border: 0, outline: "none", background: "transparent", fontWeight: historyYearFilter === "all" ? 500 : 700 }}
                     >
                       <option value="this">This Year</option>
@@ -1033,7 +1035,7 @@ export default function PlanningPage() {
                     </select>
                   </div>
                 </div>
-                <div className="planning-history-table-wrap mx-auto w-full max-w-[470px] overflow-x-auto rounded-md bg-white" style={{ boxShadow: "inset 0 0 0 1px rgba(15,23,42,0.08)" }}>
+                <div className="planning-history-table-wrap mx-auto w-full max-w-[470px] overflow-x-auto rounded-md bg-white" style={{ boxShadow: "inset 0 0 0 1px rgba(15,23,42,0.08)", WebkitOverflowScrolling: "touch" as const }}>
                   <table className="w-full min-w-[470px] text-left" style={{ fontSize: 10.5, color: "#0f172a" }}>
                     <thead className="bg-[#f3f4f6] text-[11px] font-semibold text-[#1f2937]" style={{ borderBottom: "2px solid #d1d5db" }}>
                       <tr>
