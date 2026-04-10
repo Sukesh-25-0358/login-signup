@@ -675,7 +675,7 @@ export default function PlanningPage() {
                 </button>
             </div>
 
-              <div className="mt-8 w-full pl-3 sm:pl-5 md:pl-8 lg:pl-10">
+              <div className="mt-8 w-full pl-0 sm:pl-5 md:pl-8 lg:pl-10">
                 <div className="grid w-full min-w-0 grid-cols-1 gap-y-3 md:grid-cols-4 md:items-center md:gap-x-4 lg:gap-x-6">
                   <p className="min-w-0 text-center text-sm font-bold leading-snug text-[#0c1e36] md:text-left">
               What you get with every plan:
