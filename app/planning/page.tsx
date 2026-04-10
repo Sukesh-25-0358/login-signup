@@ -149,6 +149,37 @@ function formatCardExpiryMmYy(value: string) {
   return `${d.slice(0, 2)}/${d.slice(2)}`;
 }
 
+function isValidEmailFormat(value: string) {
+  const t = value.trim();
+  if (!t) return false;
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(t);
+}
+
+function isValidCardExpiryMmYy(value: string) {
+  const raw = value.replace(/\D/g, "");
+  if (raw.length !== 4) return false;
+  const month = Number.parseInt(raw.slice(0, 2), 10);
+  if (month < 1 || month > 12) return false;
+  const yy = Number.parseInt(raw.slice(2, 4), 10);
+  const now = new Date();
+  const cy = now.getFullYear() % 100;
+  const cm = now.getMonth() + 1;
+  if (yy > cy) return true;
+  if (yy < cy) return false;
+  return month >= cm;
+}
+
+function isValidCvv(value: string) {
+  const d = value.replace(/\D/g, "");
+  return d.length === 3 || d.length === 4;
+}
+
+function isValidUpiId(value: string) {
+  const t = value.trim();
+  if (t.length < 5) return false;
+  return /^[a-zA-Z0-9._-]+@[a-zA-Z0-9][a-zA-Z0-9._-]*$/.test(t);
+}
+
 type BillingHistoryEntry = {
   date: string;
   invoiceId: string;
@@ -237,6 +268,7 @@ export default function PlanningPage() {
   const [netBank, setNetBank] = useState("");
   const [onlineWallet, setOnlineWallet] = useState<"gpay" | "phonepe">("gpay");
   const [upiId, setUpiId] = useState("");
+  const [paymentError, setPaymentError] = useState<string | null>(null);
   const [invoiceData, setInvoiceData] = useState<InvoiceData | null>(null);
   const [billingHistory, setBillingHistory] = useState<BillingHistoryEntry[]>(DEFAULT_BILLING_HISTORY);
   const [historyYearFilter, setHistoryYearFilter] = useState<string>("this");
@@ -266,6 +298,10 @@ export default function PlanningPage() {
     const stored = loadBillingHistoryFromStorage();
     if (stored) setBillingHistory(stored);
   }, []);
+
+  useEffect(() => {
+    setPaymentError(null);
+  }, [paymentMethod, paypalEmail, cardNumber, cardExpiry, cardCvv, netBank, upiId, onlineWallet]);
 
   useEffect(() => {
     function onDocClick(e: MouseEvent) {
@@ -317,7 +353,35 @@ export default function PlanningPage() {
     setPlanningView("plans");
     setSelectedPlan(null);
     setPaymentLoading(false);
+    setPaymentError(null);
     setIsFreeCheckout(false);
+  }
+
+  function getPaymentValidationError(): string | null {
+    if (isFreeCheckout) return null;
+    switch (paymentMethod) {
+      case "paypal":
+        return isValidEmailFormat(paypalEmail) ? null : "Enter a valid PayPal email address.";
+      case "card": {
+        const digits = cardNumber.replace(/\D/g, "");
+        if (digits.length < 13 || digits.length > 19) {
+          return "Enter a complete card number (13–19 digits).";
+        }
+        if (!isValidCardExpiryMmYy(cardExpiry)) {
+          return "Enter a valid expiry date (MM/YY) that is not in the past.";
+        }
+        if (!isValidCvv(cardCvv)) {
+          return "Enter a valid CVV (3 or 4 digits).";
+        }
+        return null;
+      }
+      case "netbanking":
+        return netBank.trim() ? null : "Select your bank.";
+      case "online":
+        return isValidUpiId(upiId) ? null : "Enter a valid UPI ID (for example name@upi or name@okaxis).";
+      default:
+        return null;
+    }
   }
 
   function paymentSubtitle() {
@@ -337,6 +401,12 @@ export default function PlanningPage() {
 
   function handleCompletePayment() {
     if (!selectedPlan) return;
+    const err = getPaymentValidationError();
+    if (err) {
+      setPaymentError(err);
+      return;
+    }
+    setPaymentError(null);
     setPaymentLoading(true);
     window.setTimeout(() => {
       const now = new Date();
@@ -910,6 +980,11 @@ export default function PlanningPage() {
                   </div>
                 </div>
                 <div className="border-t border-white/20 px-4 py-5 text-center sm:px-6 sm:py-6">
+                  {paymentError ? (
+                    <p className="mb-3 text-center text-xs font-medium text-red-200 sm:text-sm" role="alert">
+                      {paymentError}
+                    </p>
+                  ) : null}
                   <button
                     type="button"
                     onClick={handleCompletePayment}

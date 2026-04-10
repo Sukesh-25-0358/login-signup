@@ -1244,15 +1244,101 @@
 
     function planningCardNumberInput(el) {
       el.value = el.value.replace(/\D/g, "").slice(0, 19);
+      planningClearPaymentError();
     }
 
     function planningCardExpiryInput(el) {
       var d = el.value.replace(/\D/g, "").slice(0, 4);
       el.value = d.length <= 2 ? d : d.slice(0, 2) + "/" + d.slice(2);
+      planningClearPaymentError();
     }
 
     function planningCardCvvInput(el) {
       el.value = el.value.replace(/\D/g, "").slice(0, 4);
+      planningClearPaymentError();
+    }
+
+    function planningClearPaymentError() {
+      var err = document.getElementById("planningPaymentError");
+      if (err) {
+        err.textContent = "";
+        err.classList.add("hidden");
+      }
+    }
+
+    function planningIsValidEmailFormat(s) {
+      var t = (s || "").trim();
+      if (!t) return false;
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(t);
+    }
+
+    function planningIsValidCardExpiry(v) {
+      var raw = (v || "").replace(/\D/g, "");
+      if (raw.length !== 4) return false;
+      var month = parseInt(raw.slice(0, 2), 10);
+      if (month < 1 || month > 12) return false;
+      var yy = parseInt(raw.slice(2, 4), 10);
+      var now = new Date();
+      var cy = now.getFullYear() % 100;
+      var cm = now.getMonth() + 1;
+      if (yy > cy) return true;
+      if (yy < cy) return false;
+      return month >= cm;
+    }
+
+    function planningIsValidCvv(v) {
+      var d = (v || "").replace(/\D/g, "");
+      return d.length === 3 || d.length === 4;
+    }
+
+    function planningIsValidUpiId(s) {
+      var t = (s || "").trim();
+      if (t.length < 5) return false;
+      return /^[a-zA-Z0-9._-]+@[a-zA-Z0-9][a-zA-Z0-9._-]*$/.test(t);
+    }
+
+    function planningValidatePaymentInputs() {
+      if (planningIsFreeCheckout) return { ok: true, message: "" };
+      var method = planningGetPaymentMethod();
+      if (method === "paypal") {
+        var pe = document.getElementById("planningPaypalEmail");
+        var em = pe ? pe.value : "";
+        return planningIsValidEmailFormat(em)
+          ? { ok: true, message: "" }
+          : { ok: false, message: "Enter a valid PayPal email address." };
+      }
+      if (method === "card") {
+        var cn = document.getElementById("planningCardNumber");
+        var ce = document.getElementById("planningCardExpiry");
+        var cv = document.getElementById("planningCardCvv");
+        var cardNum = cn ? cn.value : "";
+        var digits = cardNum.replace(/\D/g, "");
+        if (digits.length < 13 || digits.length > 19) {
+          return { ok: false, message: "Enter a complete card number (13–19 digits)." };
+        }
+        if (!planningIsValidCardExpiry(ce ? ce.value : "")) {
+          return { ok: false, message: "Enter a valid expiry date (MM/YY) that is not in the past." };
+        }
+        if (!planningIsValidCvv(cv ? cv.value : "")) {
+          return { ok: false, message: "Enter a valid CVV (3 or 4 digits)." };
+        }
+        return { ok: true, message: "" };
+      }
+      if (method === "netbanking") {
+        var nb = document.getElementById("planningNetBank");
+        var bank = nb ? nb.value : "";
+        return bank && String(bank).trim()
+          ? { ok: true, message: "" }
+          : { ok: false, message: "Select your bank." };
+      }
+      if (method === "online") {
+        var upi = document.getElementById("planningUpiId");
+        var u = upi ? upi.value : "";
+        return planningIsValidUpiId(u)
+          ? { ok: true, message: "" }
+          : { ok: false, message: "Enter a valid UPI ID (for example name@upi or name@okaxis)." };
+      }
+      return { ok: true, message: "" };
     }
 
     function planningPaymentSubtitleFor(method) {
@@ -1282,6 +1368,7 @@
     }
 
     function planningSyncPaymentMethodUI() {
+      planningClearPaymentError();
       var method = planningGetPaymentMethod();
       var sub = document.getElementById("planningPaymentSubtitle");
       if (sub) sub.textContent = planningPaymentSubtitleFor(method);
@@ -1317,6 +1404,7 @@
       if (upi) upi.value = "";
       var gpay = document.querySelector('input[name="planningOnlineWallet"][value="gpay"]');
       if (gpay) gpay.checked = true;
+      planningClearPaymentError();
       planningSyncPaymentMethodUI();
     }
 
@@ -1328,6 +1416,16 @@
     }
 
     function planningCompletePayment() {
+      var check = planningValidatePaymentInputs();
+      if (!check.ok) {
+        var errBox = document.getElementById("planningPaymentError");
+        if (errBox) {
+          errBox.textContent = check.message;
+          errBox.classList.remove("hidden");
+        }
+        return;
+      }
+      planningClearPaymentError();
       var btn = document.getElementById("planningCompletePaymentBtn");
       if (btn) {
         btn.disabled = true;
@@ -2315,7 +2413,7 @@
             <div class="mt-5 border-t border-white/15 pt-5 text-xs sm:text-sm">
               <div id="planningPaymentPanelPaypal" class="hidden space-y-3">
                 <p class="text-white/80">You will be redirected to PayPal to log in and approve this payment.</p>
-                <input id="planningPaypalEmail" type="email" inputmode="email" autocomplete="email" placeholder="PayPal email" class="block w-full rounded border border-white/40 bg-transparent px-3 py-2 text-xs text-white placeholder:text-white/70 focus:outline-none sm:text-sm" style="width:100%;" />
+                <input id="planningPaypalEmail" type="email" inputmode="email" autocomplete="email" placeholder="PayPal email" class="block w-full rounded border border-white/40 bg-transparent px-3 py-2 text-xs text-white placeholder:text-white/70 focus:outline-none sm:text-sm" style="width:100%;" oninput="planningClearPaymentError()" />
               </div>
               <div id="planningPaymentPanelCard">
                 <input id="planningCardNumber" type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="cc-number" placeholder="Card Number" class="mb-4 block w-full rounded border border-white/40 bg-transparent px-3 py-2 text-xs text-white placeholder:text-white/70 focus:outline-none sm:text-sm" style="width:100%;" oninput="planningCardNumberInput(this)" />
@@ -2326,7 +2424,7 @@
               </div>
               <div id="planningPaymentPanelNetbanking" class="hidden space-y-3">
                 <label class="block text-white/90">Select your bank</label>
-                <select id="planningNetBank" class="w-full rounded border border-white/40 bg-[#0a2a5f]/80 px-3 py-2 text-xs text-white focus:outline-none sm:text-sm">
+                <select id="planningNetBank" class="w-full rounded border border-white/40 bg-[#0a2a5f]/80 px-3 py-2 text-xs text-white focus:outline-none sm:text-sm" onchange="planningClearPaymentError()">
                   <option value="">Choose bank…</option>
                   <option value="hdfc">HDFC Bank</option>
                   <option value="icici">ICICI Bank</option>
@@ -2350,13 +2448,14 @@
                 </div>
                 <div>
                   <label class="mb-1.5 block text-white/90">UPI ID</label>
-                  <input id="planningUpiId" type="text" autocomplete="off" placeholder="name@bank / name@upi" class="block w-full rounded border border-white/40 bg-transparent px-3 py-2 text-xs text-white placeholder:text-white/70 focus:outline-none sm:text-sm" style="width:100%;" />
+                  <input id="planningUpiId" type="text" autocomplete="off" placeholder="name@bank / name@upi" class="block w-full rounded border border-white/40 bg-transparent px-3 py-2 text-xs text-white placeholder:text-white/70 focus:outline-none sm:text-sm" style="width:100%;" oninput="planningClearPaymentError()" />
                   <p id="planningOnlinePaymentHint" class="mt-2 text-[11px] leading-snug text-white/75">Open Google Pay and approve the request, or pay with your UPI ID above.</p>
                 </div>
               </div>
             </div>
           </div>
           <div class="border-t border-white/20 px-4 py-5 text-center sm:px-6 sm:py-6">
+            <p id="planningPaymentError" class="mb-3 hidden text-center text-xs font-medium text-red-200 sm:text-sm" role="alert"></p>
             <button id="planningCompletePaymentBtn" type="button" onclick="planningCompletePayment()" class="inline-flex min-w-[160px] items-center justify-center rounded bg-white px-5 py-2 text-xs font-semibold text-[#1f2937] sm:min-w-[180px] sm:px-6 sm:text-sm">
               Complete Payment
             </button>
