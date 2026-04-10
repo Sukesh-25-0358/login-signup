@@ -449,7 +449,7 @@ export default function PlanningPage() {
             <button
               type="button"
               onClick={() => setMobileMenuOpen((v) => !v)}
-              className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-white/25 text-white md:hidden planning-zoom-show-hamburger"
+              className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-white/25 text-white lg:hidden planning-zoom-show-hamburger"
               aria-label="Toggle navigation menu"
               aria-expanded={mobileMenuOpen}
             >
@@ -465,9 +465,9 @@ export default function PlanningPage() {
                 className="h-[18px] w-auto sm:h-[20px]"
               />
             </div>
-          </div>
+            </div>
 
-          <div className="hidden min-w-0 flex-1 md:flex md:items-center planning-zoom-hide-primary-nav">
+          <div className="hidden min-w-0 flex-1 lg:flex lg:items-center planning-zoom-hide-primary-nav">
             <nav
               className="flex w-full min-w-0 flex-wrap items-center justify-evenly gap-x-2 gap-y-2 text-[13px] text-white sm:text-sm sm:gap-x-3"
               aria-label="Main"
@@ -491,7 +491,7 @@ export default function PlanningPage() {
           </div>
 
           <div className="ml-auto flex min-w-0 flex-nowrap items-center gap-4 sm:gap-5 lg:gap-6">
-            <div className="flex shrink-0 items-center gap-3 md:hidden">
+            <div className="flex shrink-0 items-center gap-3 lg:hidden">
               <button
                 type="button"
                 className={`${planningHeaderQuickIconBtn} h-8 w-8 touch-manipulation`}
@@ -515,7 +515,7 @@ export default function PlanningPage() {
               </button>
             </div>
 
-            <div className="hidden items-center gap-5 md:flex lg:gap-6">
+            <div className="hidden items-center gap-5 lg:flex lg:gap-6">
               <button
                 type="button"
                 className={`${planningHeaderQuickIconBtn} h-6 w-6`}
@@ -558,25 +558,25 @@ export default function PlanningPage() {
                 />
                 <span className="hidden max-w-[140px] truncate text-left text-[11px] text-white md:inline md:max-w-[180px]">
                   {PLANNING_DISPLAY_USER_NAME}
-                </span>
-                <svg
-                  width="10"
-                  height="10"
-                  viewBox="0 0 12 12"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                  aria-hidden
+              </span>
+              <svg
+                width="10"
+                height="10"
+                viewBox="0 0 12 12"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden
                   className={`hidden shrink-0 text-white/90 transition-transform md:block ${profileOpen ? "rotate-180" : ""}`}
-                >
-                  <path
-                    d="M3.5 5L6 7.5L8.5 5"
-                    stroke="currentColor"
-                    strokeWidth="1.2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    opacity="0.85"
-                  />
-                </svg>
+              >
+                <path
+                  d="M3.5 5L6 7.5L8.5 5"
+                  stroke="currentColor"
+                  strokeWidth="1.2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  opacity="0.85"
+                />
+              </svg>
               </button>
 
               {profileOpen && (
@@ -597,7 +597,7 @@ export default function PlanningPage() {
           </div>
         </div>
         {mobileMenuOpen && (
-          <div className="border-t border-white/20 px-3 pb-3 pt-2 md:hidden planning-zoom-show-mobile-menu">
+          <div className="border-t border-white/20 px-3 pb-3 pt-2 lg:hidden planning-zoom-show-mobile-menu">
             <div className="grid grid-cols-2 gap-2">
               {NAV_ITEMS.map((item) => (
                 <button
@@ -632,9 +632,9 @@ export default function PlanningPage() {
             {planningView === "plans" && (
             <div className="rounded bg-[#edf3fb] px-5 py-8 sm:px-8 sm:py-10 md:px-10">
               <div className="mx-auto w-full max-w-5xl">
-              <h1 className="text-center text-3xl font-bold text-[#0b3268] sm:text-[44px] sm:leading-tight">
-                Choose the Best Plan for You
-              </h1>
+            <h1 className="text-center text-3xl font-bold text-[#0b3268] sm:text-[44px] sm:leading-tight">
+              Choose the Best Plan for You
+            </h1>
               <p className="mx-auto mt-4 max-w-2xl text-center text-[13px] font-medium leading-relaxed text-[#0f172a] sm:text-sm md:text-base">
                 Create your website for free and upgrade when you’re ready
               </p>
@@ -673,13 +673,13 @@ export default function PlanningPage() {
                     </svg>
                   </span>
                 </button>
-              </div>
+            </div>
 
               <div className="mt-8 w-full pl-3 sm:pl-5 md:pl-8 lg:pl-10">
                 <div className="grid w-full min-w-0 grid-cols-1 gap-y-3 md:grid-cols-4 md:items-center md:gap-x-4 lg:gap-x-6">
                   <p className="min-w-0 text-center text-sm font-bold leading-snug text-[#0c1e36] md:text-left">
-                    What you get with every plan:
-                  </p>
+              What you get with every plan:
+            </p>
                   <span className="min-w-0 text-center text-sm font-medium text-[#0f172a] sm:text-center">
                     Custom Domain
                   </span>
@@ -690,7 +690,7 @@ export default function PlanningPage() {
                     24/7 customer care
                   </span>
                 </div>
-              </div>
+            </div>
 
               <div className="mt-8 flex w-full justify-center px-3 sm:px-4">
                 <div className="planning-billing-toggle-wrap flex w-full max-w-xl items-center gap-3 sm:gap-5">
@@ -726,23 +726,23 @@ export default function PlanningPage() {
                   </span>
                 </div>
               </div>
-              </div>
+            </div>
 
               <div className="planning-plans-grid mx-auto mt-8 grid w-full max-w-5xl grid-cols-1 gap-5 md:grid-cols-3 md:gap-6 md:items-stretch">
-                {plans.map((plan) => (
-                  <article
-                    key={plan.name}
+              {plans.map((plan) => (
+                <article
+                  key={plan.name}
                     className={`group relative flex h-full min-h-0 flex-col rounded border border-[#d8e1ec] bg-white p-4 text-[#0f172a] shadow-sm transition-all duration-200 hover:border-transparent hover:bg-gradient-to-b hover:from-[#06224C] hover:to-[#1A5BBC] hover:text-white hover:shadow-md sm:p-4 ${
                       plan.isRecommended ? "planning-recommended-card" : ""
                     }`}
-                  >
-                    {plan.isRecommended && (
+                >
+                  {plan.isRecommended && (
                       <div className="planning-recommended-badge absolute right-0 top-0 z-10 rounded-bl-md border border-white/10 bg-[#1A5BBC] px-3 py-1.5 text-[9px] font-extrabold leading-none tracking-wide text-white shadow-[0_2px_6px_rgba(0,0,0,0.12)] transition-colors group-hover:border-[#06224C]/40 group-hover:bg-white group-hover:text-[#06224C] hover:border-[#06224C]/40 hover:bg-white hover:text-[#06224C]">
-                        RECOMMENDED
-                      </div>
-                    )}
+                      RECOMMENDED
+                    </div>
+                  )}
                     <div className={`mb-1.5 flex items-center justify-between gap-2 ${plan.isRecommended ? "planning-recommended-content-offset" : ""}`}>
-                      <div>
+                    <div>
                         <h2 className="text-base font-bold leading-tight transition-colors group-hover:text-white">{plan.name}</h2>
                         <p className="mt-0.5 text-xs leading-tight text-[#1e3a5c] transition-colors group-hover:text-white">
                           {billingYearly ? "Per year" : "Per month"}
@@ -761,18 +761,18 @@ export default function PlanningPage() {
                       </div>
                       <div className="planning-price-chip relative top-0 mr-1 shrink-0 rounded border border-[#94b4e0] bg-[#e8f0fc] px-2 py-1 text-base font-bold leading-none text-[#082a5c] transition-colors lg:-top-2 lg:mr-3 lg:px-3.5 lg:py-1.5 lg:text-xl group-hover:border-white/30 group-hover:bg-white group-hover:text-[#0f3e87]">
                         {billingYearly ? plan.yearlyNewPrice : plan.newPrice}
-                      </div>
+                  </div>
                     </div>
                     <div className="mb-2 h-px w-full bg-[#dbe3ef] transition-colors group-hover:bg-white/30" />
 
                     <ul className="space-y-1 text-xs leading-snug text-[#0f172a] transition-colors group-hover:text-white sm:text-sm sm:leading-snug">
-                      {plan.features.map((feature) => (
+                    {plan.features.map((feature) => (
                         <li key={feature} className="flex items-start gap-1.5">
                           <FaCheckCircle className="mt-px shrink-0 text-[10px] text-[#0b3268] transition-colors group-hover:text-white" aria-hidden={true} />
-                          <span>{feature}</span>
-                        </li>
-                      ))}
-                    </ul>
+                        <span>{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
 
                     <div className="mt-2 min-h-0 w-full flex-1 shrink-0" aria-hidden />
 
@@ -780,13 +780,13 @@ export default function PlanningPage() {
                       type="button"
                       onClick={() => handlePurchasePlan(plan)}
                       className="block w-full shrink-0 rounded-full bg-gradient-to-r from-[#06224C] to-[#1A5BBC] py-2 text-center text-sm font-semibold text-white shadow-sm transition-colors transition-opacity duration-200 group-hover:bg-none group-hover:bg-white group-hover:text-[#154fa2] group-hover:opacity-100 hover:bg-none hover:bg-white hover:text-[#154fa2]"
-                    >
-                      Purchase Plan
+                  >
+                    Purchase Plan
                     </button>
-                  </article>
-                ))}
-              </div>
+                </article>
+              ))}
             </div>
+          </div>
             )}
 
             {planningView === "payment" && selectedPlan && (

@@ -197,32 +197,22 @@ body:has(> main.planning-page) {
   }
 }
 
-/* Extreme mobile zoom safety: keep monthly/yearly fully visible */
+/* Extreme mobile zoom safety: keep "Monthly" fully inside its label box */
 @media (max-width: 360px) {
   .planning-billing-toggle-wrap {
-    display: grid !important;
-    grid-template-columns: minmax(0, 1fr) 44px minmax(0, 1fr);
-    align-items: center !important;
-    gap: 0.3rem !important;
+    gap: 0.35rem !important;
   }
   .planning-billing-toggle-wrap .planning-billing-label {
-    flex: 1 1 auto !important;
-    width: auto !important;
-    max-width: none !important;
-    min-width: 0 !important;
-    font-size: 9.5px !important;
-    line-height: 1.05 !important;
-  }
-  .planning-billing-toggle-wrap button[role="switch"] {
-    width: 44px !important;
-    min-width: 44px !important;
-    justify-self: center !important;
+    flex-basis: 68px !important;
+    width: 68px !important;
+    max-width: 68px !important;
+    min-width: 68px !important;
+    font-size: 10px !important;
+    line-height: 1.02 !important;
   }
   .planning-billing-toggle-wrap .planning-billing-label .planning-billing-label-line {
-    display: block;
-    white-space: nowrap;
-    overflow-wrap: normal;
-    word-break: normal;
+    overflow: hidden;
+    text-overflow: clip;
   }
 }
 
