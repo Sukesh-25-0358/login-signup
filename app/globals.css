@@ -70,10 +70,10 @@ body:has(> main.planning-page) {
   margin-top: 0.85rem;
 }
 .planning-billing-label .planning-billing-label-line {
-  display: block;
+  display: inline;
 }
 .planning-billing-label .planning-billing-label-line + .planning-billing-label-line {
-  margin-top: 0.12rem;
+  margin-top: 0;
 }
 /* Mobile + zoom safety: keep recommended badge clear of title */
 @media (max-width: 768px) {
@@ -107,8 +107,8 @@ body:has(> main.planning-page) {
     padding: 0 !important;
   }
   .planning-billing-toggle-wrap .planning-billing-label .planning-billing-label-line {
-    display: block;
-    width: 100%;
+    display: inline;
+    width: auto;
   }
   .planning-price-row {
     flex-direction: column;
