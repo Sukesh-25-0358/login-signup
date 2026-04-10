@@ -202,11 +202,25 @@
       }
       #planningHistoryView table { min-width: 360px; font-size: 10px !important; }
       #planningInvoiceView .planning-invoice-row {
-        grid-template-columns: 78px 10px minmax(0, 1fr) !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 0.35rem !important;
+        width: 100% !important;
+      }
+      #planningInvoiceView .planning-invoice-row > span:nth-child(2) {
+        display: none !important;
+      }
+      #planningInvoiceView .planning-invoice-row > span:first-child {
+        font-weight: 600;
+      }
+      #planningInvoiceView .planning-invoice-row > span:first-child::after {
+        content: ':';
       }
       #planningInvoiceView .planning-invoice-value {
-        overflow-wrap: anywhere !important;
-        word-break: break-word !important;
+        overflow-wrap: break-word !important;
+        word-break: normal !important;
+        max-width: 100% !important;
       }
       .planning-price-row {
         flex-direction: column;
@@ -2349,25 +2363,25 @@
           </div>
         </div>
 
-        <div id="planningInvoiceView" class="hidden mx-auto w-full text-white" style="max-width:740px;border-radius:8px;overflow:hidden;background:linear-gradient(180deg,#2a66be 0%,#0b2a5c 100%);box-shadow:0 2px 0 rgba(0,0,0,0.25);">
+        <div id="planningInvoiceView" class="hidden mx-auto w-full min-w-0 text-white" style="max-width:740px;border-radius:8px;overflow:hidden;background:linear-gradient(180deg,#2a66be 0%,#0b2a5c 100%);box-shadow:0 2px 0 rgba(0,0,0,0.25);">
           <div class="border-b border-white/15 px-4 py-5 sm:px-8 sm:py-6">
             <div class="mb-4 text-left">
               <button type="button" onclick="planningBackToPlans()" class="inline-flex items-center gap-1.5 rounded-md px-2 py-1.5 text-xs font-semibold text-white/90 transition-colors hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 sm:text-sm" aria-label="Back to plans">← Back to plans</button>
             </div>
             <div class="text-center">
-              <h2 class="text-[36px] font-bold leading-tight">Invoice Details</h2>
+              <h2 class="text-2xl font-bold leading-tight sm:text-[36px]">Invoice Details</h2>
             </div>
           </div>
-          <div class="space-y-8 px-8 py-7">
-            <div class="mx-auto w-full max-w-2xl space-y-4 text-[15px]">
+          <div class="min-w-0 space-y-8 px-4 py-6 sm:px-8 sm:py-7">
+            <div class="mx-auto w-full min-w-0 max-w-2xl space-y-3 text-xs sm:space-y-4 sm:text-[15px]">
               <div class="planning-invoice-row" style="display:grid;grid-template-columns:96px 14px minmax(0,1fr);align-items:center;"><span>Invoice ID</span><span>:</span><span id="planningInvoiceId" class="planning-invoice-value">INV-000000</span></div>
               <div class="planning-invoice-row" style="display:grid;grid-template-columns:96px 14px minmax(0,1fr);align-items:center;"><span>Date</span><span>:</span><span id="planningInvoiceDate" class="planning-invoice-value">Apr 08, 2026</span></div>
               <div class="planning-invoice-row" style="display:grid;grid-template-columns:96px 14px minmax(0,1fr);align-items:center;"><span>Plan</span><span>:</span><span id="planningInvoicePlan" class="planning-invoice-value">Basic (Monthly)</span></div>
               <div class="planning-invoice-row" style="display:grid;grid-template-columns:96px 14px minmax(0,1fr);align-items:center;"><span>Amount</span><span>:</span><span id="planningInvoiceAmount" class="planning-invoice-value">$40</span></div>
             </div>
-            <div class="border-t border-white/15 pt-6">
-              <h3 class="mx-auto mb-5 w-full max-w-2xl text-[30px] font-semibold">Billing Information</h3>
-              <div class="mx-auto w-full max-w-2xl space-y-4 text-[15px]">
+            <div class="min-w-0 border-t border-white/15 pt-6">
+              <h3 class="mx-auto mb-4 w-full min-w-0 max-w-2xl text-xl font-semibold sm:mb-5 sm:text-[30px]">Billing Information</h3>
+              <div class="mx-auto w-full min-w-0 max-w-2xl space-y-3 text-xs sm:space-y-4 sm:text-[15px]">
                 <div class="planning-invoice-row" style="display:grid;grid-template-columns:96px 14px minmax(0,1fr);align-items:center;"><span>Name</span><span>:</span><span id="planningInvoiceName" class="planning-invoice-value">Pentakota Srinivas</span></div>
                 <div class="planning-invoice-row" style="display:grid;grid-template-columns:96px 14px minmax(0,1fr);align-items:center;"><span>Email</span><span>:</span><span id="planningInvoiceEmail" class="planning-invoice-value">srinu@gmail.com</span></div>
                 <div class="planning-invoice-row" style="display:grid;grid-template-columns:96px 14px minmax(0,1fr);align-items:center;"><span>Contact No</span><span>:</span><span id="planningInvoiceContact" class="planning-invoice-value">9848xxxx19</span></div>

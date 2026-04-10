@@ -46,8 +46,8 @@ body:has(> main.planning-page) {
   grid-template-columns: 96px 14px minmax(0, 1fr) !important;
 }
 .planning-invoice-value {
-  overflow-wrap: anywhere;
-  word-break: break-word;
+  overflow-wrap: break-word;
+  word-break: normal;
 }
 /* Mobile/tablet safety at high zoom: always keep plan cards stacked */
 @media (max-width: 1023px) {
@@ -96,9 +96,6 @@ body:has(> main.planning-page) {
     max-width: 48px;
     white-space: normal !important;
   }
-  .planning-invoice-row {
-    grid-template-columns: 78px 10px minmax(0, 1fr) !important;
-  }
   .planning-price-row {
     flex-direction: column;
     align-items: flex-start !important;
@@ -130,6 +127,28 @@ body:has(> main.planning-page) {
   .planning-invoice-view h2 {
     font-size: 1.55rem !important;
     line-height: 1.15 !important;
+  }
+  /* Stack label above value so text stays readable at 180–200% mobile zoom */
+  .planning-invoice-view .planning-invoice-row {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 0.35rem !important;
+    width: 100% !important;
+  }
+  .planning-invoice-view .planning-invoice-row > span:nth-child(2) {
+    display: none !important;
+  }
+  .planning-invoice-view .planning-invoice-row > span:first-child {
+    font-weight: 600;
+  }
+  .planning-invoice-view .planning-invoice-row > span:first-child::after {
+    content: ':';
+  }
+  .planning-invoice-view .planning-invoice-value {
+    overflow-wrap: break-word !important;
+    word-break: normal !important;
+    max-width: 100% !important;
   }
   .planning-history-view .planning-history-track {
     max-width: 100% !important;
