@@ -693,9 +693,9 @@ export default function PlanningPage() {
               </div>
 
               <div className="mt-8 flex w-full justify-center px-3 sm:px-4">
-                <div className="planning-billing-toggle-wrap grid w-full max-w-xl grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2 sm:gap-5">
+                <div className="planning-billing-toggle-wrap grid w-full max-w-xl grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-start gap-2 sm:gap-5">
                   <span
-                    className={`planning-billing-label flex min-h-[2.75rem] min-w-0 w-full select-none items-center justify-end py-1 text-right text-sm leading-snug sm:min-h-9 sm:py-1.5 sm:pl-2 sm:pr-1 ${
+                    className={`planning-billing-label flex min-h-[2.5rem] min-w-0 w-full select-none items-start justify-end py-0.5 pl-2 pr-1 text-right text-sm leading-snug sm:min-h-9 sm:py-1 sm:pr-2 ${
                       !billingYearly ? "font-bold text-[#0c1e36]" : "font-medium text-[#3d4f63]"
                     }`}
                   >
@@ -707,7 +707,7 @@ export default function PlanningPage() {
                     aria-checked={billingYearly}
                     aria-label="Toggle monthly or yearly billing"
                     onClick={() => setBillingYearly((v) => !v)}
-                    className="relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center self-center rounded-full border border-[#94a3b8] bg-white px-0.5 align-middle focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#06224C]/40 focus-visible:ring-offset-2"
+                    className="planning-billing-switch relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center justify-center self-start rounded-full border border-[#94a3b8] bg-white px-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#06224C]/40 focus-visible:ring-offset-2"
                   >
                     <span
                       className={`pointer-events-none absolute left-0.5 top-1/2 h-4 w-4 -translate-y-1/2 rounded-full bg-[#06224C] shadow-sm transition-transform duration-200 ${
@@ -716,7 +716,7 @@ export default function PlanningPage() {
                     />
                   </button>
                   <span
-                    className={`planning-billing-label flex min-h-[2.75rem] min-w-0 w-full select-none items-center justify-start py-1 text-left text-sm leading-snug sm:min-h-9 sm:py-1.5 sm:pr-2 sm:pl-1 ${
+                    className={`planning-billing-label flex min-h-[2.5rem] min-w-0 w-full select-none items-start justify-start py-0.5 pl-1 pr-2 text-left text-sm leading-snug sm:min-h-9 sm:py-1 sm:pl-2 ${
                       billingYearly ? "font-bold text-[#0c1e36]" : "font-medium text-[#3d4f63]"
                     }`}
                   >

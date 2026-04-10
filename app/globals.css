@@ -57,8 +57,13 @@ body:has(> main.planning-page) {
   .planning-billing-toggle-wrap {
     display: grid !important;
     grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) !important;
-    align-items: center !important;
+    align-items: start !important;
     gap: 0.45rem !important;
+  }
+  .planning-billing-toggle-wrap .planning-billing-switch {
+    margin-top: 0.25rem !important;
+    align-self: start !important;
+    justify-self: center !important;
   }
   .planning-billing-toggle-wrap .planning-billing-label {
     min-width: 0 !important;
