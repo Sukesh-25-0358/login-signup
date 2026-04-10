@@ -240,44 +240,55 @@
     }
     @media (max-width: 560px) {
       .planning-billing-toggle-wrap {
-        display: grid !important;
-        grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) !important;
-        align-items: center !important;
-        justify-content: stretch !important;
-        gap: 0.35rem !important;
+        justify-content: center !important;
+        gap: 0.4rem !important;
       }
       .planning-billing-toggle-wrap .planning-billing-label {
-        flex: 1 1 auto !important;
-        width: auto !important;
-        max-width: 100% !important;
-        min-width: 0 !important;
+        flex: 0 0 76px !important;
+        width: 76px !important;
+        max-width: 76px !important;
+        min-width: 76px !important;
+        display: inline-flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
         justify-content: center !important;
         text-align: center !important;
         white-space: normal !important;
-        line-height: 1.05 !important;
-        overflow-wrap: anywhere !important;
-        word-break: break-word !important;
-        padding-left: 0 !important;
-        padding-right: 0 !important;
-        font-size: 10.5px !important;
+        line-height: 1.08 !important;
+        row-gap: 0.12rem !important;
+        padding-left: 2px !important;
+        padding-right: 2px !important;
+      }
+      .planning-billing-toggle-wrap .planning-billing-label .planning-billing-label-line {
+        display: block !important;
+        width: 100%;
       }
     }
     @media (max-width: 420px) {
       .planning-billing-toggle-wrap {
-        gap: 0.3rem !important;
+        justify-content: center !important;
+        gap: 0.5rem !important;
       }
       .planning-billing-toggle-wrap .planning-billing-label {
+        flex: 0 0 60px !important;
+        width: 60px !important;
+        max-width: 60px !important;
+        min-width: 60px !important;
         min-height: 2.2rem !important;
         display: inline-flex !important;
-        flex-direction: row !important;
+        flex-direction: column !important;
         justify-content: center !important;
         align-items: center !important;
-        row-gap: 0 !important;
-        font-size: 10px !important;
-        line-height: 1.02 !important;
+        row-gap: 0.12rem !important;
+        font-size: 11px !important;
+        line-height: 1.05 !important;
         white-space: normal !important;
         text-align: center !important;
         padding: 0 !important;
+      }
+      .planning-billing-toggle-wrap .planning-billing-label .planning-billing-label-line {
+        display: block !important;
+        width: 100%;
       }
       #planningHistoryView table {
         min-width: 320px !important;
@@ -2305,7 +2316,8 @@
                 id="planningLabelMonthly"
                 class="planning-billing-label planning-billing-label--active inline-flex min-h-9 min-w-0 flex-1 select-none items-center justify-end gap-1 py-1.5 pl-2 pr-1 text-right text-sm leading-tight sm:pr-2"
               >
-                Bill Monthly
+                <span class="planning-billing-label-line">Bill</span>
+                <span class="planning-billing-label-line">Monthly</span>
               </span>
               <button
                 type="button"
@@ -2325,7 +2337,8 @@
                 id="planningLabelYearly"
                 class="planning-billing-label inline-flex min-h-9 min-w-0 flex-1 select-none items-center justify-start gap-1 py-1.5 pl-1 pr-2 text-left text-sm leading-tight sm:pl-2"
               >
-                Bill Yearly
+                <span class="planning-billing-label-line">Bill</span>
+                <span class="planning-billing-label-line">Yearly</span>
               </span>
             </div>
           </div>

@@ -699,7 +699,8 @@ export default function PlanningPage() {
                       !billingYearly ? "font-bold text-[#0c1e36]" : "font-medium text-[#3d4f63]"
                     }`}
                   >
-                    Bill Monthly
+                    <span className="planning-billing-label-line">Bill</span>
+                    <span className="planning-billing-label-line">Monthly</span>
                   </span>
                   <button
                     type="button"
@@ -720,7 +721,8 @@ export default function PlanningPage() {
                       billingYearly ? "font-bold text-[#0c1e36]" : "font-medium text-[#3d4f63]"
                     }`}
                   >
-                    Bill Yearly
+                    <span className="planning-billing-label-line">Bill</span>
+                    <span className="planning-billing-label-line">Yearly</span>
                   </span>
                 </div>
               </div>
