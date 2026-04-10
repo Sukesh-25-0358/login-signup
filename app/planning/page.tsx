@@ -695,7 +695,7 @@ export default function PlanningPage() {
               <div className="mt-8 flex w-full justify-center px-3 sm:px-4">
                 <div className="planning-billing-toggle-wrap flex w-full max-w-xl items-center gap-3 sm:gap-5">
                   <span
-                    className={`planning-billing-label inline-flex min-h-9 min-w-0 flex-1 select-none items-center justify-end gap-1 whitespace-nowrap py-1.5 pl-2 pr-1 text-right text-sm leading-tight sm:pr-2 ${
+                    className={`planning-billing-label inline-flex min-h-9 min-w-0 flex-1 select-none items-center justify-end gap-1 py-1.5 pl-2 pr-1 text-right text-sm leading-tight sm:pr-2 ${
                       !billingYearly ? "font-bold text-[#0c1e36]" : "font-medium text-[#3d4f63]"
                     }`}
                   >
@@ -716,7 +716,7 @@ export default function PlanningPage() {
                     />
                   </button>
                   <span
-                    className={`planning-billing-label inline-flex min-h-9 min-w-0 flex-1 select-none items-center justify-start gap-1 whitespace-nowrap py-1.5 pl-1 pr-2 text-left text-sm leading-tight sm:pl-2 ${
+                    className={`planning-billing-label inline-flex min-h-9 min-w-0 flex-1 select-none items-center justify-start gap-1 py-1.5 pl-1 pr-2 text-left text-sm leading-tight sm:pl-2 ${
                       billingYearly ? "font-bold text-[#0c1e36]" : "font-medium text-[#3d4f63]"
                     }`}
                   >
