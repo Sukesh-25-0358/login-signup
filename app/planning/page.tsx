@@ -890,7 +890,10 @@ export default function PlanningPage() {
                           className="mb-4 block w-full rounded border border-white/40 bg-transparent px-3 py-2 text-xs text-white placeholder:text-white/70 focus:outline-none sm:text-sm"
                           style={{ width: "100%" }}
                         />
-                        <div className="grid grid-cols-2 gap-2" style={{ width: "100%" }}>
+                        <div
+                          className="planning-payment-card-row grid grid-cols-2 gap-2"
+                          style={{ width: "100%" }}
+                        >
                           <input
                             type="text"
                             value={cardExpiry}
@@ -899,7 +902,7 @@ export default function PlanningPage() {
                             pattern="[0-9/]*"
                             autoComplete="cc-exp"
                             placeholder="MM/YY"
-                            className="rounded border border-white/40 bg-transparent px-3 py-2 text-xs text-white placeholder:text-white/70 focus:outline-none sm:text-sm"
+                            className="planning-payment-expiry min-w-0 rounded border border-white/40 bg-transparent px-2 py-2 text-xs text-white placeholder:text-white/70 focus:outline-none sm:px-3 sm:text-sm"
                           />
                           <input
                             type="text"
@@ -909,7 +912,7 @@ export default function PlanningPage() {
                             pattern="[0-9]*"
                             autoComplete="cc-csc"
                             placeholder="Cvv"
-                            className="rounded border border-white/40 bg-transparent px-3 py-2 text-xs text-white placeholder:text-white/70 focus:outline-none sm:text-sm"
+                            className="planning-payment-cvv min-w-0 rounded border border-white/40 bg-transparent px-2 py-2 text-xs text-white placeholder:text-white/70 focus:outline-none sm:px-3 sm:text-sm"
                           />
                         </div>
                       </div>
@@ -968,7 +971,7 @@ export default function PlanningPage() {
                             onChange={(e) => setUpiId(e.target.value)}
                             placeholder="name@bank / name@upi"
                             autoComplete="off"
-                            className="block w-full rounded border border-white/40 bg-transparent px-3 py-2 text-xs text-white placeholder:text-white/70 focus:outline-none sm:text-sm"
+                            className="planning-payment-upi block min-w-0 w-full rounded border border-white/40 bg-transparent px-2 py-2 text-xs text-white placeholder:text-white/70 focus:outline-none sm:px-3 sm:text-sm"
                             style={{ width: "100%" }}
                           />
                           <p className="mt-2 text-[11px] leading-snug text-white/75">

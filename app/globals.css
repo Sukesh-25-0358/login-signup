@@ -164,6 +164,25 @@ body:has(> main.planning-page) {
   .planning-payment-view select {
     font-size: 12px !important;
   }
+  /* Card row + UPI: avoid placeholder clipping at 190–200% mobile zoom */
+  .planning-payment-view .planning-payment-card-row {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr) !important;
+    gap: 0.5rem !important;
+  }
+  .planning-payment-view .planning-payment-expiry,
+  .planning-payment-view .planning-payment-cvv,
+  .planning-payment-view .planning-payment-upi {
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+  .planning-payment-view .planning-payment-expiry::placeholder,
+  .planning-payment-view .planning-payment-cvv::placeholder,
+  .planning-payment-view .planning-payment-upi::placeholder {
+    font-size: 10px !important;
+    line-height: 1.25 !important;
+    letter-spacing: -0.03em !important;
+  }
   .planning-invoice-view h2 {
     font-size: 1.55rem !important;
     line-height: 1.15 !important;
@@ -232,6 +251,11 @@ body:has(> main.planning-page) {
   .planning-history-view table {
     min-width: 360px !important;
     font-size: 10px !important;
+  }
+}
+@media (max-width: 380px) {
+  .planning-payment-view .planning-payment-card-row {
+    grid-template-columns: 1fr !important;
   }
 }
 @media (max-width: 420px) {
