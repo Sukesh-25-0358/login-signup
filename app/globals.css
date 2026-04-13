@@ -190,6 +190,16 @@ body:has(> main.planning-page) {
     word-break: normal !important;
     max-width: 100% !important;
   }
+  .planning-invoice-view .planning-invoice-download {
+    box-sizing: border-box !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  .planning-invoice-view .planning-invoice-download button {
+    box-sizing: border-box !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
   .planning-history-view .planning-history-track {
     max-width: 100% !important;
     flex-direction: column !important;

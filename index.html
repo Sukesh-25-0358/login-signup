@@ -223,6 +223,16 @@
         word-break: normal !important;
         max-width: 100% !important;
       }
+      #planningInvoiceView .planning-invoice-download {
+        box-sizing: border-box !important;
+        width: 100% !important;
+        max-width: 100% !important;
+      }
+      #planningInvoiceView .planning-invoice-download button {
+        box-sizing: border-box !important;
+        width: 100% !important;
+        max-width: 100% !important;
+      }
       .planning-price-row {
         flex-direction: column;
         align-items: flex-start !important;
@@ -2548,8 +2558,8 @@
               </div>
             </div>
           </div>
-          <div class="border-t border-white/15 px-8 py-6 text-center">
-            <button type="button" onclick="planningSetView('history')" class="inline-flex items-center gap-2 rounded-md bg-white px-6 py-2.5 text-[15px] font-semibold text-[#1f2937]"><span aria-hidden>↓</span>Download Invoice</button>
+          <div class="planning-invoice-download min-w-0 border-t border-white/15 px-4 py-5 text-center sm:px-8 sm:py-6">
+            <button type="button" onclick="planningSetView('history')" class="inline-flex w-full max-w-full min-w-0 flex-wrap items-center justify-center gap-2 rounded-md bg-white px-4 py-2.5 text-xs font-semibold leading-snug text-[#1f2937] sm:inline-flex sm:w-auto sm:max-w-none sm:px-6 sm:py-2.5 sm:text-[15px]"><span aria-hidden>↓</span>Download Invoice</button>
           </div>
         </div>
 

@@ -1042,11 +1042,14 @@ export default function PlanningPage() {
                     </div>
                   </div>
                 </div>
-                <div className="px-4 py-5 text-center sm:px-8 sm:py-6" style={{ borderTop: "1px solid rgba(255,255,255,0.15)" }}>
+                <div
+                  className="planning-invoice-download min-w-0 px-4 py-5 text-center sm:px-8 sm:py-6"
+                  style={{ borderTop: "1px solid rgba(255,255,255,0.15)" }}
+                >
                   <button
                     type="button"
                     onClick={() => setPlanningView("history")}
-                    className="inline-flex items-center gap-2 rounded-md bg-white px-5 py-2 text-xs font-semibold text-[#1f2937] sm:px-6 sm:py-2.5 sm:text-[15px]"
+                    className="inline-flex w-full max-w-full min-w-0 flex-wrap items-center justify-center gap-2 rounded-md bg-white px-4 py-2.5 text-xs font-semibold leading-snug text-[#1f2937] sm:inline-flex sm:w-auto sm:max-w-none sm:px-6 sm:text-[15px]"
                   >
                     <span aria-hidden>↓</span>
                     Download Invoice
