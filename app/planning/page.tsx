@@ -818,45 +818,45 @@ export default function PlanningPage() {
                 </div>
                 <div className="mx-auto w-full px-4 py-6 sm:px-6 sm:py-8" style={{ maxWidth: 430 }}>
                   <div className="space-y-3 text-xs sm:space-y-4 sm:text-sm">
-                    <label className="flex cursor-pointer items-center gap-2">
+                    <label className="flex cursor-pointer items-start gap-2">
                       <input
                         type="radio"
                         name="pm"
-                        className="accent-white"
+                        className="planning-pm-radio mt-0.5 h-4 w-4 shrink-0 accent-white"
                         checked={paymentMethod === "paypal"}
                         onChange={() => setPaymentMethod("paypal")}
                       />
-                      Paypal
+                      <span className="min-w-0 flex-1 leading-snug">Paypal</span>
                     </label>
-                    <label className="flex cursor-pointer items-center gap-2">
+                    <label className="flex cursor-pointer items-start gap-2">
                       <input
                         type="radio"
                         name="pm"
-                        className="accent-white"
+                        className="planning-pm-radio mt-0.5 h-4 w-4 shrink-0 accent-white"
                         checked={paymentMethod === "card"}
                         onChange={() => setPaymentMethod("card")}
                       />
-                      Credit / Debit Card
+                      <span className="min-w-0 flex-1 leading-snug">Credit / Debit Card</span>
                     </label>
-                    <label className="flex cursor-pointer items-center gap-2">
+                    <label className="flex cursor-pointer items-start gap-2">
                       <input
                         type="radio"
                         name="pm"
-                        className="accent-white"
+                        className="planning-pm-radio mt-0.5 h-4 w-4 shrink-0 accent-white"
                         checked={paymentMethod === "netbanking"}
                         onChange={() => setPaymentMethod("netbanking")}
                       />
-                      Net Banking
+                      <span className="min-w-0 flex-1 leading-snug">Net Banking</span>
                     </label>
-                    <label className="flex cursor-pointer items-center gap-2">
+                    <label className="flex cursor-pointer items-start gap-2">
                       <input
                         type="radio"
                         name="pm"
-                        className="accent-white"
+                        className="planning-pm-radio mt-0.5 h-4 w-4 shrink-0 accent-white"
                         checked={paymentMethod === "online"}
                         onChange={() => setPaymentMethod("online")}
                       />
-                      Online Payment ( g-pay / Phone pay )
+                      <span className="min-w-0 flex-1 leading-snug">Online (GPay / PhonePe)</span>
                     </label>
                   </div>
 

@@ -160,9 +160,18 @@ body:has(> main.planning-page) {
     max-width: 100% !important;
     border-radius: 6px !important;
   }
-  .planning-payment-view input,
+  .planning-payment-view input:not([type="radio"]):not([type="checkbox"]),
   .planning-payment-view select {
     font-size: 12px !important;
+  }
+  /* Same visual size for all payment method radios at high mobile zoom */
+  .planning-payment-view input[type="radio"].planning-pm-radio {
+    width: 1rem !important;
+    height: 1rem !important;
+    min-width: 1rem !important;
+    min-height: 1rem !important;
+    flex-shrink: 0 !important;
+    box-sizing: border-box !important;
   }
   /* Card row + UPI: avoid placeholder clipping at 190–200% mobile zoom */
   .planning-payment-view .planning-payment-card-row {

@@ -164,9 +164,17 @@
       #planningHistoryView {
         border-radius: 6px !important;
       }
-      #planningPaymentView input,
+      #planningPaymentView input:not([type="radio"]):not([type="checkbox"]),
       #planningPaymentView select {
         font-size: 12px !important;
+      }
+      #planningPaymentView input[type="radio"].planning-pm-radio {
+        width: 1rem !important;
+        height: 1rem !important;
+        min-width: 1rem !important;
+        min-height: 1rem !important;
+        flex-shrink: 0 !important;
+        box-sizing: border-box !important;
       }
       #planningInvoiceView h2 {
         font-size: 1.55rem !important;
@@ -2463,21 +2471,21 @@
           </div>
           <div class="mx-auto w-full px-4 py-6 sm:px-6 sm:py-8" style="max-width:430px;">
             <div class="space-y-3 text-xs sm:space-y-4 sm:text-sm">
-              <label class="flex cursor-pointer items-center gap-2">
-                <input type="radio" name="planningPm" value="paypal" class="accent-white" onchange="planningSyncPaymentMethodUI()" />
-                Paypal
+              <label class="flex cursor-pointer items-start gap-2">
+                <input type="radio" name="planningPm" value="paypal" class="planning-pm-radio mt-0.5 h-4 w-4 shrink-0 accent-white" onchange="planningSyncPaymentMethodUI()" />
+                <span class="min-w-0 flex-1 leading-snug">Paypal</span>
               </label>
-              <label class="flex cursor-pointer items-center gap-2">
-                <input type="radio" name="planningPm" value="card" class="accent-white" checked onchange="planningSyncPaymentMethodUI()" />
-                Credit / Debit Card
+              <label class="flex cursor-pointer items-start gap-2">
+                <input type="radio" name="planningPm" value="card" class="planning-pm-radio mt-0.5 h-4 w-4 shrink-0 accent-white" checked onchange="planningSyncPaymentMethodUI()" />
+                <span class="min-w-0 flex-1 leading-snug">Credit / Debit Card</span>
               </label>
-              <label class="flex cursor-pointer items-center gap-2">
-                <input type="radio" name="planningPm" value="netbanking" class="accent-white" onchange="planningSyncPaymentMethodUI()" />
-                Net Banking
+              <label class="flex cursor-pointer items-start gap-2">
+                <input type="radio" name="planningPm" value="netbanking" class="planning-pm-radio mt-0.5 h-4 w-4 shrink-0 accent-white" onchange="planningSyncPaymentMethodUI()" />
+                <span class="min-w-0 flex-1 leading-snug">Net Banking</span>
               </label>
-              <label class="flex cursor-pointer items-center gap-2">
-                <input type="radio" name="planningPm" value="online" class="accent-white" onchange="planningSyncPaymentMethodUI()" />
-                Online Payment ( g-pay / Phone pay )
+              <label class="flex cursor-pointer items-start gap-2">
+                <input type="radio" name="planningPm" value="online" class="planning-pm-radio mt-0.5 h-4 w-4 shrink-0 accent-white" onchange="planningSyncPaymentMethodUI()" />
+                <span class="min-w-0 flex-1 leading-snug">Online (GPay / PhonePe)</span>
               </label>
             </div>
             <div class="mt-5 border-t border-white/15 pt-5 text-xs sm:text-sm">
