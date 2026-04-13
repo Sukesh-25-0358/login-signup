@@ -969,7 +969,7 @@ export default function PlanningPage() {
                           <input
                             value={upiId}
                             onChange={(e) => setUpiId(e.target.value)}
-                            placeholder="name@bank / name@upi"
+                            placeholder="name@upi"
                             autoComplete="off"
                             className="planning-payment-upi block min-w-0 w-full rounded border border-white/40 bg-transparent px-2 py-2 text-xs text-white placeholder:text-white/70 focus:outline-none sm:px-3 sm:text-sm"
                             style={{ width: "100%" }}
