@@ -250,6 +250,31 @@ function saveBillingHistoryToStorage(entries: BillingHistoryEntry[]) {
   }
 }
 
+/** Client-side invoice summary — avoids 404 when no API / static hosting (e.g. GitHub Pages). */
+function downloadBillingInvoiceSummary(entry: BillingHistoryEntry) {
+  if (typeof window === "undefined") return;
+  const lines = [
+    "STACKLY — Invoice summary",
+    "",
+    `Invoice ID: ${entry.invoiceId}`,
+    `Date: ${entry.date}`,
+    `Amount: ${entry.amount}`,
+    `Status: ${entry.status}`,
+    "",
+    "Generated in your browser. Official PDF invoices will be available when billing is connected to your account.",
+  ];
+  const blob = new Blob([lines.join("\n")], { type: "text/plain;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `${entry.invoiceId.replace(/[^a-zA-Z0-9-_]/g, "_")}.txt`;
+  a.rel = "noopener";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
 export default function PlanningPage() {
   const router = useRouter();
   const [activeNav, setActiveNav] = useState<NavId>("billing");
@@ -1143,15 +1168,17 @@ export default function PlanningPage() {
                             </span>
                           </td>
                           <td className="px-3 py-3.5">
-                            <span
-                              className="inline-flex h-6 w-7 items-center justify-center rounded-md text-xs font-bold text-white"
+                            <button
+                              type="button"
+                              className="inline-flex h-6 w-7 cursor-pointer items-center justify-center rounded-md border-0 text-xs font-bold text-white transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1e7fd8] focus-visible:ring-offset-2 focus-visible:ring-offset-white"
                               style={{ backgroundColor: "#1e7fd8" }}
-                              aria-hidden
+                              aria-label={`Download invoice summary ${entry.invoiceId}`}
+                              onClick={() => downloadBillingInvoiceSummary(entry)}
                             >
-                              <svg width="12" height="12" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <svg width="12" height="12" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
                                 <path d="M10 4v8m0 0l-3-3m3 3l3-3M5 14h10" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
                               </svg>
-                            </span>
+                            </button>
                           </td>
                         </tr>
                       ))}

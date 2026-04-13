@@ -1576,6 +1576,30 @@
       });
     }
 
+    function planningDownloadInvoiceSummary(entry) {
+      if (!entry || !entry.invoiceId) return;
+      var lines = [
+        "STACKLY — Invoice summary",
+        "",
+        "Invoice ID: " + entry.invoiceId,
+        "Date: " + entry.date,
+        "Amount: " + entry.amount,
+        "Status: " + entry.status,
+        "",
+        "Generated in your browser. Official PDF invoices will be available when billing is connected to your account."
+      ];
+      var blob = new Blob([lines.join("\n")], { type: "text/plain;charset=utf-8" });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement("a");
+      a.href = url;
+      a.download = String(entry.invoiceId).replace(/[^a-zA-Z0-9-_]/g, "_") + ".txt";
+      a.rel = "noopener";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
     function planningRenderHistory() {
       var tbody = document.getElementById("planningHistoryTbody");
       if (!tbody) return;
@@ -1586,15 +1610,24 @@
           });
       tbody.innerHTML = rows.map(function (entry) {
         var badge = entry.status === "Paid" ? "#4f8f43" : "#667085";
+        var idJson = JSON.stringify(entry.invoiceId);
         return "<tr style='border-top:1px solid #e2e8f0'>"
           + "<td class='px-3 py-3.5'>" + entry.date + "</td>"
           + "<td class='px-3 py-3.5'>" + entry.invoiceId + "</td>"
           + "<td class='px-3 py-3.5'>" + entry.amount + "</td>"
           + "<td class='px-3 py-3.5'><span class='inline-flex min-w-[56px] justify-center rounded-md px-2 py-1 text-[10px] font-bold text-white' style='background:" + badge + "'>" + entry.status + "</span></td>"
-          + "<td class='px-3 py-3.5'><span class='inline-flex h-6 w-7 items-center justify-center rounded-md text-xs font-bold text-white' style='background:#1e7fd8'>↓</span></td>"
+          + "<td class='px-3 py-3.5'><button type='button' class='inline-flex h-6 w-7 cursor-pointer items-center justify-center rounded-md border-0 text-xs font-bold text-white hover:opacity-90' style='background:#1e7fd8' aria-label='Download invoice summary " + entry.invoiceId.replace(/"/g, "&quot;") + "' onclick='planningDownloadInvoiceSummaryById(" + idJson + ")'>↓</button></td>"
           + "</tr>";
       }).join("");
       planningSyncHistoryYearSelect();
+    }
+
+    function planningDownloadInvoiceSummaryById(invoiceId) {
+      var entry = planningHistory.find(function (e) {
+        return e.invoiceId === invoiceId;
+      });
+      if (!entry) return;
+      planningDownloadInvoiceSummary(entry);
     }
 
     function planningApplyPlanPrices(yearly) {
