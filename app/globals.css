@@ -152,6 +152,21 @@ body:has(> main.planning-page) {
   }
 }
 
+/* Billing history: “This Year” select — custom chevron so the arrow shows on all mobile browsers
+   (native indicator is inconsistent; sm:pr-[10px] also clipped it at ≥640px viewports). */
+.planning-history-view .planning-history-filter select.planning-history-year-select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-color: transparent;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.5rem center;
+  background-size: 1rem 1rem;
+  padding-right: 2.25rem;
+  box-sizing: border-box;
+}
+
 /* Payment / invoice / history readability safety up to 200% mobile zoom */
 @media (max-width: 640px) {
   .planning-payment-view,
@@ -258,7 +273,7 @@ body:has(> main.planning-page) {
   .planning-history-view .planning-history-filter select.planning-history-year-select {
     font-size: 12px !important;
     line-height: 1.35 !important;
-    padding-right: 2rem !important;
+    padding-right: 2.25rem !important;
   }
   .planning-history-view .planning-history-table-wrap {
     max-width: 100% !important;

@@ -1105,8 +1105,8 @@ export default function PlanningPage() {
                       id="historyYearSelect"
                       value={historyYearFilter}
                       onChange={(e) => setHistoryYearFilter(e.target.value)}
-                      className="planning-history-year-select box-border w-full min-w-0 max-w-none shrink-0 py-[7px] pl-[10px] pr-8 text-[12px] leading-snug text-[#1f2937] sm:min-w-[10rem] sm:max-w-[12rem] sm:flex-1 sm:pr-[10px] sm:text-[10px]"
-                      style={{ border: 0, outline: "none", background: "transparent", fontWeight: historyYearFilter === "all" ? 500 : 700 }}
+                      className="planning-history-year-select box-border w-full min-w-0 max-w-none shrink-0 bg-transparent py-[7px] pl-[10px] pr-9 text-[12px] leading-snug text-[#1f2937] sm:min-w-[10rem] sm:max-w-[12rem] sm:flex-1 sm:pr-9 sm:text-[10px]"
+                      style={{ border: 0, outline: "none", fontWeight: historyYearFilter === "all" ? 500 : 700 }}
                     >
                       <option value="this">This Year</option>
                       {historyYears.map((year) => (

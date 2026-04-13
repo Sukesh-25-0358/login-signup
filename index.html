@@ -138,6 +138,18 @@
       box-sizing: border-box;
       min-width: 0;
     }
+    #planningHistoryView .planning-history-filter select.planning-history-year-select {
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      background-color: transparent;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 0.5rem center;
+      background-size: 1rem 1rem;
+      padding-right: 2.25rem;
+      box-sizing: border-box;
+    }
     /* Mobile/tablet safety at high zoom: always keep plan cards stacked */
     @media (max-width: 1023px) {
       .planning-plans-grid {
@@ -201,7 +213,7 @@
       #planningHistoryView .planning-history-filter select.planning-history-year-select {
         font-size: 12px !important;
         line-height: 1.35 !important;
-        padding-right: 2rem !important;
+        padding-right: 2.25rem !important;
       }
       #planningHistoryView .planning-history-table-wrap {
         max-width: 100% !important;
@@ -2579,7 +2591,7 @@
             <h2 class="shrink-0 text-xl font-bold leading-tight tracking-[0.2px] sm:text-[34px]">Billing History</h2>
             <div class="planning-history-filter flex min-h-0 w-full min-w-0 flex-col items-stretch overflow-visible rounded-md bg-white sm:w-auto sm:max-w-none sm:flex-row sm:flex-nowrap sm:shrink-0" style="color:#1f2937;font-size:10px;line-height:1.2;box-shadow:0 0 0 1px rgba(15,23,42,0.08);">
               <button id="planningHistoryAllBtn" type="button" onclick="planningSetHistoryFilterYear('all')" class="min-w-0 w-full whitespace-nowrap border-b border-[#e2e8f0] sm:w-auto sm:flex-none sm:border-b-0 sm:border-r sm:border-[#e2e8f0]" style="padding:7px 10px;color:#1f2937;">All Invoices</button>
-              <select id="planningHistoryYearSelect" class="planning-history-year-select box-border w-full min-w-0 max-w-none shrink-0 py-[7px] pl-[10px] pr-8 text-[12px] leading-snug text-[#1f2937] sm:min-w-[10rem] sm:max-w-[12rem] sm:flex-1 sm:pr-[10px] sm:text-[10px]" onchange="planningSetHistoryFilterYear(this.value)" style="border:0;outline:none;background:transparent;font-weight:700;">
+              <select id="planningHistoryYearSelect" class="planning-history-year-select box-border w-full min-w-0 max-w-none shrink-0 bg-transparent py-[7px] pl-[10px] pr-9 text-[12px] leading-snug text-[#1f2937] sm:min-w-[10rem] sm:max-w-[12rem] sm:flex-1 sm:pr-9 sm:text-[10px]" onchange="planningSetHistoryFilterYear(this.value)" style="border:0;outline:none;font-weight:700;">
                 <option value="this">This Year</option>
               </select>
             </div>
