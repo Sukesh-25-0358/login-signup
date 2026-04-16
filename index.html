@@ -113,6 +113,72 @@
       transition: transform 0.2s ease;
     }
 
+    /* Buy screen (index.html#buyscreen): centered layout */
+    #buyscreenPage {
+      background: #efefef;
+      color: #111827;
+      overflow-x: hidden;
+    }
+    #buyscreenPage .buyscreen-shell {
+      box-sizing: border-box;
+      overflow: hidden;
+      border: 1px solid #d9d9d9;
+      background: #ffffff;
+      border-radius: 0.5rem;
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08);
+    }
+    #buyscreenPage .buyscreen-header > * {
+      min-width: 0;
+    }
+    #buyscreenPage .buyscreen-categories {
+      display: flex;
+      gap: 0.75rem;
+      overflow-x: auto;
+      scrollbar-width: thin;
+      -webkit-overflow-scrolling: touch;
+    }
+    #buyscreenPage .buyscreen-category-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      white-space: nowrap;
+      padding: 0.1rem 0.2rem;
+      opacity: 0.95;
+    }
+    #buyscreenPage .buyscreen-category-item--push {
+      margin-left: auto;
+    }
+    #buyscreenPage .buyscreen-products > * {
+      min-width: 0;
+    }
+    #buyscreenPage .buyscreen-products-arrow {
+      width: 20px;
+      height: 20px;
+      border: 0;
+      background: transparent;
+      color: #bcc1c8;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      padding: 0;
+      cursor: pointer;
+    }
+    #buyscreenPage .buyscreen-products-arrow:hover {
+      color: #9ca3af;
+    }
+    @media (min-width: 768px) {
+      #buyscreenPage .buyscreen-categories {
+        gap: 1.2rem;
+        padding-left: 2rem !important;
+        padding-right: 2rem !important;
+      }
+      #buyscreenPage .buyscreen-category-item {
+        padding: 0;
+        opacity: 1;
+      }
+    }
+
     /* Planning purchase flow (payment/invoice/history): mobile + 100-200% zoom safety */
     #planningPaymentView {
       box-sizing: border-box;
@@ -1682,7 +1748,7 @@
     }
 
     function showPage(page) {
-      var pages = ["planning", "signup", "login", "error", "notFound", "forgot", "verifyEmail", "verifyMobile", "verified", "createNewPassword"];
+      var pages = ["buyscreen", "planning", "signup", "login", "error", "notFound", "forgot", "verifyEmail", "verifyMobile", "verified", "createNewPassword"];
       pages.forEach(function (key) {
         var el = document.getElementById(key + "Page");
         if (el) el.classList.add("hidden");
@@ -1695,6 +1761,441 @@
       document.body.style.overflow = "";
       updateMobilePlaceholders();
       if (page === "planning") initPlanningHeader();
+    }
+
+    var buyscreenProductStart = 0;
+    var buyscreenVisibleCount = 5;
+    var buyscreenShowAllProducts = false;
+    var buyscreenSearchQuery = "";
+
+    function buyscreenCardName(card) {
+      var nameEl = card ? card.querySelector("p") : null;
+      return (nameEl ? nameEl.textContent : "").trim().toLowerCase();
+    }
+
+    function renderBuyscreenProductCarousel() {
+      var cards = Array.prototype.slice.call(document.querySelectorAll("[data-buyscreen-product-card]"));
+      var total = cards.length;
+      if (!total) return;
+      var prev = document.getElementById("buyscreenPrevProductsBtn");
+      var next = document.getElementById("buyscreenNextProductsBtn");
+      var viewAllLabel = document.getElementById("buyscreenViewAllLabel");
+      var viewAllArrow = document.getElementById("buyscreenViewAllArrow");
+      var emptyState = document.getElementById("buyscreenSearchEmpty");
+      var query = buyscreenSearchQuery.trim().toLowerCase();
+      var filteredCards = query
+        ? cards.filter(function (card) { return buyscreenCardName(card).indexOf(query) !== -1; })
+        : cards;
+
+      cards.forEach(function (card) {
+        card.classList.add("hidden");
+      });
+      if (emptyState) emptyState.classList.add("hidden");
+
+      if (!filteredCards.length) {
+        if (prev) prev.classList.add("hidden");
+        if (next) next.classList.add("hidden");
+        if (viewAllLabel) viewAllLabel.textContent = "View All";
+        if (viewAllArrow) viewAllArrow.classList.add("hidden");
+        if (emptyState) emptyState.classList.remove("hidden");
+        return;
+      }
+
+      if (query) {
+        filteredCards.forEach(function (card) {
+          card.classList.remove("hidden");
+        });
+        if (prev) prev.classList.add("hidden");
+        if (next) next.classList.add("hidden");
+        if (viewAllLabel) viewAllLabel.textContent = "Results";
+        if (viewAllArrow) viewAllArrow.classList.add("hidden");
+        return;
+      }
+
+      var filteredTotal = filteredCards.length;
+      if (buyscreenProductStart >= filteredTotal) buyscreenProductStart = 0;
+      var visible = Math.min(buyscreenVisibleCount, filteredTotal);
+      if (prev) prev.classList.remove("hidden");
+      if (next) next.classList.remove("hidden");
+      if (viewAllLabel) viewAllLabel.textContent = "View All";
+      if (viewAllArrow) viewAllArrow.classList.remove("hidden");
+
+      filteredCards.forEach(function (card, index) {
+        var relative = (index - buyscreenProductStart + filteredTotal) % filteredTotal;
+        card.classList.toggle("hidden", relative >= visible);
+      });
+    }
+
+    function moveBuyscreenProducts(step) {
+      var cards = document.querySelectorAll("[data-buyscreen-product-card]");
+      var query = buyscreenSearchQuery.trim().toLowerCase();
+      var activeCards = query
+        ? Array.prototype.slice.call(cards).filter(function (card) { return buyscreenCardName(card).indexOf(query) !== -1; })
+        : cards;
+      var total = activeCards.length;
+      if (!total) return;
+      buyscreenProductStart = (buyscreenProductStart + step + total) % total;
+      renderBuyscreenProductCarousel();
+    }
+
+    function initBuyscreenProductCarousel() {
+      var prev = document.getElementById("buyscreenPrevProductsBtn");
+      var next = document.getElementById("buyscreenNextProductsBtn");
+      var viewAll = document.getElementById("buyscreenViewAllBtn");
+      var searchInput = document.getElementById("buyscreenSearchInput");
+      if (prev && !prev.dataset.bound) {
+        prev.dataset.bound = "1";
+        prev.addEventListener("click", function () {
+          moveBuyscreenProducts(-1);
+        });
+      }
+      if (next && !next.dataset.bound) {
+        next.dataset.bound = "1";
+        next.addEventListener("click", function () {
+          moveBuyscreenProducts(1);
+        });
+      }
+      if (viewAll && !viewAll.dataset.bound) {
+        viewAll.dataset.bound = "1";
+        viewAll.addEventListener("click", function () {
+          buyscreenShowAllProducts = true;
+          renderBuyscreenProductCarousel();
+        });
+      }
+      if (searchInput && !searchInput.dataset.bound) {
+        searchInput.dataset.bound = "1";
+        searchInput.addEventListener("input", function () {
+          buyscreenSearchQuery = searchInput.value || "";
+          buyscreenProductStart = 0;
+          buyscreenShowAllProducts = false;
+          if (buyscreenSearchQuery.trim()) {
+            var featuredSection = document.getElementById("buyscreenFeaturedProducts");
+            if (featuredSection && featuredSection.scrollIntoView) {
+              featuredSection.scrollIntoView({ behavior: "smooth", block: "start" });
+            }
+          }
+          renderBuyscreenProductCarousel();
+        });
+      }
+      renderBuyscreenProductCarousel();
+    }
+
+    var buyscreenCartItems = [];
+    var buyscreenSelectedProduct = null;
+    var buyscreenFavoriteMap = {};
+    var buyscreenToastTimer = null;
+
+    function buyscreenFormatUsd(cents) {
+      var n = cents / 100;
+      var fixed = n.toFixed(2).split(".");
+      var intPart = fixed[0];
+      var withCommas = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      return "$ " + withCommas + "." + fixed[1];
+    }
+
+    var buyscreenLicenseQty = 1;
+    var buyscreenLicenseUnitCents = 0;
+
+    function buyscreenCartTotalCents() {
+      return buyscreenCartItems.reduce(function (sum, item) {
+        return sum + (item.unitCents * item.qty);
+      }, 0);
+    }
+
+    function buyscreenCartItemCount() {
+      return buyscreenCartItems.reduce(function (sum, item) {
+        return sum + item.qty;
+      }, 0);
+    }
+
+    function renderBuyscreenCartTotal() {
+      var cartEl = document.getElementById("buyscreenCartTotal");
+      var countBadge = document.getElementById("buyscreenCartCountBadge");
+      var itemCount = buyscreenCartItemCount();
+      if (countBadge) {
+        if (itemCount > 0) {
+          countBadge.textContent = String(itemCount);
+          countBadge.classList.remove("hidden");
+        } else {
+          countBadge.classList.add("hidden");
+        }
+      }
+      if (!cartEl) return;
+      if (!buyscreenCartItems.length) {
+        cartEl.textContent = "Empty";
+        return;
+      }
+      cartEl.textContent = buyscreenFormatUsd(buyscreenCartTotalCents());
+    }
+
+    function renderBuyscreenCartModal() {
+      var list = document.getElementById("buyscreenCartItems");
+      var totalEl = document.getElementById("buyscreenCartModalTotal");
+      if (totalEl) totalEl.textContent = buyscreenFormatUsd(buyscreenCartTotalCents());
+      if (!list) return;
+      if (!buyscreenCartItems.length) {
+        list.innerHTML = "<p class=\"rounded-lg border border-dashed border-[#cbd5e1] bg-[#f8fafc] px-4 py-4 text-sm text-[#6b7280]\">Your cart is empty. Add products from Featured Products.</p>";
+        return;
+      }
+      list.innerHTML = buyscreenCartItems.map(function (item) {
+        var subtotal = buyscreenFormatUsd(item.unitCents * item.qty);
+        return "<div class=\"flex items-center justify-between gap-3 rounded-lg border border-[#e5e7eb] bg-[#fafafa] px-3 py-2.5\">"
+          + "<div class=\"min-w-0\"><p class=\"truncate text-sm font-semibold text-[#111827]\">" + item.name + "</p><p class=\"text-xs text-[#6b7280]\">" + item.priceText + " x " + item.qty + "</p></div>"
+          + "<div class=\"flex items-center gap-3\"><span class=\"text-sm font-bold tabular-nums text-[#111827]\">" + subtotal + "</span>"
+          + "<button type=\"button\" data-buyscreen-cart-remove=\"" + item.name + "\" class=\"rounded-md border border-[#fecaca] px-2 py-1 text-xs font-semibold text-[#dc2626] hover:bg-[#fef2f2]\">Remove</button></div>"
+          + "</div>";
+      }).join("");
+    }
+
+    function openBuyscreenCartModal() {
+      var modal = document.getElementById("buyscreenCartModal");
+      renderBuyscreenCartModal();
+      if (modal) {
+        modal.classList.remove("hidden");
+        document.body.style.overflow = "hidden";
+      }
+    }
+
+    function closeBuyscreenCartModal() {
+      var modal = document.getElementById("buyscreenCartModal");
+      if (modal) modal.classList.add("hidden");
+      document.body.style.overflow = "";
+    }
+
+    function addBuyscreenCartItem(product, qty) {
+      if (!product || !qty) return;
+      var existing = buyscreenCartItems.find(function (item) { return item.name === product.name; });
+      if (existing) {
+        existing.qty += qty;
+      } else {
+        buyscreenCartItems.push({
+          name: product.name,
+          unitCents: product.unitCents,
+          priceText: product.priceText,
+          qty: qty
+        });
+      }
+      renderBuyscreenCartTotal();
+    }
+
+    function removeBuyscreenCartItem(productName) {
+      buyscreenCartItems = buyscreenCartItems.filter(function (item) { return item.name !== productName; });
+      renderBuyscreenCartTotal();
+      renderBuyscreenCartModal();
+    }
+
+    function buyscreenNormalizeProductName(name) {
+      return String(name || "").trim().toLowerCase();
+    }
+
+    function buyscreenProductFromActionButton(button) {
+      var card = button ? button.closest("[data-buyscreen-product-card]") : null;
+      if (!card) return "Product";
+      var nameEl = card.querySelector("p");
+      return nameEl ? nameEl.textContent.trim() : "Product";
+    }
+
+    function setBuyscreenFavoriteVisual(button, isFavorite) {
+      if (!button) return;
+      if (isFavorite) {
+        button.classList.remove("bg-white", "text-[#ff664f]");
+        button.classList.add("bg-[#ff664f]", "text-white");
+      } else {
+        button.classList.remove("bg-[#ff664f]", "text-white");
+        button.classList.add("bg-white", "text-[#ff664f]");
+      }
+      button.setAttribute("aria-pressed", isFavorite ? "true" : "false");
+      button.setAttribute("aria-label", isFavorite ? "Remove from wishlist" : "Add to wishlist");
+      var iconPath = button.querySelector("path");
+      if (iconPath) {
+        iconPath.setAttribute("fill", isFavorite ? "currentColor" : "none");
+      }
+    }
+
+    function setBuyscreenFavoriteByName(productName, isFavorite) {
+      var key = buyscreenNormalizeProductName(productName);
+      buyscreenFavoriteMap[key] = !!isFavorite;
+      var buttons = document.querySelectorAll("[data-buyscreen-favorite-toggle]");
+      buttons.forEach(function (button) {
+        var name = buyscreenProductFromActionButton(button);
+        if (buyscreenNormalizeProductName(name) !== key) return;
+        setBuyscreenFavoriteVisual(button, !!isFavorite);
+      });
+    }
+
+    function showBuyscreenToast(message) {
+      var toast = document.getElementById("buyscreenActionToast");
+      if (!toast) return;
+      toast.textContent = message;
+      toast.classList.remove("hidden");
+      if (buyscreenToastTimer) window.clearTimeout(buyscreenToastTimer);
+      buyscreenToastTimer = window.setTimeout(function () {
+        toast.classList.add("hidden");
+      }, 2200);
+    }
+
+    async function shareBuyscreenProduct(productName) {
+      var slug = buyscreenNormalizeProductName(productName).replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+      var shareUrl = window.location.origin + window.location.pathname + "#buyscreen-product-" + slug;
+      try {
+        if (navigator.share) {
+          await navigator.share({
+            title: productName,
+            text: "Check out this product: " + productName,
+            url: shareUrl
+          });
+          showBuyscreenToast(productName + " shared");
+          return;
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          await navigator.clipboard.writeText(shareUrl);
+          showBuyscreenToast("Share link copied for " + productName);
+          return;
+        }
+      } catch (err) {}
+      showBuyscreenToast("Unable to share right now");
+    }
+
+    function buyscreenSetLicenseLineTotal() {
+      var el = document.getElementById("buyscreenLicenseLineTotal");
+      var qtyEl = document.getElementById("buyscreenLicenseQty");
+      if (qtyEl) qtyEl.textContent = String(buyscreenLicenseQty);
+      if (el) el.textContent = buyscreenFormatUsd(buyscreenLicenseUnitCents * buyscreenLicenseQty);
+      var dec = document.getElementById("buyscreenLicenseDec");
+      if (dec) dec.disabled = buyscreenLicenseQty <= 1;
+    }
+
+    function openBuyscreenLicenseModal(unitCents, productName, unitPriceText) {
+      buyscreenLicenseUnitCents = unitCents;
+      buyscreenLicenseQty = 1;
+      buyscreenSelectedProduct = { unitCents: unitCents, name: productName, priceText: unitPriceText };
+      var modal = document.getElementById("buyscreenLicenseModal");
+      var sub = document.getElementById("buyscreenLicenseSubtitle");
+      if (sub) sub.textContent = productName + " · " + unitPriceText + " each";
+      buyscreenSetLicenseLineTotal();
+      if (modal) {
+        modal.classList.remove("hidden");
+        document.body.style.overflow = "hidden";
+      }
+    }
+
+    function closeBuyscreenLicenseModal() {
+      var modal = document.getElementById("buyscreenLicenseModal");
+      if (modal) modal.classList.add("hidden");
+      document.body.style.overflow = "";
+      buyscreenLicenseQty = 1;
+    }
+
+    function confirmBuyscreenLicensePurchase() {
+      addBuyscreenCartItem(buyscreenSelectedProduct, buyscreenLicenseQty);
+      closeBuyscreenLicenseModal();
+    }
+
+    function initBuyscreenLicenseModal() {
+      var page = document.getElementById("buyscreenPage");
+      if (!page || page.dataset.licenseBound) return;
+      page.dataset.licenseBound = "1";
+      var favoriteBtns = page.querySelectorAll("[aria-label='Add to wishlist']");
+      favoriteBtns.forEach(function (button) {
+        button.setAttribute("data-buyscreen-favorite-toggle", "1");
+        var productName = buyscreenProductFromActionButton(button);
+        var isFavorite = !!buyscreenFavoriteMap[buyscreenNormalizeProductName(productName)];
+        setBuyscreenFavoriteVisual(button, isFavorite);
+      });
+      var shareBtns = page.querySelectorAll("[aria-label='Share product']");
+      shareBtns.forEach(function (button) {
+        button.setAttribute("data-buyscreen-share-product", "1");
+      });
+      page.addEventListener("click", function (e) {
+        var t = e.target;
+        if (!t || !t.closest) return;
+        var btn = t.closest("[data-buyscreen-license-open]");
+        if (btn) {
+          e.preventDefault();
+          var cents = parseInt(btn.getAttribute("data-unit-cents") || "0", 10);
+          var name = btn.getAttribute("data-product-name") || "Product";
+          var priceText = btn.getAttribute("data-unit-price") || "";
+          openBuyscreenLicenseModal(cents, name, priceText);
+          return;
+        }
+        var cartOpen = t.closest("[data-buyscreen-cart-open]");
+        if (cartOpen) {
+          e.preventDefault();
+          openBuyscreenCartModal();
+          return;
+        }
+        var removeBtn = t.closest("[data-buyscreen-cart-remove]");
+        if (removeBtn) {
+          e.preventDefault();
+          removeBuyscreenCartItem(removeBtn.getAttribute("data-buyscreen-cart-remove"));
+          return;
+        }
+        var favoriteBtn = t.closest("[data-buyscreen-favorite-toggle]");
+        if (favoriteBtn) {
+          e.preventDefault();
+          var favoriteProductName = buyscreenProductFromActionButton(favoriteBtn);
+          var key = buyscreenNormalizeProductName(favoriteProductName);
+          var nextValue = !buyscreenFavoriteMap[key];
+          setBuyscreenFavoriteByName(favoriteProductName, nextValue);
+          showBuyscreenToast(nextValue ? favoriteProductName + " added to favorites" : favoriteProductName + " removed from favorites");
+          return;
+        }
+        var shareBtn = t.closest("[data-buyscreen-share-product]");
+        if (shareBtn) {
+          e.preventDefault();
+          void shareBuyscreenProduct(buyscreenProductFromActionButton(shareBtn));
+          return;
+        }
+        var shopNowBtn = t.closest("[data-buyscreen-scroll-products]");
+        if (shopNowBtn) {
+          e.preventDefault();
+          var featuredSection = document.getElementById("buyscreenFeaturedProducts");
+          if (featuredSection && featuredSection.scrollIntoView) {
+            featuredSection.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
+          return;
+        }
+        if (t.closest && t.closest("#buyscreenLicenseBackdrop")) {
+          closeBuyscreenLicenseModal();
+          return;
+        }
+        if (t.closest && t.closest("#buyscreenCartBackdrop")) {
+          closeBuyscreenCartModal();
+        }
+      });
+      var dec = document.getElementById("buyscreenLicenseDec");
+      var inc = document.getElementById("buyscreenLicenseInc");
+      var confirmBtn = document.getElementById("buyscreenLicenseConfirmBtn");
+      if (dec && !dec.dataset.bound) {
+        dec.dataset.bound = "1";
+        dec.addEventListener("click", function () {
+          if (buyscreenLicenseQty > 1) {
+            buyscreenLicenseQty -= 1;
+            buyscreenSetLicenseLineTotal();
+          }
+        });
+      }
+      if (inc && !inc.dataset.bound) {
+        inc.dataset.bound = "1";
+        inc.addEventListener("click", function () {
+          buyscreenLicenseQty += 1;
+          buyscreenSetLicenseLineTotal();
+        });
+      }
+      if (confirmBtn && !confirmBtn.dataset.bound) {
+        confirmBtn.dataset.bound = "1";
+        confirmBtn.addEventListener("click", confirmBuyscreenLicensePurchase);
+      }
+      document.addEventListener("keydown", function (e) {
+        var modal = document.getElementById("buyscreenLicenseModal");
+        var cartModal = document.getElementById("buyscreenCartModal");
+        if (e.key === "Escape" && modal && !modal.classList.contains("hidden")) {
+          closeBuyscreenLicenseModal();
+        } else if (e.key === "Escape" && cartModal && !cartModal.classList.contains("hidden")) {
+          closeBuyscreenCartModal();
+        }
+      });
+      renderBuyscreenCartTotal();
     }
 
     function setupAuthPullToRefresh() {
@@ -1938,13 +2439,14 @@
 
     // Show correct page on initial load based on URL hash
     // Direct links (same format as index.html#verifyMobile):
-    //   index.html#planning | index.html#signup | index.html#login | index.html#forgot
+    //   index.html#planning | index.html#buyscreen | index.html#signup | index.html#login | index.html#forgot
     //   index.html#verifyEmail | index.html#verifyMobile
     //   index.html#verified | index.html#createNewPassword
-    // Supported: #planning, #signup, #login, #forgot, #verifyEmail, #verifyMobile, #verified, #createNewPassword, #error
+    // Supported: #planning, #buyscreen, #signup, #login, #forgot, #verifyEmail, #verifyMobile, #verified, #createNewPassword, #error
     document.addEventListener("DOMContentLoaded", function () {
       const hash = window.location.hash.replace("#", "");
       if (hash === "planning") showPage("planning");
+      else if (hash === "buyscreen") showPage("buyscreen");
       else if (hash === "signup") showPage("signup");
       else if (hash === "forgot") showPage("forgot");
       else if (hash === "verifyEmail") showPage("verifyEmail");
@@ -1954,6 +2456,8 @@
       else if (hash === "error") showPage("error");
       else if (hash === "notFound") showPage("notFound");
       else showPage("login");
+      initBuyscreenProductCarousel();
+      initBuyscreenLicenseModal();
       setupAuthPullToRefresh();
       updateVerifyOtpButtons();
     });
@@ -1961,6 +2465,7 @@
     window.addEventListener("hashchange", function () {
       const hash = window.location.hash.replace("#", "");
       if (hash === "planning") showPage("planning");
+      else if (hash === "buyscreen") showPage("buyscreen");
       else if (hash === "signup") showPage("signup");
       else if (hash === "forgot") showPage("forgot");
       else if (hash === "verifyEmail") showPage("verifyEmail");
@@ -1975,6 +2480,7 @@
     window.addEventListener("popstate", function () {
       const hash = window.location.hash.replace("#", "");
       if (hash === "planning") showPage("planning");
+      else if (hash === "buyscreen") showPage("buyscreen");
       else if (hash === "signup") showPage("signup");
       else if (hash === "forgot") showPage("forgot");
       else if (hash === "verifyEmail") showPage("verifyEmail");
@@ -2232,6 +2738,404 @@
       showPage("login");
     }
   </script>
+
+  <!-- ================= BUY SCREEN PAGE ================= -->
+  <div id="buyscreenPage" class="hidden min-h-[100dvh] w-full overflow-x-hidden bg-[#efefef] text-[#111827]">
+    <div class="mx-auto w-full max-w-[1280px] px-4 py-8 sm:px-6 sm:py-10 lg:py-12">
+      <div class="mb-6 flex justify-end sm:mb-8">
+        <button type="button" class="rounded-md bg-[#171717] px-4 py-2 text-xs font-semibold text-white transition-opacity hover:opacity-90">
+          Buy Now
+        </button>
+      </div>
+
+      <section class="buyscreen-shell overflow-hidden rounded-lg border border-[#d9d9d9] bg-white shadow-sm">
+        <header class="buyscreen-header flex flex-col gap-4 border-b border-[#ededed] px-4 py-4 sm:px-8 sm:py-5 lg:flex-row lg:items-center lg:justify-between lg:gap-6 lg:py-4">
+          <div class="flex shrink-0 items-center justify-between lg:justify-start">
+            <span class="text-base font-bold tracking-tight text-[#2b2b2b] sm:text-lg">e-shop.</span>
+          </div>
+          <div class="flex w-full min-w-0 items-center justify-end gap-2 text-[#4b5563] sm:gap-3 lg:w-auto">
+            <label class="flex h-8 w-[150px] items-center rounded-md border-2 border-[#cbd5e1] bg-[#fafafa] px-2 text-[11px] text-[#4b5563] sm:h-9 sm:w-[180px] sm:text-xs">
+              <input id="buyscreenSearchInput" type="text" placeholder="Search..." class="min-w-0 flex-1 bg-transparent text-[#4b5563] outline-none placeholder:text-[#9ca3af]">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-[#374151]" aria-hidden="true">
+                <circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="1.7"></circle>
+                <path d="m16 16 4 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"></path>
+              </svg>
+            </label>
+            <button type="button" data-buyscreen-cart-open="1" class="flex items-center gap-2 rounded-md px-2 py-1 transition-colors hover:bg-[#f5f5f5]">
+              <span class="relative shrink-0">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <path d="M3 4h2l1.6 9.2a1 1 0 0 0 1 .8H18a1 1 0 0 0 1-.8L20.6 7H7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+                  <circle cx="10" cy="19" r="1.5" fill="currentColor"></circle>
+                  <circle cx="17" cy="19" r="1.5" fill="currentColor"></circle>
+                </svg>
+                <span id="buyscreenCartCountBadge" class="absolute -right-2 -top-2 hidden h-4 min-w-4 rounded-full bg-[#ff664f] px-1 text-center text-[10px] font-bold leading-4 text-white">0</span>
+              </span>
+              <span class="leading-tight">
+                <span class="block text-[11px] font-semibold sm:text-xs">Cart</span>
+                <span id="buyscreenCartTotal" class="block text-[11px] tabular-nums sm:text-xs">Empty</span>
+              </span>
+            </button>
+            <span class="h-6 w-px bg-[#d1d5db]" aria-hidden="true"></span>
+            <div class="flex items-center gap-2">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <circle cx="12" cy="8" r="3.2" stroke="currentColor" stroke-width="1.8"></circle>
+                <path d="M5.8 19.2c1.1-2.5 3.3-3.8 6.2-3.8s5.1 1.3 6.2 3.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+              </svg>
+              <span class="leading-tight">
+                <span class="block text-[11px] font-semibold sm:text-xs">User</span>
+                <span class="block text-[11px] sm:text-xs">Account</span>
+              </span>
+            </div>
+          </div>
+        </header>
+
+      <div class="buyscreen-categories border-b border-[#efefef] bg-[#06224C] px-4 py-2.5 text-[10px] font-semibold text-white sm:px-8 sm:text-xs">
+        <span class="buyscreen-category-item shrink-0">
+          <span>All Categories</span>
+        </span>
+        <span class="buyscreen-category-item shrink-0">Products</span>
+        <span class="buyscreen-category-item shrink-0">Blog</span>
+        <span class="buyscreen-category-item shrink-0">Contact</span>
+        <span class="buyscreen-category-item buyscreen-category-item--push shrink-0">Limited Sale</span>
+        <span class="buyscreen-category-item shrink-0">Best Seller</span>
+        <span class="buyscreen-category-item shrink-0">New Arrivals</span>
+      </div>
+
+      <div class="space-y-10 px-4 py-10 sm:space-y-12 sm:px-8 sm:py-12">
+        <section class="buyscreen-hero relative flex min-h-[320px] items-center overflow-hidden rounded-xl border border-[#efefef] p-6 sm:min-h-[380px] sm:p-8 lg:p-10">
+          <img src="./public/background.png" alt="" class="absolute inset-0 h-full w-full object-fill object-center" width="640" height="360" />
+          <div class="relative z-10 min-w-0 max-w-xl text-center lg:text-left">
+            <h1 class="text-2xl font-bold leading-tight text-[#171717] sm:text-3xl lg:text-4xl">Your One-Stop Electronic Market</h1>
+            <p class="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-[#6b7280] sm:text-base lg:mx-0">
+              Welcome to e-shop, a place where you can buy everything about electronics. Sale every day.
+            </p>
+            <button type="button" data-buyscreen-scroll-products="1" class="mt-6 rounded-md bg-[#06224C] px-5 py-2.5 text-sm font-semibold text-white">
+              Shop Now
+            </button>
+          </div>
+        </section>
+
+        <section class="grid gap-6 border-b border-[#efefef] pb-10 text-sm text-[#4b5563] sm:grid-cols-2 sm:gap-8 lg:flex lg:items-start lg:justify-between">
+          <div class="flex items-start gap-3">
+            <span aria-hidden="true" class="mt-0.5 shrink-0 text-[#6b7280]">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M4 13a8 8 0 0 1 16 0" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+                <path d="M5 13v3a2 2 0 0 0 2 2h1v-5H7a2 2 0 0 0-2 2Zm14 0h-1v5h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2Z" stroke="currentColor" stroke-width="2"></path>
+                <path d="M12 17v2" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+              </svg>
+            </span>
+            <div class="min-w-0">
+              <p class="font-semibold text-[#111827]">Responsive</p>
+              <p class="mt-0.5 text-xs leading-relaxed text-[#6b7280] sm:text-sm">Customer service available 24/7</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-3">
+            <span aria-hidden="true" class="mt-0.5 shrink-0 text-[#6b7280]">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 3 5 6v6c0 4.2 2.6 7.2 7 9 4.4-1.8 7-4.8 7-9V6l-7-3Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                <path d="m9 12 2 2 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+              </svg>
+            </span>
+            <div class="min-w-0">
+              <p class="font-semibold text-[#111827]">Secure</p>
+              <p class="mt-0.5 text-xs leading-relaxed text-[#6b7280] sm:text-sm">Certified marketplace since 2017</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-3">
+            <span aria-hidden="true" class="mt-0.5 shrink-0 text-[#6b7280]">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M3 7h11v8H3V7Zm11 2h4l3 3v3h-7V9Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                <circle cx="8" cy="17" r="1.5" fill="currentColor"></circle>
+                <circle cx="18" cy="17" r="1.5" fill="currentColor"></circle>
+              </svg>
+            </span>
+            <div class="min-w-0">
+              <p class="font-semibold text-[#111827]">Shipping</p>
+              <p class="mt-0.5 text-xs leading-relaxed text-[#6b7280] sm:text-sm">Fast, safe, and reliable worldwide</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-3">
+            <span aria-hidden="true" class="mt-0.5 shrink-0 text-[#6b7280]">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M3 12a9 9 0 0 1 15.4-6.4M21 12a9 9 0 0 1-15.4 6.4" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+                <path d="M16.5 3.5v3h3M7.5 20.5v-3h-3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+              </svg>
+            </span>
+            <div class="min-w-0">
+              <p class="font-semibold text-[#111827]">Transparent</p>
+              <p class="mt-0.5 text-xs leading-relaxed text-[#6b7280] sm:text-sm">Hassle-free return policy</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="buyscreenFeaturedProducts">
+          <div class="mb-6 flex flex-wrap items-center justify-between gap-3">
+            <h2 class="text-lg font-bold text-[#111827] sm:text-xl">Featured Products</h2>
+            <button id="buyscreenViewAllBtn" type="button" class="inline-flex items-center gap-1 text-sm font-semibold text-[#ff664f] hover:opacity-90"><span id="buyscreenViewAllLabel">View All</span><span id="buyscreenViewAllArrow" class="text-base" aria-hidden="true">→</span></button>
+          </div>
+
+          <div class="buyscreen-products-row flex items-start gap-3 sm:gap-4 lg:items-center">
+            <button id="buyscreenPrevProductsBtn" type="button" class="buyscreen-products-arrow mt-8 shrink-0 lg:mt-0" aria-label="Previous products">
+              <svg width="16" height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.3"></circle>
+                <path d="M11.2 7.3 8.4 10l2.8 2.7" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"></path>
+              </svg>
+            </button>
+            <div class="min-w-0 flex-1">
+              <div class="buyscreen-products grid grid-cols-2 gap-4 sm:gap-6 sm:grid-cols-3 lg:grid-cols-5">
+                <article data-buyscreen-product-card class="group relative min-w-0 rounded-lg border border-[#ececec] bg-white p-3 shadow-sm transition-[box-shadow,border-color] duration-200 hover:border-[#d4d4d4] hover:shadow-lg">
+                  <div class="relative aspect-[4/3] w-full overflow-hidden rounded-md bg-[#f4f6f9]" style="background-image:url('./public/phone.jpg');background-repeat:no-repeat;background-position:center;background-size:contain;">
+                    <div class="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex justify-center px-1 pb-2 pt-6 opacity-0 transition-opacity duration-200 group-hover:pointer-events-auto group-hover:opacity-100">
+                      <div class="pointer-events-auto flex items-center gap-1.5 sm:gap-2">
+                        <button type="button" data-buyscreen-license-open="1" data-unit-cents="89900" data-product-name="Phone" data-unit-price="$899.00" class="flex h-7 w-7 items-center justify-center rounded-full border-2 border-[#ff664f] bg-white text-[#ff664f] shadow-md transition-colors duration-150 hover:bg-[#ff664f] hover:text-white sm:h-8 sm:w-8" aria-label="Add to cart">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M3 4h2l1.6 9.2a1 1 0 0 0 1 .8H18a1 1 0 0 0 1-.8L20.6 7H7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path><circle cx="10" cy="19" r="1.5" fill="currentColor"></circle><circle cx="17" cy="19" r="1.5" fill="currentColor"></circle></svg>
+                        </button>
+                        <button type="button" class="flex h-7 w-7 items-center justify-center rounded-full border-2 border-[#ff664f] bg-white text-[#ff664f] shadow-md transition-colors duration-150 hover:bg-[#ff664f] hover:text-white sm:h-8 sm:w-8" aria-label="Add to wishlist">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733C11.285 5.876 9.623 4.75 7.688 4.75 5.099 4.75 3 6.765 3 9.25c0 7.22 9 12 9 12s9-4.78 9-12z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                        </button>
+                        <button type="button" class="flex h-7 w-7 items-center justify-center rounded-full border-2 border-[#ff664f] bg-white text-[#ff664f] shadow-md transition-colors duration-150 hover:bg-[#ff664f] hover:text-white sm:h-8 sm:w-8" aria-label="Share product">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="18" cy="5" r="2.5" stroke="currentColor" stroke-width="1.6"></circle><circle cx="6" cy="12" r="2.5" stroke="currentColor" stroke-width="1.6"></circle><circle cx="18" cy="19" r="2.5" stroke="currentColor" stroke-width="1.6"></circle><path d="m15.5 6.5-7 3.5M8.5 13.5l7 3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path></svg>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <p class="mt-3 text-center text-[11px] font-semibold uppercase tracking-[0.08em] text-[#6b7280] sm:text-xs">Phone</p>
+                  <p class="mt-1 text-center text-sm font-bold text-[#171717]">$899.00</p>
+                </article>
+                <article data-buyscreen-product-card class="group relative min-w-0 rounded-lg border border-[#ececec] bg-white p-3 shadow-sm transition-[box-shadow,border-color] duration-200 hover:border-[#d4d4d4] hover:shadow-lg">
+                  <div class="relative aspect-[4/3] w-full overflow-hidden rounded-md bg-[#f4f6f9]" style="background-image:url('./public/audio.jpg');background-repeat:no-repeat;background-position:center;background-size:contain;">
+                    <span class="absolute right-2 top-2 z-[1] rounded bg-[#ff664f] px-1.5 py-0.5 text-[10px] font-bold text-white">50%</span>
+                    <div class="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex justify-center px-1 pb-2 pt-6 opacity-0 transition-opacity duration-200 group-hover:pointer-events-auto group-hover:opacity-100">
+                      <div class="pointer-events-auto flex items-center gap-1.5 sm:gap-2">
+                        <button type="button" data-buyscreen-license-open="1" data-unit-cents="14900" data-product-name="Audio" data-unit-price="$149.00" class="flex h-7 w-7 items-center justify-center rounded-full border-2 border-[#ff664f] bg-white text-[#ff664f] shadow-md transition-colors duration-150 hover:bg-[#ff664f] hover:text-white sm:h-8 sm:w-8" aria-label="Add to cart">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M3 4h2l1.6 9.2a1 1 0 0 0 1 .8H18a1 1 0 0 0 1-.8L20.6 7H7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path><circle cx="10" cy="19" r="1.5" fill="currentColor"></circle><circle cx="17" cy="19" r="1.5" fill="currentColor"></circle></svg>
+                        </button>
+                        <button type="button" class="flex h-7 w-7 items-center justify-center rounded-full border-2 border-[#ff664f] bg-white text-[#ff664f] shadow-md transition-colors duration-150 hover:bg-[#ff664f] hover:text-white sm:h-8 sm:w-8" aria-label="Add to wishlist">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733C11.285 5.876 9.623 4.75 7.688 4.75 5.099 4.75 3 6.765 3 9.25c0 7.22 9 12 9 12s9-4.78 9-12z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                        </button>
+                        <button type="button" class="flex h-7 w-7 items-center justify-center rounded-full border-2 border-[#ff664f] bg-white text-[#ff664f] shadow-md transition-colors duration-150 hover:bg-[#ff664f] hover:text-white sm:h-8 sm:w-8" aria-label="Share product">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="18" cy="5" r="2.5" stroke="currentColor" stroke-width="1.6"></circle><circle cx="6" cy="12" r="2.5" stroke="currentColor" stroke-width="1.6"></circle><circle cx="18" cy="19" r="2.5" stroke="currentColor" stroke-width="1.6"></circle><path d="m15.5 6.5-7 3.5M8.5 13.5l7 3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path></svg>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <p class="mt-3 text-center text-[11px] font-semibold uppercase tracking-[0.08em] text-[#6b7280] sm:text-xs">Audio</p>
+                  <p class="mt-1 text-center text-sm font-bold text-[#171717]">$149.00</p>
+                </article>
+                <article data-buyscreen-product-card class="group relative min-w-0 rounded-lg border border-[#ececec] bg-white p-3 shadow-sm transition-[box-shadow,border-color] duration-200 hover:border-[#d4d4d4] hover:shadow-lg">
+                  <div class="relative aspect-[4/3] w-full overflow-hidden rounded-md bg-[#f4f6f9]" style="background-image:url('./public/laptop.jpg');background-repeat:no-repeat;background-position:center;background-size:contain;">
+                    <div class="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex justify-center px-1 pb-2 pt-6 opacity-0 transition-opacity duration-200 group-hover:pointer-events-auto group-hover:opacity-100">
+                      <div class="pointer-events-auto flex items-center gap-1.5 sm:gap-2">
+                        <button type="button" data-buyscreen-license-open="1" data-unit-cents="129900" data-product-name="Laptop" data-unit-price="$1,299.00" class="flex h-7 w-7 items-center justify-center rounded-full border-2 border-[#ff664f] bg-white text-[#ff664f] shadow-md transition-colors duration-150 hover:bg-[#ff664f] hover:text-white sm:h-8 sm:w-8" aria-label="Add to cart">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M3 4h2l1.6 9.2a1 1 0 0 0 1 .8H18a1 1 0 0 0 1-.8L20.6 7H7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path><circle cx="10" cy="19" r="1.5" fill="currentColor"></circle><circle cx="17" cy="19" r="1.5" fill="currentColor"></circle></svg>
+                        </button>
+                        <button type="button" class="flex h-7 w-7 items-center justify-center rounded-full border-2 border-[#ff664f] bg-white text-[#ff664f] shadow-md transition-colors duration-150 hover:bg-[#ff664f] hover:text-white sm:h-8 sm:w-8" aria-label="Add to wishlist">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733C11.285 5.876 9.623 4.75 7.688 4.75 5.099 4.75 3 6.765 3 9.25c0 7.22 9 12 9 12s9-4.78 9-12z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                        </button>
+                        <button type="button" class="flex h-7 w-7 items-center justify-center rounded-full border-2 border-[#ff664f] bg-white text-[#ff664f] shadow-md transition-colors duration-150 hover:bg-[#ff664f] hover:text-white sm:h-8 sm:w-8" aria-label="Share product">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="18" cy="5" r="2.5" stroke="currentColor" stroke-width="1.6"></circle><circle cx="6" cy="12" r="2.5" stroke="currentColor" stroke-width="1.6"></circle><circle cx="18" cy="19" r="2.5" stroke="currentColor" stroke-width="1.6"></circle><path d="m15.5 6.5-7 3.5M8.5 13.5l7 3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path></svg>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <p class="mt-3 text-center text-[11px] font-semibold uppercase tracking-[0.08em] text-[#6b7280] sm:text-xs">Laptop</p>
+                  <p class="mt-1 text-center text-sm font-bold text-[#171717]">$1,299.00</p>
+                </article>
+                <article data-buyscreen-product-card class="group relative min-w-0 rounded-lg border border-[#ececec] bg-white p-3 shadow-sm transition-[box-shadow,border-color] duration-200 hover:border-[#d4d4d4] hover:shadow-lg">
+                  <div class="relative aspect-[4/3] w-full overflow-hidden rounded-md bg-[#f4f6f9]" style="background-image:url('./public/camera.jpg');background-repeat:no-repeat;background-position:center;background-size:contain;">
+                    <div class="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex justify-center px-1 pb-2 pt-6 opacity-0 transition-opacity duration-200 group-hover:pointer-events-auto group-hover:opacity-100">
+                      <div class="pointer-events-auto flex items-center gap-1.5 sm:gap-2">
+                        <button type="button" data-buyscreen-license-open="1" data-unit-cents="7900" data-product-name="Camera" data-unit-price="$79.00" class="flex h-7 w-7 items-center justify-center rounded-full border-2 border-[#ff664f] bg-white text-[#ff664f] shadow-md transition-colors duration-150 hover:bg-[#ff664f] hover:text-white sm:h-8 sm:w-8" aria-label="Add to cart">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M3 4h2l1.6 9.2a1 1 0 0 0 1 .8H18a1 1 0 0 0 1-.8L20.6 7H7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path><circle cx="10" cy="19" r="1.5" fill="currentColor"></circle><circle cx="17" cy="19" r="1.5" fill="currentColor"></circle></svg>
+                        </button>
+                        <button type="button" class="flex h-7 w-7 items-center justify-center rounded-full border-2 border-[#ff664f] bg-white text-[#ff664f] shadow-md transition-colors duration-150 hover:bg-[#ff664f] hover:text-white sm:h-8 sm:w-8" aria-label="Add to wishlist">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733C11.285 5.876 9.623 4.75 7.688 4.75 5.099 4.75 3 6.765 3 9.25c0 7.22 9 12 9 12s9-4.78 9-12z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                        </button>
+                        <button type="button" class="flex h-7 w-7 items-center justify-center rounded-full border-2 border-[#ff664f] bg-white text-[#ff664f] shadow-md transition-colors duration-150 hover:bg-[#ff664f] hover:text-white sm:h-8 sm:w-8" aria-label="Share product">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="18" cy="5" r="2.5" stroke="currentColor" stroke-width="1.6"></circle><circle cx="6" cy="12" r="2.5" stroke="currentColor" stroke-width="1.6"></circle><circle cx="18" cy="19" r="2.5" stroke="currentColor" stroke-width="1.6"></circle><path d="m15.5 6.5-7 3.5M8.5 13.5l7 3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path></svg>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <p class="mt-3 text-center text-[11px] font-semibold uppercase tracking-[0.08em] text-[#6b7280] sm:text-xs">Camera</p>
+                  <p class="mt-1 text-center text-sm font-bold text-[#171717]">$79.00</p>
+                </article>
+                <article data-buyscreen-product-card class="group relative min-w-0 rounded-lg border border-[#ececec] bg-white p-3 shadow-sm transition-[box-shadow,border-color] duration-200 hover:border-[#d4d4d4] hover:shadow-lg">
+                  <div class="relative aspect-[4/3] w-full overflow-hidden rounded-md bg-[#f4f6f9]" style="background-image:url('./public/television.jpg');background-repeat:no-repeat;background-position:center;background-size:contain;">
+                    <div class="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex justify-center px-1 pb-2 pt-6 opacity-0 transition-opacity duration-200 group-hover:pointer-events-auto group-hover:opacity-100">
+                      <div class="pointer-events-auto flex items-center gap-1.5 sm:gap-2">
+                        <button type="button" data-buyscreen-license-open="1" data-unit-cents="59900" data-product-name="Television" data-unit-price="$599.00" class="flex h-7 w-7 items-center justify-center rounded-full border-2 border-[#ff664f] bg-white text-[#ff664f] shadow-md transition-colors duration-150 hover:bg-[#ff664f] hover:text-white sm:h-8 sm:w-8" aria-label="Add to cart">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M3 4h2l1.6 9.2a1 1 0 0 0 1 .8H18a1 1 0 0 0 1-.8L20.6 7H7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path><circle cx="10" cy="19" r="1.5" fill="currentColor"></circle><circle cx="17" cy="19" r="1.5" fill="currentColor"></circle></svg>
+                        </button>
+                        <button type="button" class="flex h-7 w-7 items-center justify-center rounded-full border-2 border-[#ff664f] bg-white text-[#ff664f] shadow-md transition-colors duration-150 hover:bg-[#ff664f] hover:text-white sm:h-8 sm:w-8" aria-label="Add to wishlist">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733C11.285 5.876 9.623 4.75 7.688 4.75 5.099 4.75 3 6.765 3 9.25c0 7.22 9 12 9 12s9-4.78 9-12z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                        </button>
+                        <button type="button" class="flex h-7 w-7 items-center justify-center rounded-full border-2 border-[#ff664f] bg-white text-[#ff664f] shadow-md transition-colors duration-150 hover:bg-[#ff664f] hover:text-white sm:h-8 sm:w-8" aria-label="Share product">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="18" cy="5" r="2.5" stroke="currentColor" stroke-width="1.6"></circle><circle cx="6" cy="12" r="2.5" stroke="currentColor" stroke-width="1.6"></circle><circle cx="18" cy="19" r="2.5" stroke="currentColor" stroke-width="1.6"></circle><path d="m15.5 6.5-7 3.5M8.5 13.5l7 3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path></svg>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <p class="mt-3 text-center text-[11px] font-semibold uppercase tracking-[0.08em] text-[#6b7280] sm:text-xs">Television</p>
+                  <p class="mt-1 text-center text-sm font-bold text-[#171717]">$599.00</p>
+                </article>
+                <article data-buyscreen-product-card class="group relative min-w-0 rounded-lg border border-[#ececec] bg-white p-3 shadow-sm transition-[box-shadow,border-color] duration-200 hover:border-[#d4d4d4] hover:shadow-lg">
+                  <div class="relative aspect-[4/3] w-full overflow-hidden rounded-md bg-[#f4f6f9]" style="background-image:url('./public/tablet.jpg');background-repeat:no-repeat;background-position:center;background-size:contain;">
+                    <div class="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex justify-center px-1 pb-2 pt-6 opacity-0 transition-opacity duration-200 group-hover:pointer-events-auto group-hover:opacity-100">
+                      <div class="pointer-events-auto flex items-center gap-1.5 sm:gap-2">
+                        <button type="button" data-buyscreen-license-open="1" data-unit-cents="39900" data-product-name="Tablet" data-unit-price="$399.00" class="flex h-7 w-7 items-center justify-center rounded-full border-2 border-[#ff664f] bg-white text-[#ff664f] shadow-md transition-colors duration-150 hover:bg-[#ff664f] hover:text-white sm:h-8 sm:w-8" aria-label="Add to cart">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M3 4h2l1.6 9.2a1 1 0 0 0 1 .8H18a1 1 0 0 0 1-.8L20.6 7H7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path><circle cx="10" cy="19" r="1.5" fill="currentColor"></circle><circle cx="17" cy="19" r="1.5" fill="currentColor"></circle></svg>
+                        </button>
+                        <button type="button" class="flex h-7 w-7 items-center justify-center rounded-full border-2 border-[#ff664f] bg-white text-[#ff664f] shadow-md transition-colors duration-150 hover:bg-[#ff664f] hover:text-white sm:h-8 sm:w-8" aria-label="Add to wishlist">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733C11.285 5.876 9.623 4.75 7.688 4.75 5.099 4.75 3 6.765 3 9.25c0 7.22 9 12 9 12s9-4.78 9-12z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                        </button>
+                        <button type="button" class="flex h-7 w-7 items-center justify-center rounded-full border-2 border-[#ff664f] bg-white text-[#ff664f] shadow-md transition-colors duration-150 hover:bg-[#ff664f] hover:text-white sm:h-8 sm:w-8" aria-label="Share product">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="18" cy="5" r="2.5" stroke="currentColor" stroke-width="1.6"></circle><circle cx="6" cy="12" r="2.5" stroke="currentColor" stroke-width="1.6"></circle><circle cx="18" cy="19" r="2.5" stroke="currentColor" stroke-width="1.6"></circle><path d="m15.5 6.5-7 3.5M8.5 13.5l7 3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path></svg>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <p class="mt-3 text-center text-[11px] font-semibold uppercase tracking-[0.08em] text-[#6b7280] sm:text-xs">Tablet</p>
+                  <p class="mt-1 text-center text-sm font-bold text-[#171717]">$399.00</p>
+                </article>
+                <article data-buyscreen-product-card class="group relative min-w-0 rounded-lg border border-[#ececec] bg-white p-3 shadow-sm transition-[box-shadow,border-color] duration-200 hover:border-[#d4d4d4] hover:shadow-lg">
+                  <div class="relative aspect-[4/3] w-full overflow-hidden rounded-md bg-[#f4f6f9]" style="background-image:url('./public/watch.jpg');background-repeat:no-repeat;background-position:center;background-size:contain;">
+                    <div class="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex justify-center px-1 pb-2 pt-6 opacity-0 transition-opacity duration-200 group-hover:pointer-events-auto group-hover:opacity-100">
+                      <div class="pointer-events-auto flex items-center gap-1.5 sm:gap-2">
+                        <button type="button" data-buyscreen-license-open="1" data-unit-cents="19900" data-product-name="Watch" data-unit-price="$199.00" class="flex h-7 w-7 items-center justify-center rounded-full border-2 border-[#ff664f] bg-white text-[#ff664f] shadow-md transition-colors duration-150 hover:bg-[#ff664f] hover:text-white sm:h-8 sm:w-8" aria-label="Add to cart">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M3 4h2l1.6 9.2a1 1 0 0 0 1 .8H18a1 1 0 0 0 1-.8L20.6 7H7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path><circle cx="10" cy="19" r="1.5" fill="currentColor"></circle><circle cx="17" cy="19" r="1.5" fill="currentColor"></circle></svg>
+                        </button>
+                        <button type="button" class="flex h-7 w-7 items-center justify-center rounded-full border-2 border-[#ff664f] bg-white text-[#ff664f] shadow-md transition-colors duration-150 hover:bg-[#ff664f] hover:text-white sm:h-8 sm:w-8" aria-label="Add to wishlist">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733C11.285 5.876 9.623 4.75 7.688 4.75 5.099 4.75 3 6.765 3 9.25c0 7.22 9 12 9 12s9-4.78 9-12z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                        </button>
+                        <button type="button" class="flex h-7 w-7 items-center justify-center rounded-full border-2 border-[#ff664f] bg-white text-[#ff664f] shadow-md transition-colors duration-150 hover:bg-[#ff664f] hover:text-white sm:h-8 sm:w-8" aria-label="Share product">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="18" cy="5" r="2.5" stroke="currentColor" stroke-width="1.6"></circle><circle cx="6" cy="12" r="2.5" stroke="currentColor" stroke-width="1.6"></circle><circle cx="18" cy="19" r="2.5" stroke="currentColor" stroke-width="1.6"></circle><path d="m15.5 6.5-7 3.5M8.5 13.5l7 3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path></svg>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <p class="mt-3 text-center text-[11px] font-semibold uppercase tracking-[0.08em] text-[#6b7280] sm:text-xs">Watch</p>
+                  <p class="mt-1 text-center text-sm font-bold text-[#171717]">$199.00</p>
+                </article>
+                <article data-buyscreen-product-card class="group relative min-w-0 rounded-lg border border-[#ececec] bg-white p-3 shadow-sm transition-[box-shadow,border-color] duration-200 hover:border-[#d4d4d4] hover:shadow-lg">
+                  <div class="relative aspect-[4/3] w-full overflow-hidden rounded-md bg-[#f4f6f9]" style="background-image:url('./public/speaker.jpg');background-repeat:no-repeat;background-position:center;background-size:contain;">
+                    <div class="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex justify-center px-1 pb-2 pt-6 opacity-0 transition-opacity duration-200 group-hover:pointer-events-auto group-hover:opacity-100">
+                      <div class="pointer-events-auto flex items-center gap-1.5 sm:gap-2">
+                        <button type="button" data-buyscreen-license-open="1" data-unit-cents="8900" data-product-name="Speaker" data-unit-price="$89.00" class="flex h-7 w-7 items-center justify-center rounded-full border-2 border-[#ff664f] bg-white text-[#ff664f] shadow-md transition-colors duration-150 hover:bg-[#ff664f] hover:text-white sm:h-8 sm:w-8" aria-label="Add to cart">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M3 4h2l1.6 9.2a1 1 0 0 0 1 .8H18a1 1 0 0 0 1-.8L20.6 7H7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path><circle cx="10" cy="19" r="1.5" fill="currentColor"></circle><circle cx="17" cy="19" r="1.5" fill="currentColor"></circle></svg>
+                        </button>
+                        <button type="button" class="flex h-7 w-7 items-center justify-center rounded-full border-2 border-[#ff664f] bg-white text-[#ff664f] shadow-md transition-colors duration-150 hover:bg-[#ff664f] hover:text-white sm:h-8 sm:w-8" aria-label="Add to wishlist">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733C11.285 5.876 9.623 4.75 7.688 4.75 5.099 4.75 3 6.765 3 9.25c0 7.22 9 12 9 12s9-4.78 9-12z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                        </button>
+                        <button type="button" class="flex h-7 w-7 items-center justify-center rounded-full border-2 border-[#ff664f] bg-white text-[#ff664f] shadow-md transition-colors duration-150 hover:bg-[#ff664f] hover:text-white sm:h-8 sm:w-8" aria-label="Share product">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="18" cy="5" r="2.5" stroke="currentColor" stroke-width="1.6"></circle><circle cx="6" cy="12" r="2.5" stroke="currentColor" stroke-width="1.6"></circle><circle cx="18" cy="19" r="2.5" stroke="currentColor" stroke-width="1.6"></circle><path d="m15.5 6.5-7 3.5M8.5 13.5l7 3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path></svg>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <p class="mt-3 text-center text-[11px] font-semibold uppercase tracking-[0.08em] text-[#6b7280] sm:text-xs">Speaker</p>
+                  <p class="mt-1 text-center text-sm font-bold text-[#171717]">$89.00</p>
+                </article>
+                <article data-buyscreen-product-card class="group relative min-w-0 rounded-lg border border-[#ececec] bg-white p-3 shadow-sm transition-[box-shadow,border-color] duration-200 hover:border-[#d4d4d4] hover:shadow-lg">
+                  <div class="relative aspect-[4/3] w-full overflow-hidden rounded-md bg-[#f4f6f9]" style="background-image:url('./public/keyboard.jpg');background-repeat:no-repeat;background-position:center;background-size:contain;">
+                    <div class="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex justify-center px-1 pb-2 pt-6 opacity-0 transition-opacity duration-200 group-hover:pointer-events-auto group-hover:opacity-100">
+                      <div class="pointer-events-auto flex items-center gap-1.5 sm:gap-2">
+                        <button type="button" data-buyscreen-license-open="1" data-unit-cents="4900" data-product-name="Keyboard" data-unit-price="$49.00" class="flex h-7 w-7 items-center justify-center rounded-full border-2 border-[#ff664f] bg-white text-[#ff664f] shadow-md transition-colors duration-150 hover:bg-[#ff664f] hover:text-white sm:h-8 sm:w-8" aria-label="Add to cart">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M3 4h2l1.6 9.2a1 1 0 0 0 1 .8H18a1 1 0 0 0 1-.8L20.6 7H7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path><circle cx="10" cy="19" r="1.5" fill="currentColor"></circle><circle cx="17" cy="19" r="1.5" fill="currentColor"></circle></svg>
+                        </button>
+                        <button type="button" class="flex h-7 w-7 items-center justify-center rounded-full border-2 border-[#ff664f] bg-white text-[#ff664f] shadow-md transition-colors duration-150 hover:bg-[#ff664f] hover:text-white sm:h-8 sm:w-8" aria-label="Add to wishlist">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733C11.285 5.876 9.623 4.75 7.688 4.75 5.099 4.75 3 6.765 3 9.25c0 7.22 9 12 9 12s9-4.78 9-12z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                        </button>
+                        <button type="button" class="flex h-7 w-7 items-center justify-center rounded-full border-2 border-[#ff664f] bg-white text-[#ff664f] shadow-md transition-colors duration-150 hover:bg-[#ff664f] hover:text-white sm:h-8 sm:w-8" aria-label="Share product">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="18" cy="5" r="2.5" stroke="currentColor" stroke-width="1.6"></circle><circle cx="6" cy="12" r="2.5" stroke="currentColor" stroke-width="1.6"></circle><circle cx="18" cy="19" r="2.5" stroke="currentColor" stroke-width="1.6"></circle><path d="m15.5 6.5-7 3.5M8.5 13.5l7 3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path></svg>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <p class="mt-3 text-center text-[11px] font-semibold uppercase tracking-[0.08em] text-[#6b7280] sm:text-xs">Keyboard</p>
+                  <p class="mt-1 text-center text-sm font-bold text-[#171717]">$49.00</p>
+                </article>
+                <article data-buyscreen-product-card class="group relative min-w-0 rounded-lg border border-[#ececec] bg-white p-3 shadow-sm transition-[box-shadow,border-color] duration-200 hover:border-[#d4d4d4] hover:shadow-lg">
+                  <div class="relative aspect-[4/3] w-full overflow-hidden rounded-md bg-[#f4f6f9]" style="background-image:url('./public/mouse.jpg');background-repeat:no-repeat;background-position:center;background-size:contain;">
+                    <div class="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex justify-center px-1 pb-2 pt-6 opacity-0 transition-opacity duration-200 group-hover:pointer-events-auto group-hover:opacity-100">
+                      <div class="pointer-events-auto flex items-center gap-1.5 sm:gap-2">
+                        <button type="button" data-buyscreen-license-open="1" data-unit-cents="2900" data-product-name="Mouse" data-unit-price="$29.00" class="flex h-7 w-7 items-center justify-center rounded-full border-2 border-[#ff664f] bg-white text-[#ff664f] shadow-md transition-colors duration-150 hover:bg-[#ff664f] hover:text-white sm:h-8 sm:w-8" aria-label="Add to cart">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M3 4h2l1.6 9.2a1 1 0 0 0 1 .8H18a1 1 0 0 0 1-.8L20.6 7H7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path><circle cx="10" cy="19" r="1.5" fill="currentColor"></circle><circle cx="17" cy="19" r="1.5" fill="currentColor"></circle></svg>
+                        </button>
+                        <button type="button" class="flex h-7 w-7 items-center justify-center rounded-full border-2 border-[#ff664f] bg-white text-[#ff664f] shadow-md transition-colors duration-150 hover:bg-[#ff664f] hover:text-white sm:h-8 sm:w-8" aria-label="Add to wishlist">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733C11.285 5.876 9.623 4.75 7.688 4.75 5.099 4.75 3 6.765 3 9.25c0 7.22 9 12 9 12s9-4.78 9-12z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                        </button>
+                        <button type="button" class="flex h-7 w-7 items-center justify-center rounded-full border-2 border-[#ff664f] bg-white text-[#ff664f] shadow-md transition-colors duration-150 hover:bg-[#ff664f] hover:text-white sm:h-8 sm:w-8" aria-label="Share product">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="18" cy="5" r="2.5" stroke="currentColor" stroke-width="1.6"></circle><circle cx="6" cy="12" r="2.5" stroke="currentColor" stroke-width="1.6"></circle><circle cx="18" cy="19" r="2.5" stroke="currentColor" stroke-width="1.6"></circle><path d="m15.5 6.5-7 3.5M8.5 13.5l7 3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path></svg>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <p class="mt-3 text-center text-[11px] font-semibold uppercase tracking-[0.08em] text-[#6b7280] sm:text-xs">Mouse</p>
+                  <p class="mt-1 text-center text-sm font-bold text-[#171717]">$29.00</p>
+                </article>
+              </div>
+              <p id="buyscreenSearchEmpty" class="mt-4 hidden rounded-lg border border-dashed border-[#cbd5e1] bg-[#f8fafc] px-4 py-4 text-sm text-[#6b7280]">
+                No products found.
+              </p>
+            </div>
+            <button id="buyscreenNextProductsBtn" type="button" class="buyscreen-products-arrow mt-8 shrink-0 lg:mt-0" aria-label="Next products">
+              <svg width="16" height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.3"></circle>
+                <path d="M8.8 7.3 11.6 10l-2.8 2.7" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"></path>
+              </svg>
+            </button>
+          </div>
+        </section>
+      </div>
+    </section>
+    </div>
+
+    <div id="buyscreenLicenseModal" class="fixed inset-0 z-[200] hidden flex items-center justify-center p-4 sm:p-6">
+      <button type="button" id="buyscreenLicenseBackdrop" class="pointer-events-auto absolute inset-0 bg-black/45 backdrop-blur-[1px]" aria-label="Close dialog"></button>
+      <div role="dialog" aria-modal="true" aria-labelledby="buyscreenLicenseTitle" class="pointer-events-auto relative z-10 w-full max-w-md rounded-2xl border border-[#e5e7eb] bg-white p-6 shadow-2xl sm:p-8">
+        <div class="flex items-start justify-between gap-3 border-b border-[#eef2f7] pb-4">
+          <div>
+            <h2 id="buyscreenLicenseTitle" class="text-base font-semibold text-[#06224C] sm:text-lg">Regular license</h2>
+            <p id="buyscreenLicenseSubtitle" class="mt-1 text-xs text-[#6b7280]"></p>
+          </div>
+          <p id="buyscreenLicenseLineTotal" class="text-lg font-bold tabular-nums text-[#06224C] sm:text-xl"></p>
+        </div>
+        <ul class="mt-5 space-y-3 text-sm text-[#374151]">
+          <li class="flex gap-2">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" class="mt-0.5 shrink-0" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="#06224C" stroke-width="1.5"></circle><path d="m8 12 2.5 2.5L16 9" stroke="#06224C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+            <span class="leading-snug">Quality checked by Stackly before delivery.</span>
+          </li>
+          <li class="flex gap-2">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" class="mt-0.5 shrink-0" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="#06224C" stroke-width="1.5"></circle><path d="m8 12 2.5 2.5L16 9" stroke="#06224C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+            <span class="leading-snug">Stackly provides licenses ranging from 1 month to 1 year.</span>
+          </li>
+          <li class="flex gap-2">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" class="mt-0.5 shrink-0" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="#06224C" stroke-width="1.5"></circle><path d="m8 12 2.5 2.5L16 9" stroke="#06224C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+            <span class="leading-snug">Secure checkout and instant confirmation by email.</span>
+          </li>
+        </ul>
+        <div class="mt-6 flex items-center justify-between gap-3 rounded-full border-2 border-[#06224C] px-3 py-2.5 sm:px-4">
+          <button type="button" id="buyscreenLicenseDec" class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#06224C] text-lg font-light leading-none text-white transition-opacity hover:opacity-90 disabled:opacity-40" aria-label="Decrease quantity">−</button>
+          <div id="buyscreenLicenseQty" class="min-w-[3rem] rounded-md border border-dashed border-[#cbd5e1] bg-[#f8fafc] px-3 py-1.5 text-center text-lg font-semibold tabular-nums text-[#0f172a]">1</div>
+          <button type="button" id="buyscreenLicenseInc" class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#06224C] text-lg font-light leading-none text-white transition-opacity hover:opacity-90" aria-label="Increase quantity">+</button>
+        </div>
+        <button type="button" id="buyscreenLicenseConfirmBtn" class="mt-6 w-full rounded-xl bg-[#06224C] py-3.5 text-center text-sm font-bold text-white transition-opacity hover:opacity-95 sm:text-base">Confirm To Buy</button>
+      </div>
+    </div>
+
+    <div id="buyscreenCartModal" class="fixed inset-0 z-[210] hidden flex items-center justify-center p-4 sm:p-6">
+      <button type="button" id="buyscreenCartBackdrop" class="absolute inset-0 bg-black/45 backdrop-blur-[1px]" aria-label="Close cart"></button>
+      <div role="dialog" aria-modal="true" aria-labelledby="buyscreenCartTitle" class="relative z-10 w-full max-w-lg rounded-2xl border border-[#e5e7eb] bg-white p-6 shadow-2xl sm:p-8">
+        <div class="flex items-center justify-between border-b border-[#eef2f7] pb-4">
+          <h2 id="buyscreenCartTitle" class="text-lg font-semibold text-[#06224C]">Your cart</h2>
+          <p id="buyscreenCartModalTotal" class="text-sm font-bold tabular-nums text-[#06224C]">$ 0.00</p>
+        </div>
+        <div id="buyscreenCartItems" class="mt-4"></div>
+      </div>
+    </div>
+    <div id="buyscreenActionToast" class="pointer-events-none fixed bottom-4 right-4 z-[220] hidden max-w-[260px] rounded-md bg-[#111827] px-3 py-2 text-xs font-medium text-white shadow-lg sm:text-sm"></div>
+  </div>
 
   <!-- ================= PLANNING PAGE ================= -->
   <div id="planningPage" class="hidden min-h-[100dvh] w-full bg-[#efefef] overflow-x-hidden">
