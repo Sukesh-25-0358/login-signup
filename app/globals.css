@@ -72,6 +72,28 @@ body:has(> main.buyscreen-page) {
 .buyscreen-products > * {
   min-width: 0;
 }
+/* Featured products: single horizontal row; column count from JS via --buyscreen-carousel-slots (zoom-safe). */
+.buyscreen-products.buyscreen-products--carousel {
+  --buyscreen-gap: 1rem;
+  --buyscreen-carousel-slots: 1;
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: stretch;
+  gap: var(--buyscreen-gap);
+  min-width: 0;
+}
+@media (min-width: 640px) {
+  .buyscreen-products.buyscreen-products--carousel {
+    --buyscreen-gap: 1.5rem;
+  }
+}
+.buyscreen-products.buyscreen-products--carousel > * {
+  flex: 0 0
+    calc(
+      (100% - (var(--buyscreen-carousel-slots) - 1) * var(--buyscreen-gap)) / var(--buyscreen-carousel-slots)
+    );
+  min-width: 0;
+}
 .buyscreen-products-strip {
   scrollbar-width: thin;
   -webkit-overflow-scrolling: touch;
@@ -120,11 +142,8 @@ body:has(> main.buyscreen-page) {
   .buyscreen-features {
     grid-template-columns: minmax(0, 1fr) !important;
   }
-  .buyscreen-products {
+  .buyscreen-products.buyscreen-products--grid {
     grid-template-columns: minmax(0, 1fr) !important;
-  }
-  .buyscreen-products-row .buyscreen-products-arrow {
-    display: none !important;
   }
 }
 @media (min-width: 768px) {
@@ -187,7 +206,7 @@ body:has(> main.buyscreen-page) {
   .buyscreen-features {
     gap: 0.9rem !important;
   }
-  .buyscreen-products {
+  .buyscreen-products.buyscreen-products--grid {
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
   }
 }

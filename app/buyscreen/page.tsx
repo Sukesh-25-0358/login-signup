@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 
 const buyCategories = [
   { label: "All Categories" },
@@ -56,6 +56,15 @@ const licenseBullets = [
 ];
 
 const NAVY = "#06224C";
+
+/** Fits ~1–5 cards in one row from track width (zoom / resize safe). */
+function getCarouselColumnCount(widthPx: number): number {
+  if (!widthPx || widthPx <= 0) return 1;
+  const gapPx = 16;
+  const minCardPx = 148;
+  const n = Math.floor((widthPx + gapPx) / (minCardPx + gapPx));
+  return Math.max(1, Math.min(5, n));
+}
 
 function formatUsd(cents: number): string {
   const n = cents / 100;
@@ -148,7 +157,6 @@ function CheckIcon() {
 }
 
 export default function BuyScreenPage() {
-  const visibleProductCount = 5;
   const [activeProductStart, setActiveProductStart] = useState(0);
   const [showAllProducts, setShowAllProducts] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -161,19 +169,23 @@ export default function BuyScreenPage() {
   const [actionToast, setActionToast] = useState<string | null>(null);
   const toastTimerRef = useRef<number | null>(null);
   const featuredProductsRef = useRef<HTMLElement | null>(null);
+  const productsViewportRef = useRef<HTMLDivElement | null>(null);
+  const [carouselCols, setCarouselCols] = useState(3);
 
   const normalizedSearchQuery = searchQuery.trim().toLowerCase();
   const searchFilteredProducts = normalizedSearchQuery
     ? buyProducts.filter((product) => product.name.toLowerCase().includes(normalizedSearchQuery))
     : buyProducts;
   const totalProducts = searchFilteredProducts.length;
+  const isSearching = normalizedSearchQuery.length > 0;
+  const isCarouselMode = !showAllProducts && !isSearching;
+  const visibleProductCount = isCarouselMode ? carouselCols : Number.POSITIVE_INFINITY;
   const visibleBuyProducts = totalProducts
     ? Array.from({ length: Math.min(visibleProductCount, totalProducts) }, (_, offset) => {
         const index = (activeProductStart + offset) % totalProducts;
         return searchFilteredProducts[index];
       })
     : [];
-  const isSearching = normalizedSearchQuery.length > 0;
   const displayedProducts = isSearching || showAllProducts ? searchFilteredProducts : visibleBuyProducts;
 
   const closeLicenseModal = useCallback(() => {
@@ -271,6 +283,19 @@ export default function BuyScreenPage() {
     };
   }, []);
 
+  useLayoutEffect(() => {
+    if (!isCarouselMode) return;
+    const el = productsViewportRef.current;
+    if (!el) return;
+    const measure = () => {
+      setCarouselCols(getCarouselColumnCount(el.getBoundingClientRect().width));
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [isCarouselMode]);
+
   function moveProducts(direction: number) {
     if (!totalProducts) return;
     setActiveProductStart((prev) => (prev + direction + totalProducts) % totalProducts);
@@ -311,9 +336,10 @@ export default function BuyScreenPage() {
     );
   }
 
-  const productGridClass = showAllProducts
-    ? "grid grid-cols-2 gap-4 sm:gap-6 md:grid-cols-3 lg:grid-cols-5"
-    : "grid grid-cols-2 gap-4 sm:gap-6 sm:grid-cols-3 lg:grid-cols-5";
+  const productGridClass = showAllProducts || isSearching
+    ? "buyscreen-products--grid grid grid-cols-2 gap-4 sm:gap-6 md:grid-cols-3 lg:grid-cols-5"
+    : "buyscreen-products--carousel";
+  const carouselSlots = isCarouselMode ? Math.max(1, displayedProducts.length) : 1;
 
   const lineTotalCents = licenseProduct ? licenseProduct.unitPriceCents * licenseQty : 0;
   const cartTotalCents = cartItems.reduce((sum, item) => sum + item.product.unitPriceCents * item.qty, 0);
@@ -591,16 +617,26 @@ export default function BuyScreenPage() {
                 </button>
               </div>
 
-              <div className="buyscreen-products-row flex items-start gap-3 sm:gap-4 lg:items-center">
+              <div className="buyscreen-products-row flex items-center gap-2 sm:gap-4">
                 {!showAllProducts && !isSearching ? (
-                  <button type="button" className="buyscreen-products-arrow mt-8 shrink-0 lg:mt-0" aria-label="Previous products" onClick={() => moveProducts(-1)}>
+                  <button type="button" className="buyscreen-products-arrow shrink-0" aria-label="Previous products" onClick={() => moveProducts(-1)}>
                     <svg width="16" height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
                       <circle cx="10" cy="10" r="8" stroke="currentColor" strokeWidth="1.3" />
                       <path d="M11.2 7.3 8.4 10l2.8 2.7" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
                   </button>
                 ) : null}
-                <div className={`buyscreen-products min-w-0 flex-1 ${productGridClass}`}>
+                <div ref={productsViewportRef} className="min-w-0 flex-1 overflow-hidden">
+                  <div
+                    className={`buyscreen-products min-w-0 ${productGridClass}`}
+                    style={
+                      isCarouselMode
+                        ? ({
+                            ["--buyscreen-carousel-slots" as string]: String(carouselSlots),
+                          } as React.CSSProperties)
+                        : undefined
+                    }
+                  >
                   {displayedProducts.map((product, index) => (
                     <article
                       key={`${product.id}-${index}`}
@@ -635,9 +671,10 @@ export default function BuyScreenPage() {
                       <p className="mt-1 text-center text-sm font-bold text-[#171717]">{product.price}</p>
                     </article>
                   ))}
+                  </div>
                 </div>
                 {!showAllProducts && !isSearching ? (
-                  <button type="button" className="buyscreen-products-arrow mt-8 shrink-0 lg:mt-0" aria-label="Next products" onClick={() => moveProducts(1)}>
+                  <button type="button" className="buyscreen-products-arrow shrink-0" aria-label="Next products" onClick={() => moveProducts(1)}>
                     <svg width="16" height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
                       <circle cx="10" cy="10" r="8" stroke="currentColor" strokeWidth="1.3" />
                       <path d="M8.8 7.3 11.6 10l-2.8 2.7" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
