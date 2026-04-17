@@ -128,6 +128,22 @@ body:has(> main.buyscreen-page) {
 .buyscreen-products-arrow:hover {
   color: #9ca3af;
 }
+.buyscreen-product-actions-mobile {
+  overflow: hidden;
+}
+.buyscreen-product-actions-mobile > button {
+  width: min(1.625rem, 100%) !important;
+  height: min(1.625rem, 100%) !important;
+}
+.buyscreen-product-actions-mobile > button svg {
+  width: 11px;
+  height: 11px;
+}
+@media (max-width: 480px) {
+  .buyscreen-products-row .buyscreen-products-arrow {
+    display: none !important;
+  }
+}
 /* Horizontal category bar only at lg+; do not set display:flex globally — it overrides Tailwind `hidden` on the mobile menu panel. */
 @media (min-width: 1024px) {
   .buyscreen-categories-list {

@@ -219,6 +219,11 @@
     #buyscreenPage .buyscreen-products-arrow:hover {
       color: #9ca3af;
     }
+    @media (max-width: 480px) {
+      #buyscreenPage .buyscreen-products-row .buyscreen-products-arrow {
+        display: none !important;
+      }
+    }
     #buyscreenPage .buyscreen-hero-content h1,
     #buyscreenPage .buyscreen-hero-content p {
       overflow-wrap: anywhere;
@@ -3469,7 +3474,7 @@
               <h2 id="buyscreenLicenseTitle" class="text-base font-semibold text-[#06224C] sm:text-lg">Regular license</h2>
               <p id="buyscreenLicenseSubtitle" class="mt-1 text-xs text-[#6b7280]"></p>
             </div>
-            <p id="buyscreenLicenseLineTotal" class="text-lg font-bold tabular-nums text-[#06224C] sm:text-xl"></p>
+            <p id="buyscreenLicenseLineTotal" class="whitespace-nowrap text-lg font-bold tabular-nums text-[#06224C] sm:text-xl"></p>
           </div>
         </div>
         <div class="min-h-0 flex-1 overflow-y-auto overscroll-contain px-6 pb-6 pt-5 sm:px-8 sm:pb-8">
@@ -3487,10 +3492,10 @@
               <span class="leading-snug">Secure checkout and instant confirmation by email.</span>
             </li>
           </ul>
-          <div class="mt-6 grid grid-cols-[auto,1fr,auto] items-center gap-3 overflow-hidden rounded-full border-2 border-[#06224C] p-2 sm:px-3">
-            <button type="button" id="buyscreenLicenseDec" class="flex h-9 w-9 items-center justify-center rounded-full bg-[#06224C] text-lg font-light leading-none text-white transition-opacity hover:opacity-90 disabled:opacity-40" aria-label="Decrease quantity">−</button>
-            <div id="buyscreenLicenseQty" class="min-w-0 rounded-md border border-dashed border-[#cbd5e1] bg-[#f8fafc] px-3 py-1.5 text-center text-lg font-semibold tabular-nums text-[#0f172a]">1</div>
-            <button type="button" id="buyscreenLicenseInc" class="flex h-9 w-9 items-center justify-center rounded-full bg-[#06224C] text-lg font-light leading-none text-white transition-opacity hover:opacity-90" aria-label="Increase quantity">+</button>
+          <div class="mt-6 grid grid-cols-3 items-center gap-2 rounded-full border-2 border-[#06224C] p-2 sm:px-3">
+            <button type="button" id="buyscreenLicenseDec" class="justify-self-start flex h-8 w-8 items-center justify-center rounded-full bg-[#06224C] text-lg font-light leading-none text-white transition-opacity hover:opacity-90 disabled:opacity-40 sm:h-9 sm:w-9" aria-label="Decrease quantity">−</button>
+            <div id="buyscreenLicenseQty" class="min-w-0 w-full rounded-md border border-dashed border-[#cbd5e1] bg-[#f8fafc] px-2 py-1.5 text-center text-lg font-semibold tabular-nums text-[#0f172a]">1</div>
+            <button type="button" id="buyscreenLicenseInc" class="justify-self-end flex h-8 w-8 items-center justify-center rounded-full bg-[#06224C] text-lg font-light leading-none text-white transition-opacity hover:opacity-90 sm:h-9 sm:w-9" aria-label="Increase quantity">+</button>
           </div>
           <button type="button" id="buyscreenLicenseConfirmBtn" class="mt-6 w-full rounded-xl bg-[#06224C] py-3.5 text-center text-sm font-bold text-white transition-opacity hover:opacity-95 sm:text-base">Confirm To Buy</button>
         </div>

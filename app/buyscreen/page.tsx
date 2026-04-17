@@ -372,7 +372,7 @@ export default function BuyScreenPage() {
                   {licenseProduct.name} · {licenseProduct.price} each
                 </p>
               </div>
-              <p className="text-lg font-bold tabular-nums sm:text-xl" style={{ color: NAVY }}>
+              <p className="whitespace-nowrap text-lg font-bold tabular-nums sm:text-xl" style={{ color: NAVY }}>
                 {formatUsd(lineTotalCents)}
               </p>
               </div>
@@ -387,13 +387,10 @@ export default function BuyScreenPage() {
               ))}
               </ul>
 
-              <div
-                className="mt-6 grid grid-cols-[auto,1fr,auto] items-center gap-3 overflow-hidden rounded-full border-2 p-2 sm:px-3"
-                style={{ borderColor: NAVY }}
-              >
+              <div className="mt-6 grid grid-cols-3 items-center gap-2 rounded-full border-2 p-2 sm:px-3" style={{ borderColor: NAVY }}>
               <button
                 type="button"
-                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-white transition-opacity hover:opacity-90 disabled:opacity-40"
+                className="justify-self-start flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-white transition-opacity hover:opacity-90 disabled:opacity-40 sm:h-9 sm:w-9"
                 style={{ backgroundColor: NAVY }}
                 aria-label="Decrease quantity"
                 disabled={licenseQty <= 1}
@@ -401,12 +398,12 @@ export default function BuyScreenPage() {
               >
                 <span className="text-lg font-light leading-none">−</span>
               </button>
-              <div className="min-w-0 rounded-md border border-dashed border-[#cbd5e1] bg-[#f8fafc] px-3 py-1.5 text-center text-lg font-semibold tabular-nums text-[#0f172a]">
+              <div className="min-w-0 w-full rounded-md border border-dashed border-[#cbd5e1] bg-[#f8fafc] px-2 py-1.5 text-center text-lg font-semibold tabular-nums text-[#0f172a]">
                 {licenseQty}
               </div>
               <button
                 type="button"
-                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-white transition-opacity hover:opacity-90"
+                className="justify-self-end flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-white transition-opacity hover:opacity-90 sm:h-9 sm:w-9"
                 style={{ backgroundColor: NAVY }}
                 aria-label="Increase quantity"
                 onClick={() => setLicenseQty((q) => q + 1)}
@@ -686,7 +683,7 @@ export default function BuyScreenPage() {
                           </div>
                         </div>
                       </div>
-                      <div className="buyscreen-product-actions-mobile grid grid-cols-3 place-items-center gap-0.5 overflow-hidden border-t border-[#f3f4f6] px-0.5 py-1 lg:hidden">
+                      <div className="buyscreen-product-actions-mobile grid grid-cols-3 place-items-center gap-1 border-t border-[#f3f4f6] px-1 py-1 lg:hidden">
                         <BuyProductActionButtons
                           compact
                           isFavorite={favoriteProductIds.includes(product.id)}
