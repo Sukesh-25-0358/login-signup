@@ -238,6 +238,68 @@
     #buyscreenPage #buyscreenLicenseLineTotal {
       white-space: nowrap;
     }
+    /* Global fallbacks: modal and cards can be outside #buyscreenPage scope */
+    .buyscreen-product-actions-mobile {
+      display: grid !important;
+      grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+      align-items: center !important;
+      justify-items: center !important;
+      gap: 0.2rem !important;
+      padding-left: 0.35rem !important;
+      padding-right: 0.35rem !important;
+      overflow: hidden !important;
+    }
+    .buyscreen-product-actions-mobile > button {
+      width: 1.55rem !important;
+      height: 1.55rem !important;
+      min-width: 1.55rem !important;
+      border-width: 1.5px !important;
+    }
+    .buyscreen-product-actions-mobile > button svg {
+      width: 10px !important;
+      height: 10px !important;
+    }
+    @media (min-width: 640px) {
+      .buyscreen-product-actions-mobile > button {
+        width: 2rem !important;
+        height: 2rem !important;
+        min-width: 2rem !important;
+        border-width: 2px !important;
+      }
+      .buyscreen-product-actions-mobile > button svg {
+        width: 13px !important;
+        height: 13px !important;
+      }
+    }
+    .buyscreen-license-qty-row {
+      display: grid !important;
+      grid-template-columns: auto minmax(3rem, 1fr) auto !important;
+      align-items: center !important;
+      gap: 0.45rem !important;
+      overflow: hidden !important;
+      padding: 0.5rem 0.625rem !important;
+    }
+    .buyscreen-license-qty-row > button {
+      width: 2rem !important;
+      height: 2rem !important;
+      min-width: 2rem !important;
+      overflow: hidden !important;
+      font-size: 1.1rem !important;
+      line-height: 1 !important;
+      text-size-adjust: 100%;
+      -webkit-text-size-adjust: 100%;
+    }
+    @media (min-width: 640px) {
+      .buyscreen-license-qty-row > button {
+        width: 2.25rem !important;
+        height: 2.25rem !important;
+        min-width: 2.25rem !important;
+      }
+    }
+    #buyscreenLicenseLineTotal {
+      white-space: nowrap !important;
+      line-height: 1.1 !important;
+    }
     @media (min-width: 640px) {
       #buyscreenPage .buyscreen-license-qty-row > button {
         width: 2.25rem !important;
