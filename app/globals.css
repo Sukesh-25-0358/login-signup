@@ -184,7 +184,7 @@ body:has(> main.buyscreen-page) {
   .buyscreen-header-actions {
     width: 100% !important;
     flex-wrap: wrap;
-    justify-content: space-between !important;
+    justify-content: flex-end;
     row-gap: 0.5rem;
     column-gap: 0.5rem;
   }
@@ -194,9 +194,15 @@ body:has(> main.buyscreen-page) {
     width: 100% !important;
     max-width: none !important;
   }
-  .buyscreen-cart-trigger,
-  .buyscreen-user-summary {
+  .buyscreen-header-trailing {
     order: 2;
+    display: flex;
+    flex: 1 1 100%;
+    min-width: 0;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.5rem;
   }
   .buyscreen-categories {
     padding-left: 1rem !important;

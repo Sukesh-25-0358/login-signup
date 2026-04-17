@@ -74,76 +74,77 @@ function formatUsd(cents: number): string {
   return `$ ${withCommas}.${parts[1] ?? "00"}`;
 }
 
-function BuyProductHoverActions({
+function BuyProductActionButtons({
   isFavorite,
   onCartClick,
   onFavoriteClick,
   onShareClick,
+  compact,
 }: {
   isFavorite: boolean;
   onCartClick: () => void;
   onFavoriteClick: () => void;
   onShareClick: () => void;
+  compact?: boolean;
 }) {
-  const btnBase =
-    "flex h-7 w-7 items-center justify-center rounded-full border-2 border-[#ff664f] shadow-md transition-colors duration-150 sm:h-8 sm:w-8";
-  const btn =
-    `${btnBase} bg-white text-[#ff664f] hover:bg-[#ff664f] hover:text-white`;
-  const favoriteBtn = isFavorite
-    ? `${btnBase} bg-[#ff664f] text-white hover:bg-[#ff664f] hover:text-white`
-    : btn;
+  const size = compact ? "h-8 w-8 sm:h-7 sm:w-7" : "h-7 w-7 sm:h-8 sm:w-8";
+  const shadow = compact ? "shadow-sm" : "shadow-md";
+  const base =
+    `flex shrink-0 items-center justify-center rounded-full border-2 border-[#ff664f] transition-colors duration-150 ${size} ${shadow}`;
+  const inactive = `${base} bg-white text-[#ff664f] hover:bg-[#ff664f] hover:text-white`;
+  const favoriteActive = `${base} bg-[#ff664f] text-white hover:bg-[#ff664f] hover:text-white`;
+  const favoriteBtn = isFavorite ? favoriteActive : inactive;
+  const icon = compact ? 13 : 14;
   return (
-    <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex justify-center px-1 pb-2 pt-6 opacity-0 transition-opacity duration-200 group-hover:pointer-events-auto group-hover:opacity-100">
-      <div className="pointer-events-auto flex items-center gap-1.5 sm:gap-2">
-        <button type="button" className={btn} aria-label="Add to cart" onClick={(e) => {
+    <>
+      <button type="button" className={inactive} aria-label="Add to cart" onClick={(e) => {
+        e.stopPropagation();
+        onCartClick();
+      }}>
+        <svg width={icon} height={icon} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+          <path d="M3 4h2l1.6 9.2a1 1 0 0 0 1 .8H18a1 1 0 0 0 1-.8L20.6 7H7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+          <circle cx="10" cy="19" r="1.5" fill="currentColor" />
+          <circle cx="17" cy="19" r="1.5" fill="currentColor" />
+        </svg>
+      </button>
+      <button
+        type="button"
+        className={favoriteBtn}
+        aria-label={isFavorite ? "Remove from wishlist" : "Add to wishlist"}
+        aria-pressed={isFavorite}
+        onClick={(e) => {
           e.stopPropagation();
-          onCartClick();
-        }}>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
-            <path d="M3 4h2l1.6 9.2a1 1 0 0 0 1 .8H18a1 1 0 0 0 1-.8L20.6 7H7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-            <circle cx="10" cy="19" r="1.5" fill="currentColor" />
-            <circle cx="17" cy="19" r="1.5" fill="currentColor" />
-          </svg>
-        </button>
-        <button
-          type="button"
-          className={favoriteBtn}
-          aria-label={isFavorite ? "Remove from wishlist" : "Add to wishlist"}
-          aria-pressed={isFavorite}
-          onClick={(e) => {
-            e.stopPropagation();
-            onFavoriteClick();
-          }}
-        >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
-            <path
-              d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733C11.285 5.876 9.623 4.75 7.688 4.75 5.099 4.75 3 6.765 3 9.25c0 7.22 9 12 9 12s9-4.78 9-12z"
-              stroke="currentColor"
-              strokeWidth="1.8"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              fill={isFavorite ? "currentColor" : "none"}
-            />
-          </svg>
-        </button>
-        <button
-          type="button"
-          className={btn}
-          aria-label="Share product"
-          onClick={(e) => {
-            e.stopPropagation();
-            onShareClick();
-          }}
-        >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
-            <circle cx="18" cy="5" r="2.5" stroke="currentColor" strokeWidth="1.6" />
-            <circle cx="6" cy="12" r="2.5" stroke="currentColor" strokeWidth="1.6" />
-            <circle cx="18" cy="19" r="2.5" stroke="currentColor" strokeWidth="1.6" />
-            <path d="m15.5 6.5-7 3.5M8.5 13.5l7 3.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-          </svg>
-        </button>
-      </div>
-    </div>
+          onFavoriteClick();
+        }}
+      >
+        <svg width={icon} height={icon} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+          <path
+            d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733C11.285 5.876 9.623 4.75 7.688 4.75 5.099 4.75 3 6.765 3 9.25c0 7.22 9 12 9 12s9-4.78 9-12z"
+            stroke="currentColor"
+            strokeWidth="1.8"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            fill={isFavorite ? "currentColor" : "none"}
+          />
+        </svg>
+      </button>
+      <button
+        type="button"
+        className={inactive}
+        aria-label="Share product"
+        onClick={(e) => {
+          e.stopPropagation();
+          onShareClick();
+        }}
+      >
+        <svg width={icon} height={icon} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+          <circle cx="18" cy="5" r="2.5" stroke="currentColor" strokeWidth="1.6" />
+          <circle cx="6" cy="12" r="2.5" stroke="currentColor" strokeWidth="1.6" />
+          <circle cx="18" cy="19" r="2.5" stroke="currentColor" strokeWidth="1.6" />
+          <path d="m15.5 6.5-7 3.5M8.5 13.5l7 3.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+        </svg>
+      </button>
+    </>
   );
 }
 
@@ -424,35 +425,52 @@ export default function BuyScreenPage() {
         </div>
       ) : null}
       {isCartOpen ? (
-        <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 sm:p-6">
-          <button type="button" className="absolute inset-0 bg-black/45 backdrop-blur-[1px]" aria-label="Close cart" onClick={() => setIsCartOpen(false)} />
-          <div role="dialog" aria-modal aria-labelledby="buyscreen-cart-title" className="relative z-10 w-full max-w-lg rounded-2xl border border-[#e5e7eb] bg-white p-6 shadow-2xl sm:p-8">
-            <div className="flex items-center justify-between border-b border-[#eef2f7] pb-4">
-              <h2 id="buyscreen-cart-title" className="text-lg font-semibold text-[#06224C]">Your cart</h2>
-              <p className="text-sm font-bold tabular-nums text-[#06224C]">{formatUsd(cartTotalCents)}</p>
-            </div>
-            {cartItems.length ? (
-              <div className="mt-4 space-y-3">
-                {cartItems.map((item) => (
-                  <div key={item.product.id} className="flex items-center justify-between gap-3 rounded-lg border border-[#e5e7eb] bg-[#fafafa] px-3 py-2.5">
-                    <div className="min-w-0">
-                      <p className="truncate text-sm font-semibold text-[#111827]">{item.product.name}</p>
-                      <p className="text-xs text-[#6b7280]">{item.product.price} x {item.qty}</p>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <span className="text-sm font-bold tabular-nums text-[#111827]">{formatUsd(item.product.unitPriceCents * item.qty)}</span>
-                      <button type="button" onClick={() => removeCartItem(item.product.id)} className="rounded-md border border-[#fecaca] px-2 py-1 text-xs font-semibold text-[#dc2626] hover:bg-[#fef2f2]">
-                        Remove
-                      </button>
-                    </div>
-                  </div>
-                ))}
+        <div className="fixed inset-0 z-[110] flex items-start justify-center overflow-y-auto overscroll-contain p-4 sm:items-center sm:p-6">
+          <button type="button" className="fixed inset-0 bg-black/45 backdrop-blur-[1px]" aria-label="Close cart" onClick={() => setIsCartOpen(false)} />
+          <div
+            role="dialog"
+            aria-modal
+            aria-labelledby="buyscreen-cart-title"
+            className="relative z-10 my-auto flex max-h-[min(90dvh,720px)] w-full max-w-lg flex-col overflow-hidden rounded-2xl border border-[#e5e7eb] bg-white shadow-2xl sm:max-h-[85dvh]"
+          >
+            <div className="shrink-0 border-b border-[#eef2f7] p-6 pb-4 sm:p-8 sm:pb-4">
+              <div className="flex items-center justify-between gap-3">
+                <h2 id="buyscreen-cart-title" className="text-lg font-semibold text-[#06224C]">
+                  Your cart
+                </h2>
+                <p className="text-sm font-bold tabular-nums text-[#06224C]">{formatUsd(cartTotalCents)}</p>
               </div>
-            ) : (
-              <p className="mt-4 rounded-lg border border-dashed border-[#cbd5e1] bg-[#f8fafc] px-4 py-4 text-sm text-[#6b7280]">
-                Your cart is empty. Add products from Featured Products.
-              </p>
-            )}
+            </div>
+            <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-6 pb-6 pt-4 sm:px-8 sm:pb-8">
+              {cartItems.length ? (
+                <div className="space-y-3">
+                  {cartItems.map((item) => (
+                    <div key={item.product.id} className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-[#e5e7eb] bg-[#fafafa] px-3 py-2.5">
+                      <div className="min-w-0 flex-1">
+                        <p className="break-words text-sm font-semibold text-[#111827]">{item.product.name}</p>
+                        <p className="text-xs text-[#6b7280]">
+                          {item.product.price} x {item.qty}
+                        </p>
+                      </div>
+                      <div className="flex shrink-0 items-center gap-3">
+                        <span className="text-sm font-bold tabular-nums text-[#111827]">{formatUsd(item.product.unitPriceCents * item.qty)}</span>
+                        <button
+                          type="button"
+                          onClick={() => removeCartItem(item.product.id)}
+                          className="rounded-md border border-[#fecaca] px-2 py-1 text-xs font-semibold text-[#dc2626] hover:bg-[#fef2f2]"
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="rounded-lg border border-dashed border-[#cbd5e1] bg-[#f8fafc] px-4 py-4 text-sm text-[#6b7280]">
+                  Your cart is empty. Add products from Featured Products.
+                </p>
+              )}
+            </div>
           </div>
         </div>
       ) : null}
@@ -495,34 +513,36 @@ export default function BuyScreenPage() {
                   <path d="m16 16 4 4" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
                 </svg>
               </label>
-              <button type="button" className="buyscreen-cart-trigger flex items-center gap-2 rounded-md px-2 py-1 transition-colors hover:bg-[#f5f5f5]" onClick={() => setIsCartOpen(true)}>
-                <span className="relative shrink-0">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
-                    <path d="M3 4h2l1.6 9.2a1 1 0 0 0 1 .8H18a1 1 0 0 0 1-.8L20.6 7H7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-                    <circle cx="10" cy="19" r="1.5" fill="currentColor" />
-                    <circle cx="17" cy="19" r="1.5" fill="currentColor" />
+              <div className="buyscreen-header-trailing flex min-w-0 flex-1 items-center justify-end gap-2 sm:gap-3">
+                <button type="button" className="buyscreen-cart-trigger flex items-center gap-2 rounded-md px-2 py-1 transition-colors hover:bg-[#f5f5f5]" onClick={() => setIsCartOpen(true)}>
+                  <span className="relative shrink-0">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+                      <path d="M3 4h2l1.6 9.2a1 1 0 0 0 1 .8H18a1 1 0 0 0 1-.8L20.6 7H7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                      <circle cx="10" cy="19" r="1.5" fill="currentColor" />
+                      <circle cx="17" cy="19" r="1.5" fill="currentColor" />
+                    </svg>
+                    {cartItemCount > 0 ? (
+                      <span className="absolute -right-2 -top-2 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#ff664f] px-1 text-[10px] font-bold leading-none text-white">
+                        {cartItemCount}
+                      </span>
+                    ) : null}
+                  </span>
+                  <span className="min-w-0 leading-tight">
+                    <span className="block text-[11px] font-semibold sm:text-xs">Cart</span>
+                    <span className="block text-[11px] tabular-nums sm:text-xs">{cartItems.length ? formatUsd(cartTotalCents) : "Empty"}</span>
+                  </span>
+                </button>
+                <span className="h-6 w-px shrink-0 bg-[#d1d5db]" aria-hidden />
+                <div className="buyscreen-user-summary flex min-w-0 items-center gap-2">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="shrink-0" aria-hidden>
+                    <circle cx="12" cy="8" r="3.2" stroke="currentColor" strokeWidth="1.8" />
+                    <path d="M5.8 19.2c1.1-2.5 3.3-3.8 6.2-3.8s5.1 1.3 6.2 3.8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
                   </svg>
-                  {cartItemCount > 0 ? (
-                    <span className="absolute -right-2 -top-2 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#ff664f] px-1 text-[10px] font-bold leading-none text-white">
-                      {cartItemCount}
-                    </span>
-                  ) : null}
-                </span>
-                <span className="leading-tight">
-                  <span className="block text-[11px] font-semibold sm:text-xs">Cart</span>
-                  <span className="block text-[11px] tabular-nums sm:text-xs">{cartItems.length ? formatUsd(cartTotalCents) : "Empty"}</span>
-                </span>
-              </button>
-              <span className="h-6 w-px bg-[#d1d5db]" aria-hidden />
-              <div className="buyscreen-user-summary flex items-center gap-2">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
-                  <circle cx="12" cy="8" r="3.2" stroke="currentColor" strokeWidth="1.8" />
-                  <path d="M5.8 19.2c1.1-2.5 3.3-3.8 6.2-3.8s5.1 1.3 6.2 3.8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-                </svg>
-                <span className="leading-tight">
-                  <span className="block text-[11px] font-semibold sm:text-xs">User</span>
-                  <span className="block text-[11px] sm:text-xs">Account</span>
-                </span>
+                  <span className="min-w-0 leading-tight">
+                    <span className="block text-[11px] font-semibold sm:text-xs">User</span>
+                    <span className="block text-[11px] sm:text-xs">Account</span>
+                  </span>
+                </div>
               </div>
             </div>
           </header>
@@ -649,12 +669,23 @@ export default function BuyScreenPage() {
                             backgroundImage: `url('${product.image}')`,
                           }}
                         />
-                        {product.badge ? (
-                          <span className="absolute right-2 top-2 z-[5] rounded bg-[#ff664f] px-1.5 py-0.5 text-[10px] font-bold leading-none text-white shadow-sm ring-2 ring-white">
-                            {product.badge}
-                          </span>
-                        ) : null}
-                        <BuyProductHoverActions
+                        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 hidden justify-center px-1 pb-2 pt-6 opacity-0 transition-opacity duration-200 group-hover:pointer-events-auto group-hover:opacity-100 lg:flex">
+                          <div className="pointer-events-auto flex items-center gap-1.5 sm:gap-2">
+                            <BuyProductActionButtons
+                              compact={false}
+                              isFavorite={favoriteProductIds.includes(product.id)}
+                              onCartClick={() => openLicenseModal(product)}
+                              onFavoriteClick={() => toggleFavorite(product)}
+                              onShareClick={() => {
+                                void shareProduct(product);
+                              }}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      <div className="buyscreen-product-actions-mobile flex justify-center gap-1.5 border-t border-[#f3f4f6] py-1.5 lg:hidden">
+                        <BuyProductActionButtons
+                          compact
                           isFavorite={favoriteProductIds.includes(product.id)}
                           onCartClick={() => openLicenseModal(product)}
                           onFavoriteClick={() => toggleFavorite(product)}
@@ -664,6 +695,11 @@ export default function BuyScreenPage() {
                         />
                       </div>
                       <div className="buyscreen-product-meta mt-2 min-w-0 px-0.5 sm:mt-3">
+                        {product.badge ? (
+                          <p className="mb-1 text-center">
+                            <span className="inline-block rounded bg-[#ff664f] px-2 py-0.5 text-[10px] font-bold leading-none text-white shadow-sm">{product.badge}</span>
+                          </p>
+                        ) : null}
                         <p className="text-center text-[10px] font-semibold uppercase leading-snug tracking-tight text-[#6b7280] [overflow-wrap:anywhere] sm:text-xs sm:leading-normal sm:tracking-[0.06em] md:tracking-[0.08em]">
                           {product.name}
                         </p>
