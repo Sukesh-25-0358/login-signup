@@ -304,7 +304,7 @@ export default function BuyScreenPage() {
   function BuyFeatureIcon({ type }: { type: BuyFeatureIconType }) {
     if (type === "responsive") {
       return (
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
           <path d="M4 13a8 8 0 0 1 16 0" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
           <path d="M5 13v3a2 2 0 0 0 2 2h1v-5H7a2 2 0 0 0-2 2Zm14 0h-1v5h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2Z" stroke="currentColor" strokeWidth="2" />
           <path d="M12 17v2" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
@@ -313,7 +313,7 @@ export default function BuyScreenPage() {
     }
     if (type === "secure") {
       return (
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
           <path d="M12 3 5 6v6c0 4.2 2.6 7.2 7 9 4.4-1.8 7-4.8 7-9V6l-7-3Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
           <path d="m9 12 2 2 4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
@@ -321,7 +321,7 @@ export default function BuyScreenPage() {
     }
     if (type === "shipping") {
       return (
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
           <path d="M3 7h11v8H3V7Zm11 2h4l3 3v3h-7V9Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
           <circle cx="8" cy="17" r="1.5" fill="currentColor" />
           <circle cx="18" cy="17" r="1.5" fill="currentColor" />
@@ -329,7 +329,7 @@ export default function BuyScreenPage() {
       );
     }
     return (
-      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
         <path d="M3 12a9 9 0 0 1 15.4-6.4M21 12a9 9 0 0 1-15.4 6.4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
         <path d="M16.5 3.5v3h3M7.5 20.5v-3h-3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
@@ -588,7 +588,7 @@ export default function BuyScreenPage() {
 
             <section className="buyscreen-features grid gap-6 border-b border-[#efefef] pb-10 text-sm text-[#4b5563] sm:grid-cols-2 sm:gap-8 lg:flex lg:items-start lg:justify-between">
               {buyFeatures.map((feature) => (
-                <div key={feature.title} className="flex items-start gap-3">
+                <div key={feature.title} className="flex items-start gap-4">
                   <span aria-hidden className="mt-0.5 shrink-0 text-[#6b7280]">
                     <BuyFeatureIcon type={feature.icon} />
                   </span>
@@ -640,19 +640,17 @@ export default function BuyScreenPage() {
                   {displayedProducts.map((product, index) => (
                     <article
                       key={`${product.id}-${index}`}
-                      className="group relative min-w-0 rounded-lg border border-[#ececec] bg-white p-3 shadow-sm transition-[box-shadow,border-color] duration-200 hover:border-[#d4d4d4] hover:shadow-lg"
+                      className="buyscreen-product-card group relative flex min-w-0 flex-col rounded-lg border border-[#ececec] bg-white p-2 shadow-sm transition-[box-shadow,border-color] duration-200 hover:border-[#d4d4d4] hover:shadow-lg sm:p-3"
                     >
-                      <div
-                        className="relative aspect-[4/3] w-full overflow-hidden rounded-md bg-[#f4f6f9]"
-                        style={{
-                          backgroundImage: `url('${product.image}')`,
-                          backgroundRepeat: "no-repeat",
-                          backgroundPosition: "center",
-                          backgroundSize: "contain",
-                        }}
-                      >
+                      <div className="buyscreen-product-image-wrap relative aspect-[4/3] w-full overflow-hidden rounded-md bg-white">
+                        <div
+                          className="absolute inset-2 rounded-sm bg-white bg-contain bg-center bg-no-repeat"
+                          style={{
+                            backgroundImage: `url('${product.image}')`,
+                          }}
+                        />
                         {product.badge ? (
-                          <span className="absolute right-2 top-2 z-[1] rounded bg-[#ff664f] px-1.5 py-0.5 text-[10px] font-bold text-white">
+                          <span className="absolute right-2 top-2 z-[5] rounded bg-[#ff664f] px-1.5 py-0.5 text-[10px] font-bold leading-none text-white shadow-sm ring-2 ring-white">
                             {product.badge}
                           </span>
                         ) : null}
@@ -665,10 +663,14 @@ export default function BuyScreenPage() {
                           }}
                         />
                       </div>
-                      <p className="mt-3 text-center text-[11px] font-semibold uppercase tracking-[0.08em] text-[#6b7280] sm:text-xs">
-                        {product.name}
-                      </p>
-                      <p className="mt-1 text-center text-sm font-bold text-[#171717]">{product.price}</p>
+                      <div className="buyscreen-product-meta mt-2 min-w-0 px-0.5 sm:mt-3">
+                        <p className="text-center text-[10px] font-semibold uppercase leading-snug tracking-tight text-[#6b7280] [overflow-wrap:anywhere] sm:text-xs sm:leading-normal sm:tracking-[0.06em] md:tracking-[0.08em]">
+                          {product.name}
+                        </p>
+                        <p className="mt-1 text-center text-xs font-bold leading-snug tracking-tight text-[#171717] [overflow-wrap:anywhere] tabular-nums sm:text-sm">
+                          {product.price}
+                        </p>
+                      </div>
                     </article>
                   ))}
                   </div>

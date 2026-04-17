@@ -179,6 +179,19 @@
         );
       min-width: 0;
     }
+    #buyscreenPage .buyscreen-product-card {
+      min-width: 0;
+    }
+    #buyscreenPage .buyscreen-product-meta {
+      min-width: 0;
+      max-width: 100%;
+    }
+    #buyscreenPage .buyscreen-product-meta p {
+      min-width: 0;
+      max-width: 100%;
+      overflow-wrap: anywhere;
+      word-break: normal;
+    }
     #buyscreenPage .buyscreen-products-arrow {
       width: 20px;
       height: 20px;
@@ -3005,9 +3018,9 @@
         </section>
 
         <section class="buyscreen-features grid gap-6 border-b border-[#efefef] pb-10 text-sm text-[#4b5563] sm:grid-cols-2 sm:gap-8 lg:flex lg:items-start lg:justify-between">
-          <div class="flex items-start gap-3">
+          <div class="flex items-start gap-4">
             <span aria-hidden="true" class="mt-0.5 shrink-0 text-[#6b7280]">
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M4 13a8 8 0 0 1 16 0" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
                 <path d="M5 13v3a2 2 0 0 0 2 2h1v-5H7a2 2 0 0 0-2 2Zm14 0h-1v5h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2Z" stroke="currentColor" stroke-width="2"></path>
                 <path d="M12 17v2" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
@@ -3018,9 +3031,9 @@
               <p class="mt-0.5 text-xs leading-relaxed text-[#6b7280] sm:text-sm">Customer service available 24/7</p>
             </div>
           </div>
-          <div class="flex items-start gap-3">
+          <div class="flex items-start gap-4">
             <span aria-hidden="true" class="mt-0.5 shrink-0 text-[#6b7280]">
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M12 3 5 6v6c0 4.2 2.6 7.2 7 9 4.4-1.8 7-4.8 7-9V6l-7-3Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
                 <path d="m9 12 2 2 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
               </svg>
@@ -3030,9 +3043,9 @@
               <p class="mt-0.5 text-xs leading-relaxed text-[#6b7280] sm:text-sm">Certified marketplace since 2017</p>
             </div>
           </div>
-          <div class="flex items-start gap-3">
+          <div class="flex items-start gap-4">
             <span aria-hidden="true" class="mt-0.5 shrink-0 text-[#6b7280]">
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M3 7h11v8H3V7Zm11 2h4l3 3v3h-7V9Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
                 <circle cx="8" cy="17" r="1.5" fill="currentColor"></circle>
                 <circle cx="18" cy="17" r="1.5" fill="currentColor"></circle>
@@ -3043,9 +3056,9 @@
               <p class="mt-0.5 text-xs leading-relaxed text-[#6b7280] sm:text-sm">Fast, safe, and reliable worldwide</p>
             </div>
           </div>
-          <div class="flex items-start gap-3">
+          <div class="flex items-start gap-4">
             <span aria-hidden="true" class="mt-0.5 shrink-0 text-[#6b7280]">
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M3 12a9 9 0 0 1 15.4-6.4M21 12a9 9 0 0 1-15.4 6.4" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
                 <path d="M16.5 3.5v3h3M7.5 20.5v-3h-3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
               </svg>
@@ -3072,8 +3085,9 @@
             </button>
             <div id="buyscreenProductsViewport" class="min-w-0 flex-1 overflow-hidden">
               <div id="buyscreenProductsGrid" class="buyscreen-products buyscreen-products--carousel">
-                <article data-buyscreen-product-card class="group relative min-w-0 rounded-lg border border-[#ececec] bg-white p-3 shadow-sm transition-[box-shadow,border-color] duration-200 hover:border-[#d4d4d4] hover:shadow-lg">
-                  <div class="relative aspect-[4/3] w-full overflow-hidden rounded-md bg-[#f4f6f9]" style="background-image:url('./public/phone.jpg');background-repeat:no-repeat;background-position:center;background-size:contain;">
+                <article data-buyscreen-product-card class="buyscreen-product-card group relative flex min-w-0 flex-col rounded-lg border border-[#ececec] bg-white p-2 shadow-sm transition-[box-shadow,border-color] duration-200 hover:border-[#d4d4d4] hover:shadow-lg sm:p-3">
+                  <div class="buyscreen-product-image-wrap relative aspect-[4/3] w-full overflow-hidden rounded-md bg-white">
+                    <div class="absolute inset-2 rounded-sm bg-contain bg-center bg-no-repeat bg-white" style="background-image:url('./public/phone.jpg');"></div>
                     <div class="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex justify-center px-1 pb-2 pt-6 opacity-0 transition-opacity duration-200 group-hover:pointer-events-auto group-hover:opacity-100">
                       <div class="pointer-events-auto flex items-center gap-1.5 sm:gap-2">
                         <button type="button" data-buyscreen-license-open="1" data-unit-cents="89900" data-product-name="Phone" data-unit-price="$899.00" class="flex h-7 w-7 items-center justify-center rounded-full border-2 border-[#ff664f] bg-white text-[#ff664f] shadow-md transition-colors duration-150 hover:bg-[#ff664f] hover:text-white sm:h-8 sm:w-8" aria-label="Add to cart">
@@ -3088,12 +3102,15 @@
                       </div>
                     </div>
                   </div>
-                  <p class="mt-3 text-center text-[11px] font-semibold uppercase tracking-[0.08em] text-[#6b7280] sm:text-xs">Phone</p>
-                  <p class="mt-1 text-center text-sm font-bold text-[#171717]">$899.00</p>
+                  <div class="buyscreen-product-meta mt-2 min-w-0 px-0.5 sm:mt-3">
+                  <p class="text-center text-[10px] font-semibold uppercase leading-snug tracking-tight text-[#6b7280] break-words sm:text-xs sm:leading-normal sm:tracking-wide md:tracking-wider">Phone</p>
+                  <p class="mt-1 text-center text-xs font-bold leading-snug tracking-tight text-[#171717] break-words tabular-nums sm:text-sm">$899.00</p>
+                  </div>
                 </article>
-                <article data-buyscreen-product-card class="group relative min-w-0 rounded-lg border border-[#ececec] bg-white p-3 shadow-sm transition-[box-shadow,border-color] duration-200 hover:border-[#d4d4d4] hover:shadow-lg">
-                  <div class="relative aspect-[4/3] w-full overflow-hidden rounded-md bg-[#f4f6f9]" style="background-image:url('./public/audio.jpg');background-repeat:no-repeat;background-position:center;background-size:contain;">
-                    <span class="absolute right-2 top-2 z-[1] rounded bg-[#ff664f] px-1.5 py-0.5 text-[10px] font-bold text-white">50%</span>
+                <article data-buyscreen-product-card class="buyscreen-product-card group relative flex min-w-0 flex-col rounded-lg border border-[#ececec] bg-white p-2 shadow-sm transition-[box-shadow,border-color] duration-200 hover:border-[#d4d4d4] hover:shadow-lg sm:p-3">
+                  <div class="buyscreen-product-image-wrap relative aspect-[4/3] w-full overflow-hidden rounded-md bg-white">
+                    <div class="absolute inset-2 rounded-sm bg-contain bg-center bg-no-repeat bg-white" style="background-image:url('./public/audio.jpg');"></div>
+                    <span class="absolute right-2 top-2 z-[5] rounded bg-[#ff664f] px-1.5 py-0.5 text-[10px] font-bold leading-none text-white shadow-sm ring-2 ring-white">50%</span>
                     <div class="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex justify-center px-1 pb-2 pt-6 opacity-0 transition-opacity duration-200 group-hover:pointer-events-auto group-hover:opacity-100">
                       <div class="pointer-events-auto flex items-center gap-1.5 sm:gap-2">
                         <button type="button" data-buyscreen-license-open="1" data-unit-cents="14900" data-product-name="Audio" data-unit-price="$149.00" class="flex h-7 w-7 items-center justify-center rounded-full border-2 border-[#ff664f] bg-white text-[#ff664f] shadow-md transition-colors duration-150 hover:bg-[#ff664f] hover:text-white sm:h-8 sm:w-8" aria-label="Add to cart">
@@ -3108,11 +3125,14 @@
                       </div>
                     </div>
                   </div>
-                  <p class="mt-3 text-center text-[11px] font-semibold uppercase tracking-[0.08em] text-[#6b7280] sm:text-xs">Audio</p>
-                  <p class="mt-1 text-center text-sm font-bold text-[#171717]">$149.00</p>
+                  <div class="buyscreen-product-meta mt-2 min-w-0 px-0.5 sm:mt-3">
+                  <p class="text-center text-[10px] font-semibold uppercase leading-snug tracking-tight text-[#6b7280] break-words sm:text-xs sm:leading-normal sm:tracking-wide md:tracking-wider">Audio</p>
+                  <p class="mt-1 text-center text-xs font-bold leading-snug tracking-tight text-[#171717] break-words tabular-nums sm:text-sm">$149.00</p>
+                  </div>
                 </article>
-                <article data-buyscreen-product-card class="group relative min-w-0 rounded-lg border border-[#ececec] bg-white p-3 shadow-sm transition-[box-shadow,border-color] duration-200 hover:border-[#d4d4d4] hover:shadow-lg">
-                  <div class="relative aspect-[4/3] w-full overflow-hidden rounded-md bg-[#f4f6f9]" style="background-image:url('./public/laptop.jpg');background-repeat:no-repeat;background-position:center;background-size:contain;">
+                <article data-buyscreen-product-card class="buyscreen-product-card group relative flex min-w-0 flex-col rounded-lg border border-[#ececec] bg-white p-2 shadow-sm transition-[box-shadow,border-color] duration-200 hover:border-[#d4d4d4] hover:shadow-lg sm:p-3">
+                  <div class="buyscreen-product-image-wrap relative aspect-[4/3] w-full overflow-hidden rounded-md bg-white">
+                    <div class="absolute inset-2 rounded-sm bg-contain bg-center bg-no-repeat bg-white" style="background-image:url('./public/laptop.jpg');"></div>
                     <div class="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex justify-center px-1 pb-2 pt-6 opacity-0 transition-opacity duration-200 group-hover:pointer-events-auto group-hover:opacity-100">
                       <div class="pointer-events-auto flex items-center gap-1.5 sm:gap-2">
                         <button type="button" data-buyscreen-license-open="1" data-unit-cents="129900" data-product-name="Laptop" data-unit-price="$1,299.00" class="flex h-7 w-7 items-center justify-center rounded-full border-2 border-[#ff664f] bg-white text-[#ff664f] shadow-md transition-colors duration-150 hover:bg-[#ff664f] hover:text-white sm:h-8 sm:w-8" aria-label="Add to cart">
@@ -3127,11 +3147,14 @@
                       </div>
                     </div>
                   </div>
-                  <p class="mt-3 text-center text-[11px] font-semibold uppercase tracking-[0.08em] text-[#6b7280] sm:text-xs">Laptop</p>
-                  <p class="mt-1 text-center text-sm font-bold text-[#171717]">$1,299.00</p>
+                  <div class="buyscreen-product-meta mt-2 min-w-0 px-0.5 sm:mt-3">
+                  <p class="text-center text-[10px] font-semibold uppercase leading-snug tracking-tight text-[#6b7280] break-words sm:text-xs sm:leading-normal sm:tracking-wide md:tracking-wider">Laptop</p>
+                  <p class="mt-1 text-center text-xs font-bold leading-snug tracking-tight text-[#171717] break-words tabular-nums sm:text-sm">$1,299.00</p>
+                  </div>
                 </article>
-                <article data-buyscreen-product-card class="group relative min-w-0 rounded-lg border border-[#ececec] bg-white p-3 shadow-sm transition-[box-shadow,border-color] duration-200 hover:border-[#d4d4d4] hover:shadow-lg">
-                  <div class="relative aspect-[4/3] w-full overflow-hidden rounded-md bg-[#f4f6f9]" style="background-image:url('./public/camera.jpg');background-repeat:no-repeat;background-position:center;background-size:contain;">
+                <article data-buyscreen-product-card class="buyscreen-product-card group relative flex min-w-0 flex-col rounded-lg border border-[#ececec] bg-white p-2 shadow-sm transition-[box-shadow,border-color] duration-200 hover:border-[#d4d4d4] hover:shadow-lg sm:p-3">
+                  <div class="buyscreen-product-image-wrap relative aspect-[4/3] w-full overflow-hidden rounded-md bg-white">
+                    <div class="absolute inset-2 rounded-sm bg-contain bg-center bg-no-repeat bg-white" style="background-image:url('./public/camera.jpg');"></div>
                     <div class="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex justify-center px-1 pb-2 pt-6 opacity-0 transition-opacity duration-200 group-hover:pointer-events-auto group-hover:opacity-100">
                       <div class="pointer-events-auto flex items-center gap-1.5 sm:gap-2">
                         <button type="button" data-buyscreen-license-open="1" data-unit-cents="7900" data-product-name="Camera" data-unit-price="$79.00" class="flex h-7 w-7 items-center justify-center rounded-full border-2 border-[#ff664f] bg-white text-[#ff664f] shadow-md transition-colors duration-150 hover:bg-[#ff664f] hover:text-white sm:h-8 sm:w-8" aria-label="Add to cart">
@@ -3146,11 +3169,14 @@
                       </div>
                     </div>
                   </div>
-                  <p class="mt-3 text-center text-[11px] font-semibold uppercase tracking-[0.08em] text-[#6b7280] sm:text-xs">Camera</p>
-                  <p class="mt-1 text-center text-sm font-bold text-[#171717]">$79.00</p>
+                  <div class="buyscreen-product-meta mt-2 min-w-0 px-0.5 sm:mt-3">
+                  <p class="text-center text-[10px] font-semibold uppercase leading-snug tracking-tight text-[#6b7280] break-words sm:text-xs sm:leading-normal sm:tracking-wide md:tracking-wider">Camera</p>
+                  <p class="mt-1 text-center text-xs font-bold leading-snug tracking-tight text-[#171717] break-words tabular-nums sm:text-sm">$79.00</p>
+                  </div>
                 </article>
-                <article data-buyscreen-product-card class="group relative min-w-0 rounded-lg border border-[#ececec] bg-white p-3 shadow-sm transition-[box-shadow,border-color] duration-200 hover:border-[#d4d4d4] hover:shadow-lg">
-                  <div class="relative aspect-[4/3] w-full overflow-hidden rounded-md bg-[#f4f6f9]" style="background-image:url('./public/television.jpg');background-repeat:no-repeat;background-position:center;background-size:contain;">
+                <article data-buyscreen-product-card class="buyscreen-product-card group relative flex min-w-0 flex-col rounded-lg border border-[#ececec] bg-white p-2 shadow-sm transition-[box-shadow,border-color] duration-200 hover:border-[#d4d4d4] hover:shadow-lg sm:p-3">
+                  <div class="buyscreen-product-image-wrap relative aspect-[4/3] w-full overflow-hidden rounded-md bg-white">
+                    <div class="absolute inset-2 rounded-sm bg-contain bg-center bg-no-repeat bg-white" style="background-image:url('./public/television.jpg');"></div>
                     <div class="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex justify-center px-1 pb-2 pt-6 opacity-0 transition-opacity duration-200 group-hover:pointer-events-auto group-hover:opacity-100">
                       <div class="pointer-events-auto flex items-center gap-1.5 sm:gap-2">
                         <button type="button" data-buyscreen-license-open="1" data-unit-cents="59900" data-product-name="Television" data-unit-price="$599.00" class="flex h-7 w-7 items-center justify-center rounded-full border-2 border-[#ff664f] bg-white text-[#ff664f] shadow-md transition-colors duration-150 hover:bg-[#ff664f] hover:text-white sm:h-8 sm:w-8" aria-label="Add to cart">
@@ -3165,11 +3191,14 @@
                       </div>
                     </div>
                   </div>
-                  <p class="mt-3 text-center text-[11px] font-semibold uppercase tracking-[0.08em] text-[#6b7280] sm:text-xs">Television</p>
-                  <p class="mt-1 text-center text-sm font-bold text-[#171717]">$599.00</p>
+                  <div class="buyscreen-product-meta mt-2 min-w-0 px-0.5 sm:mt-3">
+                  <p class="text-center text-[10px] font-semibold uppercase leading-snug tracking-tight text-[#6b7280] break-words sm:text-xs sm:leading-normal sm:tracking-wide md:tracking-wider">Television</p>
+                  <p class="mt-1 text-center text-xs font-bold leading-snug tracking-tight text-[#171717] break-words tabular-nums sm:text-sm">$599.00</p>
+                  </div>
                 </article>
-                <article data-buyscreen-product-card class="group relative min-w-0 rounded-lg border border-[#ececec] bg-white p-3 shadow-sm transition-[box-shadow,border-color] duration-200 hover:border-[#d4d4d4] hover:shadow-lg">
-                  <div class="relative aspect-[4/3] w-full overflow-hidden rounded-md bg-[#f4f6f9]" style="background-image:url('./public/tablet.jpg');background-repeat:no-repeat;background-position:center;background-size:contain;">
+                <article data-buyscreen-product-card class="buyscreen-product-card group relative flex min-w-0 flex-col rounded-lg border border-[#ececec] bg-white p-2 shadow-sm transition-[box-shadow,border-color] duration-200 hover:border-[#d4d4d4] hover:shadow-lg sm:p-3">
+                  <div class="buyscreen-product-image-wrap relative aspect-[4/3] w-full overflow-hidden rounded-md bg-white">
+                    <div class="absolute inset-2 rounded-sm bg-contain bg-center bg-no-repeat bg-white" style="background-image:url('./public/tablet.jpg');"></div>
                     <div class="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex justify-center px-1 pb-2 pt-6 opacity-0 transition-opacity duration-200 group-hover:pointer-events-auto group-hover:opacity-100">
                       <div class="pointer-events-auto flex items-center gap-1.5 sm:gap-2">
                         <button type="button" data-buyscreen-license-open="1" data-unit-cents="39900" data-product-name="Tablet" data-unit-price="$399.00" class="flex h-7 w-7 items-center justify-center rounded-full border-2 border-[#ff664f] bg-white text-[#ff664f] shadow-md transition-colors duration-150 hover:bg-[#ff664f] hover:text-white sm:h-8 sm:w-8" aria-label="Add to cart">
@@ -3184,11 +3213,14 @@
                       </div>
                     </div>
                   </div>
-                  <p class="mt-3 text-center text-[11px] font-semibold uppercase tracking-[0.08em] text-[#6b7280] sm:text-xs">Tablet</p>
-                  <p class="mt-1 text-center text-sm font-bold text-[#171717]">$399.00</p>
+                  <div class="buyscreen-product-meta mt-2 min-w-0 px-0.5 sm:mt-3">
+                  <p class="text-center text-[10px] font-semibold uppercase leading-snug tracking-tight text-[#6b7280] break-words sm:text-xs sm:leading-normal sm:tracking-wide md:tracking-wider">Tablet</p>
+                  <p class="mt-1 text-center text-xs font-bold leading-snug tracking-tight text-[#171717] break-words tabular-nums sm:text-sm">$399.00</p>
+                  </div>
                 </article>
-                <article data-buyscreen-product-card class="group relative min-w-0 rounded-lg border border-[#ececec] bg-white p-3 shadow-sm transition-[box-shadow,border-color] duration-200 hover:border-[#d4d4d4] hover:shadow-lg">
-                  <div class="relative aspect-[4/3] w-full overflow-hidden rounded-md bg-[#f4f6f9]" style="background-image:url('./public/watch.jpg');background-repeat:no-repeat;background-position:center;background-size:contain;">
+                <article data-buyscreen-product-card class="buyscreen-product-card group relative flex min-w-0 flex-col rounded-lg border border-[#ececec] bg-white p-2 shadow-sm transition-[box-shadow,border-color] duration-200 hover:border-[#d4d4d4] hover:shadow-lg sm:p-3">
+                  <div class="buyscreen-product-image-wrap relative aspect-[4/3] w-full overflow-hidden rounded-md bg-white">
+                    <div class="absolute inset-2 rounded-sm bg-contain bg-center bg-no-repeat bg-white" style="background-image:url('./public/watch.jpg');"></div>
                     <div class="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex justify-center px-1 pb-2 pt-6 opacity-0 transition-opacity duration-200 group-hover:pointer-events-auto group-hover:opacity-100">
                       <div class="pointer-events-auto flex items-center gap-1.5 sm:gap-2">
                         <button type="button" data-buyscreen-license-open="1" data-unit-cents="19900" data-product-name="Watch" data-unit-price="$199.00" class="flex h-7 w-7 items-center justify-center rounded-full border-2 border-[#ff664f] bg-white text-[#ff664f] shadow-md transition-colors duration-150 hover:bg-[#ff664f] hover:text-white sm:h-8 sm:w-8" aria-label="Add to cart">
@@ -3203,11 +3235,14 @@
                       </div>
                     </div>
                   </div>
-                  <p class="mt-3 text-center text-[11px] font-semibold uppercase tracking-[0.08em] text-[#6b7280] sm:text-xs">Watch</p>
-                  <p class="mt-1 text-center text-sm font-bold text-[#171717]">$199.00</p>
+                  <div class="buyscreen-product-meta mt-2 min-w-0 px-0.5 sm:mt-3">
+                  <p class="text-center text-[10px] font-semibold uppercase leading-snug tracking-tight text-[#6b7280] break-words sm:text-xs sm:leading-normal sm:tracking-wide md:tracking-wider">Watch</p>
+                  <p class="mt-1 text-center text-xs font-bold leading-snug tracking-tight text-[#171717] break-words tabular-nums sm:text-sm">$199.00</p>
+                  </div>
                 </article>
-                <article data-buyscreen-product-card class="group relative min-w-0 rounded-lg border border-[#ececec] bg-white p-3 shadow-sm transition-[box-shadow,border-color] duration-200 hover:border-[#d4d4d4] hover:shadow-lg">
-                  <div class="relative aspect-[4/3] w-full overflow-hidden rounded-md bg-[#f4f6f9]" style="background-image:url('./public/speaker.jpg');background-repeat:no-repeat;background-position:center;background-size:contain;">
+                <article data-buyscreen-product-card class="buyscreen-product-card group relative flex min-w-0 flex-col rounded-lg border border-[#ececec] bg-white p-2 shadow-sm transition-[box-shadow,border-color] duration-200 hover:border-[#d4d4d4] hover:shadow-lg sm:p-3">
+                  <div class="buyscreen-product-image-wrap relative aspect-[4/3] w-full overflow-hidden rounded-md bg-white">
+                    <div class="absolute inset-2 rounded-sm bg-contain bg-center bg-no-repeat bg-white" style="background-image:url('./public/speaker.jpg');"></div>
                     <div class="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex justify-center px-1 pb-2 pt-6 opacity-0 transition-opacity duration-200 group-hover:pointer-events-auto group-hover:opacity-100">
                       <div class="pointer-events-auto flex items-center gap-1.5 sm:gap-2">
                         <button type="button" data-buyscreen-license-open="1" data-unit-cents="8900" data-product-name="Speaker" data-unit-price="$89.00" class="flex h-7 w-7 items-center justify-center rounded-full border-2 border-[#ff664f] bg-white text-[#ff664f] shadow-md transition-colors duration-150 hover:bg-[#ff664f] hover:text-white sm:h-8 sm:w-8" aria-label="Add to cart">
@@ -3222,11 +3257,14 @@
                       </div>
                     </div>
                   </div>
-                  <p class="mt-3 text-center text-[11px] font-semibold uppercase tracking-[0.08em] text-[#6b7280] sm:text-xs">Speaker</p>
-                  <p class="mt-1 text-center text-sm font-bold text-[#171717]">$89.00</p>
+                  <div class="buyscreen-product-meta mt-2 min-w-0 px-0.5 sm:mt-3">
+                  <p class="text-center text-[10px] font-semibold uppercase leading-snug tracking-tight text-[#6b7280] break-words sm:text-xs sm:leading-normal sm:tracking-wide md:tracking-wider">Speaker</p>
+                  <p class="mt-1 text-center text-xs font-bold leading-snug tracking-tight text-[#171717] break-words tabular-nums sm:text-sm">$89.00</p>
+                  </div>
                 </article>
-                <article data-buyscreen-product-card class="group relative min-w-0 rounded-lg border border-[#ececec] bg-white p-3 shadow-sm transition-[box-shadow,border-color] duration-200 hover:border-[#d4d4d4] hover:shadow-lg">
-                  <div class="relative aspect-[4/3] w-full overflow-hidden rounded-md bg-[#f4f6f9]" style="background-image:url('./public/keyboard.jpg');background-repeat:no-repeat;background-position:center;background-size:contain;">
+                <article data-buyscreen-product-card class="buyscreen-product-card group relative flex min-w-0 flex-col rounded-lg border border-[#ececec] bg-white p-2 shadow-sm transition-[box-shadow,border-color] duration-200 hover:border-[#d4d4d4] hover:shadow-lg sm:p-3">
+                  <div class="buyscreen-product-image-wrap relative aspect-[4/3] w-full overflow-hidden rounded-md bg-white">
+                    <div class="absolute inset-2 rounded-sm bg-contain bg-center bg-no-repeat bg-white" style="background-image:url('./public/keyboard.jpg');"></div>
                     <div class="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex justify-center px-1 pb-2 pt-6 opacity-0 transition-opacity duration-200 group-hover:pointer-events-auto group-hover:opacity-100">
                       <div class="pointer-events-auto flex items-center gap-1.5 sm:gap-2">
                         <button type="button" data-buyscreen-license-open="1" data-unit-cents="4900" data-product-name="Keyboard" data-unit-price="$49.00" class="flex h-7 w-7 items-center justify-center rounded-full border-2 border-[#ff664f] bg-white text-[#ff664f] shadow-md transition-colors duration-150 hover:bg-[#ff664f] hover:text-white sm:h-8 sm:w-8" aria-label="Add to cart">
@@ -3241,11 +3279,14 @@
                       </div>
                     </div>
                   </div>
-                  <p class="mt-3 text-center text-[11px] font-semibold uppercase tracking-[0.08em] text-[#6b7280] sm:text-xs">Keyboard</p>
-                  <p class="mt-1 text-center text-sm font-bold text-[#171717]">$49.00</p>
+                  <div class="buyscreen-product-meta mt-2 min-w-0 px-0.5 sm:mt-3">
+                  <p class="text-center text-[10px] font-semibold uppercase leading-snug tracking-tight text-[#6b7280] break-words sm:text-xs sm:leading-normal sm:tracking-wide md:tracking-wider">Keyboard</p>
+                  <p class="mt-1 text-center text-xs font-bold leading-snug tracking-tight text-[#171717] break-words tabular-nums sm:text-sm">$49.00</p>
+                  </div>
                 </article>
-                <article data-buyscreen-product-card class="group relative min-w-0 rounded-lg border border-[#ececec] bg-white p-3 shadow-sm transition-[box-shadow,border-color] duration-200 hover:border-[#d4d4d4] hover:shadow-lg">
-                  <div class="relative aspect-[4/3] w-full overflow-hidden rounded-md bg-[#f4f6f9]" style="background-image:url('./public/mouse.jpg');background-repeat:no-repeat;background-position:center;background-size:contain;">
+                <article data-buyscreen-product-card class="buyscreen-product-card group relative flex min-w-0 flex-col rounded-lg border border-[#ececec] bg-white p-2 shadow-sm transition-[box-shadow,border-color] duration-200 hover:border-[#d4d4d4] hover:shadow-lg sm:p-3">
+                  <div class="buyscreen-product-image-wrap relative aspect-[4/3] w-full overflow-hidden rounded-md bg-white">
+                    <div class="absolute inset-2 rounded-sm bg-contain bg-center bg-no-repeat bg-white" style="background-image:url('./public/mouse.jpg');"></div>
                     <div class="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex justify-center px-1 pb-2 pt-6 opacity-0 transition-opacity duration-200 group-hover:pointer-events-auto group-hover:opacity-100">
                       <div class="pointer-events-auto flex items-center gap-1.5 sm:gap-2">
                         <button type="button" data-buyscreen-license-open="1" data-unit-cents="2900" data-product-name="Mouse" data-unit-price="$29.00" class="flex h-7 w-7 items-center justify-center rounded-full border-2 border-[#ff664f] bg-white text-[#ff664f] shadow-md transition-colors duration-150 hover:bg-[#ff664f] hover:text-white sm:h-8 sm:w-8" aria-label="Add to cart">
@@ -3260,8 +3301,10 @@
                       </div>
                     </div>
                   </div>
-                  <p class="mt-3 text-center text-[11px] font-semibold uppercase tracking-[0.08em] text-[#6b7280] sm:text-xs">Mouse</p>
-                  <p class="mt-1 text-center text-sm font-bold text-[#171717]">$29.00</p>
+                  <div class="buyscreen-product-meta mt-2 min-w-0 px-0.5 sm:mt-3">
+                  <p class="text-center text-[10px] font-semibold uppercase leading-snug tracking-tight text-[#6b7280] break-words sm:text-xs sm:leading-normal sm:tracking-wide md:tracking-wider">Mouse</p>
+                  <p class="mt-1 text-center text-xs font-bold leading-snug tracking-tight text-[#171717] break-words tabular-nums sm:text-sm">$29.00</p>
+                  </div>
                 </article>
               </div>
               <p id="buyscreenSearchEmpty" class="mt-4 hidden rounded-lg border border-dashed border-[#cbd5e1] bg-[#f8fafc] px-4 py-4 text-sm text-[#6b7280]">

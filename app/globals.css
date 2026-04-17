@@ -72,6 +72,20 @@ body:has(> main.buyscreen-page) {
 .buyscreen-products > * {
   min-width: 0;
 }
+/* Product cards: text + badge safe at mobile & 100–200% zoom */
+.buyscreen-product-card {
+  min-width: 0;
+}
+.buyscreen-product-meta {
+  min-width: 0;
+  max-width: 100%;
+}
+.buyscreen-product-meta p {
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
 /* Featured products: single horizontal row; column count from JS via --buyscreen-carousel-slots (zoom-safe). */
 .buyscreen-products.buyscreen-products--carousel {
   --buyscreen-gap: 1rem;
