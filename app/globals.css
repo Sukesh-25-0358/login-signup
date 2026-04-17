@@ -92,12 +92,39 @@ body:has(> main.buyscreen-page) {
 .buyscreen-products-arrow:hover {
   color: #9ca3af;
 }
+/* Horizontal category bar only at lg+; do not set display:flex globally — it overrides Tailwind `hidden` on the mobile menu panel. */
+@media (min-width: 1024px) {
+  .buyscreen-categories-list {
+    display: flex;
+    gap: 1.2rem;
+    align-items: center;
+    overflow-x: auto;
+    scrollbar-width: thin;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+.buyscreen-hero-content h1,
+.buyscreen-hero-content p {
+  overflow-wrap: anywhere;
+}
 @media (max-width: 640px) {
   .buyscreen-page {
     overflow-x: hidden;
   }
   .buyscreen-shell {
     border-radius: 0.375rem;
+  }
+  .buyscreen-hero-content {
+    max-width: 100%;
+  }
+  .buyscreen-features {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+  .buyscreen-products {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+  .buyscreen-products-row .buyscreen-products-arrow {
+    display: none !important;
   }
 }
 @media (min-width: 768px) {
@@ -109,6 +136,59 @@ body:has(> main.buyscreen-page) {
   .buyscreen-category-item {
     padding: 0;
     opacity: 1;
+  }
+}
+@media (max-width: 1023px) {
+  .buyscreen-shell,
+  .buyscreen-shell * {
+    box-sizing: border-box;
+    min-width: 0;
+  }
+  .buyscreen-header {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+  .buyscreen-header-actions {
+    width: 100% !important;
+    flex-wrap: wrap;
+    justify-content: space-between !important;
+    row-gap: 0.5rem;
+    column-gap: 0.5rem;
+  }
+  .buyscreen-search {
+    order: 1;
+    flex: 1 1 100%;
+    width: 100% !important;
+    max-width: none !important;
+  }
+  .buyscreen-cart-trigger,
+  .buyscreen-user-summary {
+    order: 2;
+  }
+  .buyscreen-categories {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+  /* Hamburger panel: hidden until Menu is used (beats Tailwind `hidden` vs `lg:flex` ordering on CDN). */
+  .buyscreen-categories-list:not(.buyscreen-categories-list--open) {
+    display: none !important;
+  }
+  .buyscreen-categories-list.buyscreen-categories-list--open {
+    display: flex !important;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.25rem;
+    margin-top: 0.5rem;
+  }
+  .buyscreen-categories-list {
+    width: 100%;
+    overflow-x: visible;
+  }
+  .buyscreen-features {
+    gap: 0.9rem !important;
+  }
+  .buyscreen-products {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
   }
 }
 

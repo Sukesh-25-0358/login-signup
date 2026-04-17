@@ -152,6 +152,7 @@ export default function BuyScreenPage() {
   const [activeProductStart, setActiveProductStart] = useState(0);
   const [showAllProducts, setShowAllProducts] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [isCategoryMenuOpen, setIsCategoryMenuOpen] = useState(false);
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [favoriteProductIds, setFavoriteProductIds] = useState<string[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -446,8 +447,8 @@ export default function BuyScreenPage() {
               <span className="text-base font-bold tracking-tight text-[#2b2b2b] sm:text-lg">e-shop.</span>
             </div>
 
-            <div className="flex w-full min-w-0 items-center justify-end gap-2 text-[#4b5563] sm:gap-3 lg:w-auto">
-              <label className="flex h-8 w-[150px] items-center rounded-md border-2 border-[#cbd5e1] bg-[#fafafa] px-2 text-[11px] text-[#4b5563] sm:h-9 sm:w-[180px] sm:text-xs">
+            <div className="buyscreen-header-actions flex w-full min-w-0 items-center justify-end gap-2 text-[#4b5563] sm:gap-3 lg:w-auto">
+              <label className="buyscreen-search flex h-8 w-[150px] items-center rounded-md border-2 border-[#cbd5e1] bg-[#fafafa] px-2 text-[11px] text-[#4b5563] sm:h-9 sm:w-[180px] sm:text-xs">
                 <input
                   type="text"
                   value={searchQuery}
@@ -468,7 +469,7 @@ export default function BuyScreenPage() {
                   <path d="m16 16 4 4" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
                 </svg>
               </label>
-              <button type="button" className="flex items-center gap-2 rounded-md px-2 py-1 transition-colors hover:bg-[#f5f5f5]" onClick={() => setIsCartOpen(true)}>
+              <button type="button" className="buyscreen-cart-trigger flex items-center gap-2 rounded-md px-2 py-1 transition-colors hover:bg-[#f5f5f5]" onClick={() => setIsCartOpen(true)}>
                 <span className="relative shrink-0">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
                     <path d="M3 4h2l1.6 9.2a1 1 0 0 0 1 .8H18a1 1 0 0 0 1-.8L20.6 7H7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
@@ -487,7 +488,7 @@ export default function BuyScreenPage() {
                 </span>
               </button>
               <span className="h-6 w-px bg-[#d1d5db]" aria-hidden />
-              <div className="flex items-center gap-2">
+              <div className="buyscreen-user-summary flex items-center gap-2">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
                   <circle cx="12" cy="8" r="3.2" stroke="currentColor" strokeWidth="1.8" />
                   <path d="M5.8 19.2c1.1-2.5 3.3-3.8 6.2-3.8s5.1 1.3 6.2 3.8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
@@ -500,15 +501,36 @@ export default function BuyScreenPage() {
             </div>
           </header>
 
-          <nav className="buyscreen-categories flex overflow-x-auto border-b border-[#efefef] bg-[#06224C] px-4 py-2.5 text-[10px] font-semibold text-white sm:px-8 sm:text-xs">
-            {buyCategories.map((item) => (
-              <span
-                key={item.label}
-                className={`buyscreen-category-item shrink-0 ${item.label === "Limited Sale" ? "buyscreen-category-item--push" : ""}`}
+          <nav className="buyscreen-categories border-b border-[#efefef] bg-[#06224C] px-4 py-2.5 text-[10px] font-semibold text-white sm:px-8 sm:text-xs">
+            <div className="flex items-center justify-end lg:hidden">
+              <button
+                type="button"
+                aria-expanded={isCategoryMenuOpen}
+                aria-controls="buyscreen-category-menu"
+                className="inline-flex items-center gap-2 rounded-md border border-white/30 px-2.5 py-1.5 text-[11px] font-semibold text-white transition-colors duration-150 hover:bg-white hover:text-[#06224C]"
+                onClick={() => setIsCategoryMenuOpen((prev) => !prev)}
               >
-                <span>{item.label}</span>
-              </span>
-            ))}
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden>
+                  <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+                </svg>
+                Menu
+              </button>
+            </div>
+            <div
+              id="buyscreen-category-menu"
+              className={`buyscreen-categories-list ${isCategoryMenuOpen ? "buyscreen-categories-list--open" : ""}`}
+            >
+              {buyCategories.map((item) => (
+                <button
+                  key={item.label}
+                  type="button"
+                  className={`buyscreen-category-item shrink-0 rounded-md text-left transition-colors duration-150 hover:bg-white hover:text-[#06224C] ${item.label === "Limited Sale" ? "lg:ml-auto" : ""}`}
+                  onClick={() => setIsCategoryMenuOpen(false)}
+                >
+                  {item.label}
+                </button>
+              ))}
+            </div>
           </nav>
 
           <div className="space-y-10 px-4 py-10 sm:space-y-12 sm:px-8 sm:py-12">
@@ -521,11 +543,11 @@ export default function BuyScreenPage() {
                 unoptimized
                 priority
               />
-              <div className="relative z-10 min-w-0 max-w-xl text-center lg:text-left">
+              <div className="buyscreen-hero-content relative z-10 min-w-0 max-w-xl text-center lg:text-left">
                 <h1 className="text-2xl font-bold leading-tight text-[#171717] sm:text-3xl lg:text-4xl">
                   Your One-Stop Electronic Market
                 </h1>
-                <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-[#6b7280] sm:text-base lg:mx-0">
+                <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-white sm:text-base lg:mx-0">
                   Welcome to e-shop, a place where you can buy everything about electronics. Sale every day.
                 </p>
                 <button
@@ -538,7 +560,7 @@ export default function BuyScreenPage() {
               </div>
             </section>
 
-            <section className="grid gap-6 border-b border-[#efefef] pb-10 text-sm text-[#4b5563] sm:grid-cols-2 sm:gap-8 lg:flex lg:items-start lg:justify-between">
+            <section className="buyscreen-features grid gap-6 border-b border-[#efefef] pb-10 text-sm text-[#4b5563] sm:grid-cols-2 sm:gap-8 lg:flex lg:items-start lg:justify-between">
               {buyFeatures.map((feature) => (
                 <div key={feature.title} className="flex items-start gap-3">
                   <span aria-hidden className="mt-0.5 shrink-0 text-[#6b7280]">

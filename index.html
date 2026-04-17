@@ -131,11 +131,18 @@
       min-width: 0;
     }
     #buyscreenPage .buyscreen-categories {
-      display: flex;
-      gap: 0.75rem;
-      overflow-x: auto;
       scrollbar-width: thin;
-      -webkit-overflow-scrolling: touch;
+    }
+    /* Desktop-only: avoid display:flex here — it overrides .hidden on the collapsible menu below lg. */
+    @media (min-width: 1024px) {
+      #buyscreenPage .buyscreen-categories-list {
+        display: flex;
+        gap: 1.2rem;
+        align-items: center;
+        overflow-x: auto;
+        scrollbar-width: thin;
+        -webkit-overflow-scrolling: touch;
+      }
     }
     #buyscreenPage .buyscreen-category-item {
       display: inline-flex;
@@ -167,9 +174,78 @@
     #buyscreenPage .buyscreen-products-arrow:hover {
       color: #9ca3af;
     }
+    #buyscreenPage .buyscreen-hero-content h1,
+    #buyscreenPage .buyscreen-hero-content p {
+      overflow-wrap: anywhere;
+    }
+    @media (max-width: 1023px) {
+      #buyscreenPage .buyscreen-shell,
+      #buyscreenPage .buyscreen-shell * {
+        box-sizing: border-box;
+        min-width: 0;
+      }
+      #buyscreenPage .buyscreen-header {
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+      }
+      #buyscreenPage .buyscreen-header-actions {
+        width: 100% !important;
+        flex-wrap: wrap;
+        justify-content: space-between !important;
+        row-gap: 0.5rem;
+        column-gap: 0.5rem;
+      }
+      #buyscreenPage .buyscreen-search {
+        order: 1;
+        flex: 1 1 100%;
+        width: 100% !important;
+        max-width: none !important;
+      }
+      #buyscreenPage .buyscreen-cart-trigger,
+      #buyscreenPage .buyscreen-user-summary {
+        order: 2;
+      }
+      #buyscreenPage .buyscreen-categories {
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+      }
+      #buyscreenPage .buyscreen-categories-list:not(.buyscreen-categories-list--open) {
+        display: none !important;
+      }
+      #buyscreenPage .buyscreen-categories-list.buyscreen-categories-list--open {
+        display: flex !important;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.25rem;
+        margin-top: 0.5rem;
+      }
+      #buyscreenPage .buyscreen-categories-list {
+        width: 100%;
+        overflow-x: visible;
+      }
+      #buyscreenPage .buyscreen-features {
+        gap: 0.9rem !important;
+      }
+      #buyscreenPage .buyscreen-products {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+      }
+    }
+    @media (max-width: 640px) {
+      #buyscreenPage .buyscreen-hero-content {
+        max-width: 100%;
+      }
+      #buyscreenPage .buyscreen-features {
+        grid-template-columns: minmax(0, 1fr) !important;
+      }
+      #buyscreenPage .buyscreen-products {
+        grid-template-columns: minmax(0, 1fr) !important;
+      }
+      #buyscreenPage .buyscreen-products-row .buyscreen-products-arrow {
+        display: none !important;
+      }
+    }
     @media (min-width: 768px) {
       #buyscreenPage .buyscreen-categories {
-        gap: 1.2rem;
         padding-left: 2rem !important;
         padding-right: 2rem !important;
       }
@@ -1767,6 +1843,19 @@
     var buyscreenVisibleCount = 5;
     var buyscreenShowAllProducts = false;
     var buyscreenSearchQuery = "";
+    var buyscreenCategoryMenuOpen = false;
+
+    function renderBuyscreenCategoryMenu() {
+      var menu = document.getElementById("buyscreenCategoryMenu");
+      var toggle = document.getElementById("buyscreenCategoryToggle");
+      if (!menu || !toggle) return;
+      if (buyscreenCategoryMenuOpen) {
+        menu.classList.add("buyscreen-categories-list--open");
+      } else {
+        menu.classList.remove("buyscreen-categories-list--open");
+      }
+      toggle.setAttribute("aria-expanded", buyscreenCategoryMenuOpen ? "true" : "false");
+    }
 
     function buyscreenCardName(card) {
       var nameEl = card ? card.querySelector("p") : null;
@@ -2109,6 +2198,21 @@
       page.addEventListener("click", function (e) {
         var t = e.target;
         if (!t || !t.closest) return;
+        var categoryToggle = t.closest("[data-buyscreen-categories-toggle]");
+        if (categoryToggle) {
+          e.preventDefault();
+          buyscreenCategoryMenuOpen = !buyscreenCategoryMenuOpen;
+          renderBuyscreenCategoryMenu();
+          return;
+        }
+        var categoryBtn = t.closest("[data-buyscreen-category-btn]");
+        if (categoryBtn) {
+          if (window.innerWidth < 1024) {
+            buyscreenCategoryMenuOpen = false;
+            renderBuyscreenCategoryMenu();
+          }
+          return;
+        }
         var btn = t.closest("[data-buyscreen-license-open]");
         if (btn) {
           e.preventDefault();
@@ -2195,6 +2299,7 @@
           closeBuyscreenCartModal();
         }
       });
+      renderBuyscreenCategoryMenu();
       renderBuyscreenCartTotal();
     }
 
@@ -2753,15 +2858,15 @@
           <div class="flex shrink-0 items-center justify-between lg:justify-start">
             <span class="text-base font-bold tracking-tight text-[#2b2b2b] sm:text-lg">e-shop.</span>
           </div>
-          <div class="flex w-full min-w-0 items-center justify-end gap-2 text-[#4b5563] sm:gap-3 lg:w-auto">
-            <label class="flex h-8 w-[150px] items-center rounded-md border-2 border-[#cbd5e1] bg-[#fafafa] px-2 text-[11px] text-[#4b5563] sm:h-9 sm:w-[180px] sm:text-xs">
+          <div class="buyscreen-header-actions flex w-full min-w-0 items-center justify-end gap-2 text-[#4b5563] sm:gap-3 lg:w-auto">
+            <label class="buyscreen-search flex h-8 w-[150px] items-center rounded-md border-2 border-[#cbd5e1] bg-[#fafafa] px-2 text-[11px] text-[#4b5563] sm:h-9 sm:w-[180px] sm:text-xs">
               <input id="buyscreenSearchInput" type="text" placeholder="Search..." class="min-w-0 flex-1 bg-transparent text-[#4b5563] outline-none placeholder:text-[#9ca3af]">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-[#374151]" aria-hidden="true">
                 <circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="1.7"></circle>
                 <path d="m16 16 4 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"></path>
               </svg>
             </label>
-            <button type="button" data-buyscreen-cart-open="1" class="flex items-center gap-2 rounded-md px-2 py-1 transition-colors hover:bg-[#f5f5f5]">
+            <button type="button" data-buyscreen-cart-open="1" class="buyscreen-cart-trigger flex items-center gap-2 rounded-md px-2 py-1 transition-colors hover:bg-[#f5f5f5]">
               <span class="relative shrink-0">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                   <path d="M3 4h2l1.6 9.2a1 1 0 0 0 1 .8H18a1 1 0 0 0 1-.8L20.6 7H7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
@@ -2776,7 +2881,7 @@
               </span>
             </button>
             <span class="h-6 w-px bg-[#d1d5db]" aria-hidden="true"></span>
-            <div class="flex items-center gap-2">
+            <div class="buyscreen-user-summary flex items-center gap-2">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                 <circle cx="12" cy="8" r="3.2" stroke="currentColor" stroke-width="1.8"></circle>
                 <path d="M5.8 19.2c1.1-2.5 3.3-3.8 6.2-3.8s5.1 1.3 6.2 3.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
@@ -2789,24 +2894,39 @@
           </div>
         </header>
 
-      <div class="buyscreen-categories border-b border-[#efefef] bg-[#06224C] px-4 py-2.5 text-[10px] font-semibold text-white sm:px-8 sm:text-xs">
-        <span class="buyscreen-category-item shrink-0">
-          <span>All Categories</span>
-        </span>
-        <span class="buyscreen-category-item shrink-0">Products</span>
-        <span class="buyscreen-category-item shrink-0">Blog</span>
-        <span class="buyscreen-category-item shrink-0">Contact</span>
-        <span class="buyscreen-category-item buyscreen-category-item--push shrink-0">Limited Sale</span>
-        <span class="buyscreen-category-item shrink-0">Best Seller</span>
-        <span class="buyscreen-category-item shrink-0">New Arrivals</span>
-      </div>
+      <nav class="buyscreen-categories border-b border-[#efefef] bg-[#06224C] px-4 py-2.5 text-[10px] font-semibold text-white sm:px-8 sm:text-xs">
+        <div class="flex items-center justify-end lg:hidden">
+          <button
+            id="buyscreenCategoryToggle"
+            type="button"
+            data-buyscreen-categories-toggle="1"
+            aria-expanded="false"
+            aria-controls="buyscreenCategoryMenu"
+            class="inline-flex items-center gap-2 rounded-md border border-white/30 px-2.5 py-1.5 text-[11px] font-semibold text-white transition-colors duration-150 hover:bg-white hover:text-[#06224C]"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+            </svg>
+            Menu
+          </button>
+        </div>
+        <div id="buyscreenCategoryMenu" class="buyscreen-categories-list">
+          <button type="button" data-buyscreen-category-btn="1" class="buyscreen-category-item shrink-0 rounded-md text-left transition-colors duration-150 hover:bg-white hover:text-[#06224C]">All Categories</button>
+          <button type="button" data-buyscreen-category-btn="1" class="buyscreen-category-item shrink-0 rounded-md text-left transition-colors duration-150 hover:bg-white hover:text-[#06224C]">Products</button>
+          <button type="button" data-buyscreen-category-btn="1" class="buyscreen-category-item shrink-0 rounded-md text-left transition-colors duration-150 hover:bg-white hover:text-[#06224C]">Blog</button>
+          <button type="button" data-buyscreen-category-btn="1" class="buyscreen-category-item shrink-0 rounded-md text-left transition-colors duration-150 hover:bg-white hover:text-[#06224C]">Contact</button>
+          <button type="button" data-buyscreen-category-btn="1" class="buyscreen-category-item shrink-0 rounded-md text-left transition-colors duration-150 hover:bg-white hover:text-[#06224C] lg:ml-auto">Limited Sale</button>
+          <button type="button" data-buyscreen-category-btn="1" class="buyscreen-category-item shrink-0 rounded-md text-left transition-colors duration-150 hover:bg-white hover:text-[#06224C]">Best Seller</button>
+          <button type="button" data-buyscreen-category-btn="1" class="buyscreen-category-item shrink-0 rounded-md text-left transition-colors duration-150 hover:bg-white hover:text-[#06224C]">New Arrivals</button>
+        </div>
+      </nav>
 
       <div class="space-y-10 px-4 py-10 sm:space-y-12 sm:px-8 sm:py-12">
         <section class="buyscreen-hero relative flex min-h-[320px] items-center overflow-hidden rounded-xl border border-[#efefef] p-6 sm:min-h-[380px] sm:p-8 lg:p-10">
           <img src="./public/background.png" alt="" class="absolute inset-0 h-full w-full object-fill object-center" width="640" height="360" />
-          <div class="relative z-10 min-w-0 max-w-xl text-center lg:text-left">
+          <div class="buyscreen-hero-content relative z-10 min-w-0 max-w-xl text-center lg:text-left">
             <h1 class="text-2xl font-bold leading-tight text-[#171717] sm:text-3xl lg:text-4xl">Your One-Stop Electronic Market</h1>
-            <p class="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-[#6b7280] sm:text-base lg:mx-0">
+            <p class="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-white sm:text-base lg:mx-0">
               Welcome to e-shop, a place where you can buy everything about electronics. Sale every day.
             </p>
             <button type="button" data-buyscreen-scroll-products="1" class="mt-6 rounded-md bg-[#06224C] px-5 py-2.5 text-sm font-semibold text-white">
@@ -2815,7 +2935,7 @@
           </div>
         </section>
 
-        <section class="grid gap-6 border-b border-[#efefef] pb-10 text-sm text-[#4b5563] sm:grid-cols-2 sm:gap-8 lg:flex lg:items-start lg:justify-between">
+        <section class="buyscreen-features grid gap-6 border-b border-[#efefef] pb-10 text-sm text-[#4b5563] sm:grid-cols-2 sm:gap-8 lg:flex lg:items-start lg:justify-between">
           <div class="flex items-start gap-3">
             <span aria-hidden="true" class="mt-0.5 shrink-0 text-[#6b7280]">
               <svg width="17" height="17" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
