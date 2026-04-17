@@ -193,21 +193,53 @@
       word-break: normal;
     }
     #buyscreenPage .buyscreen-product-actions-mobile {
-      justify-content: space-between;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      align-items: center;
+      justify-items: center;
       gap: 0.25rem;
       padding-left: 0.5rem;
       padding-right: 0.5rem;
+      overflow: hidden;
     }
     #buyscreenPage .buyscreen-product-actions-mobile > button {
-      width: 1.75rem !important;
-      height: 1.75rem !important;
-      min-width: 1.75rem !important;
+      width: 1.65rem !important;
+      height: 1.65rem !important;
+      min-width: 1.65rem !important;
+    }
+    #buyscreenPage .buyscreen-product-actions-mobile > button svg {
+      width: 11px !important;
+      height: 11px !important;
     }
     @media (min-width: 640px) {
       #buyscreenPage .buyscreen-product-actions-mobile > button {
         width: 2rem !important;
         height: 2rem !important;
         min-width: 2rem !important;
+      }
+      #buyscreenPage .buyscreen-product-actions-mobile > button svg {
+        width: 13px !important;
+        height: 13px !important;
+      }
+    }
+    #buyscreenPage .buyscreen-license-qty-row {
+      display: grid;
+      grid-template-columns: auto minmax(3rem, 1fr) auto;
+      align-items: center;
+      gap: 0.5rem;
+      overflow: hidden;
+      padding: 0.5rem 0.625rem;
+    }
+    #buyscreenPage .buyscreen-license-qty-row > button {
+      width: 2rem !important;
+      height: 2rem !important;
+      min-width: 2rem !important;
+    }
+    @media (min-width: 640px) {
+      #buyscreenPage .buyscreen-license-qty-row > button {
+        width: 2.25rem !important;
+        height: 2.25rem !important;
+        min-width: 2.25rem !important;
       }
     }
     #buyscreenPage .buyscreen-products-arrow {
@@ -3492,7 +3524,7 @@
             <span class="leading-snug">Secure checkout and instant confirmation by email.</span>
           </li>
         </ul>
-        <div class="mt-6 flex items-center justify-between gap-3 rounded-full border-2 border-[#06224C] px-3 py-2.5 sm:px-4">
+        <div class="buyscreen-license-qty-row mt-6 flex items-center justify-between gap-3 rounded-full border-2 border-[#06224C] px-3 py-2.5 sm:px-4">
           <button type="button" id="buyscreenLicenseDec" class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#06224C] text-lg font-light leading-none text-white transition-opacity hover:opacity-90 disabled:opacity-40" aria-label="Decrease quantity">−</button>
           <div id="buyscreenLicenseQty" class="min-w-[3rem] rounded-md border border-dashed border-[#cbd5e1] bg-[#f8fafc] px-3 py-1.5 text-center text-lg font-semibold tabular-nums text-[#0f172a]">1</div>
           <button type="button" id="buyscreenLicenseInc" class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#06224C] text-lg font-light leading-none text-white transition-opacity hover:opacity-90" aria-label="Increase quantity">+</button>
