@@ -87,7 +87,7 @@ function BuyProductActionButtons({
   onShareClick: () => void;
   compact?: boolean;
 }) {
-  const size = compact ? "h-8 w-8 sm:h-7 sm:w-7" : "h-7 w-7 sm:h-8 sm:w-8";
+  const size = compact ? "h-7 w-7 sm:h-8 sm:w-8" : "h-7 w-7 sm:h-8 sm:w-8";
   const shadow = compact ? "shadow-sm" : "shadow-md";
   const base =
     `flex shrink-0 items-center justify-center rounded-full border-2 border-[#ff664f] transition-colors duration-150 ${size} ${shadow}`;
@@ -349,7 +349,7 @@ export default function BuyScreenPage() {
   return (
     <main className="buyscreen-page min-h-[100dvh] overflow-x-hidden bg-[#efefef] text-[#111827]">
       {licenseProduct ? (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
+        <div className="fixed inset-0 z-[100] flex items-start justify-center overflow-y-auto overscroll-contain p-4 sm:items-center sm:p-6">
           <button
             type="button"
             className="absolute inset-0 bg-black/45 backdrop-blur-[1px]"
@@ -360,9 +360,9 @@ export default function BuyScreenPage() {
             role="dialog"
             aria-modal
             aria-labelledby="buyscreen-license-title"
-            className="relative z-10 w-full max-w-md rounded-2xl border border-[#e5e7eb] bg-white p-6 shadow-2xl sm:p-8"
+            className="relative z-10 my-auto flex max-h-[min(90dvh,720px)] w-full max-w-md flex-col overflow-hidden rounded-2xl border border-[#e5e7eb] bg-white p-6 shadow-2xl sm:max-h-[85dvh] sm:p-8"
           >
-            <div className="flex items-start justify-between gap-3 border-b border-[#eef2f7] pb-4">
+            <div className="shrink-0 flex items-start justify-between gap-3 border-b border-[#eef2f7] pb-4">
               <div>
                 <h2 id="buyscreen-license-title" className="text-base font-semibold sm:text-lg" style={{ color: NAVY }}>
                   Regular license
@@ -376,51 +376,53 @@ export default function BuyScreenPage() {
               </p>
             </div>
 
-            <ul className="mt-5 space-y-3 text-sm text-[#374151]">
-              {licenseBullets.map((line) => (
-                <li key={line} className="flex gap-2">
-                  <CheckIcon />
-                  <span className="leading-snug">{line}</span>
-                </li>
-              ))}
-            </ul>
+            <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain pt-5">
+              <ul className="space-y-3 text-sm text-[#374151]">
+                {licenseBullets.map((line) => (
+                  <li key={line} className="flex gap-2">
+                    <CheckIcon />
+                    <span className="leading-snug">{line}</span>
+                  </li>
+                ))}
+              </ul>
 
-            <div
-              className="mt-6 flex items-center justify-between gap-3 rounded-full border-2 px-3 py-2.5 sm:px-4"
-              style={{ borderColor: NAVY }}
-            >
-              <button
-                type="button"
-                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-white transition-opacity hover:opacity-90 disabled:opacity-40"
-                style={{ backgroundColor: NAVY }}
-                aria-label="Decrease quantity"
-                disabled={licenseQty <= 1}
-                onClick={() => setLicenseQty((q) => Math.max(1, q - 1))}
+              <div
+                className="mt-6 flex items-center justify-between gap-3 rounded-full border-2 px-3 py-2.5 sm:px-4"
+                style={{ borderColor: NAVY }}
               >
-                <span className="text-lg font-light leading-none">−</span>
-              </button>
-              <div className="min-w-[3rem] rounded-md border border-dashed border-[#cbd5e1] bg-[#f8fafc] px-3 py-1.5 text-center text-lg font-semibold tabular-nums text-[#0f172a]">
-                {licenseQty}
+                <button
+                  type="button"
+                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-white transition-opacity hover:opacity-90 disabled:opacity-40"
+                  style={{ backgroundColor: NAVY }}
+                  aria-label="Decrease quantity"
+                  disabled={licenseQty <= 1}
+                  onClick={() => setLicenseQty((q) => Math.max(1, q - 1))}
+                >
+                  <span className="text-lg font-light leading-none">−</span>
+                </button>
+                <div className="min-w-[3rem] rounded-md border border-dashed border-[#cbd5e1] bg-[#f8fafc] px-3 py-1.5 text-center text-lg font-semibold tabular-nums text-[#0f172a]">
+                  {licenseQty}
+                </div>
+                <button
+                  type="button"
+                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-white transition-opacity hover:opacity-90"
+                  style={{ backgroundColor: NAVY }}
+                  aria-label="Increase quantity"
+                  onClick={() => setLicenseQty((q) => q + 1)}
+                >
+                  <span className="text-lg font-light leading-none">+</span>
+                </button>
               </div>
+
               <button
                 type="button"
-                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-white transition-opacity hover:opacity-90"
+                className="mt-6 w-full rounded-xl py-3.5 text-center text-sm font-bold text-white transition-opacity hover:opacity-95 sm:text-base"
                 style={{ backgroundColor: NAVY }}
-                aria-label="Increase quantity"
-                onClick={() => setLicenseQty((q) => q + 1)}
+                onClick={confirmLicensePurchase}
               >
-                <span className="text-lg font-light leading-none">+</span>
+                Confirm To Buy
               </button>
             </div>
-
-            <button
-              type="button"
-              className="mt-6 w-full rounded-xl py-3.5 text-center text-sm font-bold text-white transition-opacity hover:opacity-95 sm:text-base"
-              style={{ backgroundColor: NAVY }}
-              onClick={confirmLicensePurchase}
-            >
-              Confirm To Buy
-            </button>
           </div>
         </div>
       ) : null}
@@ -683,7 +685,7 @@ export default function BuyScreenPage() {
                           </div>
                         </div>
                       </div>
-                      <div className="buyscreen-product-actions-mobile flex justify-center gap-1.5 border-t border-[#f3f4f6] py-1.5 lg:hidden">
+                      <div className="buyscreen-product-actions-mobile flex justify-between gap-1 border-t border-[#f3f4f6] px-2 py-1.5 sm:px-3 lg:hidden">
                         <BuyProductActionButtons
                           compact
                           isFavorite={favoriteProductIds.includes(product.id)}
