@@ -171,6 +171,8 @@ export default function BuyScreenPage() {
   const toastTimerRef = useRef<number | null>(null);
   const featuredProductsRef = useRef<HTMLElement | null>(null);
   const productsViewportRef = useRef<HTMLDivElement | null>(null);
+  const productsTouchStartXRef = useRef<number | null>(null);
+  const productsTouchStartYRef = useRef<number | null>(null);
   const [carouselCols, setCarouselCols] = useState(3);
 
   const normalizedSearchQuery = searchQuery.trim().toLowerCase();
@@ -301,6 +303,47 @@ export default function BuyScreenPage() {
     if (!totalProducts) return;
     setActiveProductStart((prev) => (prev + direction + totalProducts) % totalProducts);
   }
+
+  const handleProductsTouchStart = useCallback(
+    (e: React.TouchEvent<HTMLDivElement>) => {
+      if (!isCarouselMode || typeof window === "undefined" || window.innerWidth > 1023 || e.touches.length !== 1) return;
+      productsTouchStartXRef.current = e.touches[0]?.clientX ?? null;
+      productsTouchStartYRef.current = e.touches[0]?.clientY ?? null;
+    },
+    [isCarouselMode]
+  );
+
+  const handleProductsTouchMove = useCallback((e: React.TouchEvent<HTMLDivElement>) => {
+    const startX = productsTouchStartXRef.current;
+    const startY = productsTouchStartYRef.current;
+    if (startX == null || startY == null || e.touches.length !== 1) return;
+    const dx = (e.touches[0]?.clientX ?? startX) - startX;
+    const dy = (e.touches[0]?.clientY ?? startY) - startY;
+    if (Math.abs(dx) > 10 && Math.abs(dx) > Math.abs(dy)) {
+      e.preventDefault();
+    }
+  }, []);
+
+  const handleProductsTouchCancel = useCallback(() => {
+    productsTouchStartXRef.current = null;
+    productsTouchStartYRef.current = null;
+  }, []);
+
+  const handleProductsTouchFinal = useCallback(
+    (e: React.TouchEvent<HTMLDivElement>) => {
+      const startX = productsTouchStartXRef.current;
+      const startY = productsTouchStartYRef.current;
+      const endTouch = e.changedTouches[0];
+      productsTouchStartXRef.current = null;
+      productsTouchStartYRef.current = null;
+      if (!isCarouselMode || startX == null || startY == null || !endTouch) return;
+      const dx = endTouch.clientX - startX;
+      const dy = endTouch.clientY - startY;
+      if (Math.abs(dx) < 28 || Math.abs(dx) <= Math.abs(dy)) return;
+      moveProducts(dx < 0 ? 1 : -1);
+    },
+    [isCarouselMode, moveProducts]
+  );
 
   function BuyFeatureIcon({ type }: { type: BuyFeatureIconType }) {
     if (type === "responsive") {
@@ -646,7 +689,14 @@ export default function BuyScreenPage() {
                     </svg>
                   </button>
                 ) : null}
-                <div ref={productsViewportRef} className="min-w-0 flex-1 overflow-hidden">
+                <div
+                  ref={productsViewportRef}
+                  className="min-w-0 flex-1 overflow-hidden"
+                  onTouchStart={handleProductsTouchStart}
+                  onTouchMove={handleProductsTouchMove}
+                  onTouchEnd={handleProductsTouchFinal}
+                  onTouchCancel={handleProductsTouchCancel}
+                >
                   <div
                     className={`buyscreen-products min-w-0 ${productGridClass}`}
                     style={
@@ -720,6 +770,9 @@ export default function BuyScreenPage() {
                   </button>
                 ) : null}
               </div>
+              {isCarouselMode && totalProducts > 1 ? (
+                <p className="mt-3 text-center text-[11px] font-medium text-[#6b7280] lg:hidden">Swipe for more products</p>
+              ) : null}
               {!displayedProducts.length ? (
                 <p className="mt-4 rounded-lg border border-dashed border-[#cbd5e1] bg-[#f8fafc] px-4 py-4 text-sm text-[#6b7280]">
                   No products found for "{searchQuery}".

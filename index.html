@@ -1940,6 +1940,7 @@
       var viewAllLabel = document.getElementById("buyscreenViewAllLabel");
       var viewAllArrow = document.getElementById("buyscreenViewAllArrow");
       var emptyState = document.getElementById("buyscreenSearchEmpty");
+      var swipeHint = document.getElementById("buyscreenProductsSwipeHint");
       var query = buyscreenSearchQuery.trim().toLowerCase();
       var filteredCards = query
         ? cards.filter(function (card) { return buyscreenCardName(card).indexOf(query) !== -1; })
@@ -1956,6 +1957,7 @@
         if (viewAllLabel) viewAllLabel.textContent = "View All";
         if (viewAllArrow) viewAllArrow.classList.add("hidden");
         if (emptyState) emptyState.classList.remove("hidden");
+        if (swipeHint) swipeHint.classList.add("hidden");
         return;
       }
 
@@ -1972,6 +1974,7 @@
         if (next) next.classList.add("hidden");
         if (viewAllLabel) viewAllLabel.textContent = "Results";
         if (viewAllArrow) viewAllArrow.classList.add("hidden");
+        if (swipeHint) swipeHint.classList.add("hidden");
         return;
       }
 
@@ -1988,6 +1991,7 @@
         if (next) next.classList.add("hidden");
         if (viewAllLabel) viewAllLabel.textContent = "All Products";
         if (viewAllArrow) viewAllArrow.classList.add("hidden");
+        if (swipeHint) swipeHint.classList.add("hidden");
         return;
       }
 
@@ -2005,6 +2009,7 @@
       if (next) next.classList.remove("hidden");
       if (viewAllLabel) viewAllLabel.textContent = "View All";
       if (viewAllArrow) viewAllArrow.classList.remove("hidden");
+      if (swipeHint) swipeHint.classList.toggle("hidden", !(filteredTotal > 1 && window.innerWidth <= 1023));
 
       filteredCards.forEach(function (card, index) {
         var relative = (index - buyscreenProductStart + filteredTotal) % filteredTotal;
@@ -2029,6 +2034,7 @@
       var next = document.getElementById("buyscreenNextProductsBtn");
       var viewAll = document.getElementById("buyscreenViewAllBtn");
       var searchInput = document.getElementById("buyscreenSearchInput");
+      var vp = document.getElementById("buyscreenProductsViewport");
       if (prev && !prev.dataset.bound) {
         prev.dataset.bound = "1";
         prev.addEventListener("click", function () {
@@ -2064,12 +2070,45 @@
         });
       }
       renderBuyscreenProductCarousel();
-      var vp = document.getElementById("buyscreenProductsViewport");
       if (vp && !vp.dataset.roBound) {
         vp.dataset.roBound = "1";
         new ResizeObserver(function () {
           renderBuyscreenProductCarousel();
         }).observe(vp);
+      }
+      if (vp && !vp.dataset.swipeBound) {
+        vp.dataset.swipeBound = "1";
+        var startX = 0;
+        var startY = 0;
+        var tracking = false;
+        vp.addEventListener("touchstart", function (event) {
+          if (window.innerWidth > 1023 || event.touches.length !== 1) return;
+          startX = event.touches[0].clientX;
+          startY = event.touches[0].clientY;
+          tracking = true;
+        }, { passive: true });
+        vp.addEventListener("touchmove", function (event) {
+          if (!tracking || event.touches.length !== 1) return;
+          var dx = event.touches[0].clientX - startX;
+          var dy = event.touches[0].clientY - startY;
+          if (Math.abs(dx) > 10 && Math.abs(dx) > Math.abs(dy)) {
+            event.preventDefault();
+          }
+        }, { passive: false });
+        vp.addEventListener("touchend", function (event) {
+          if (!tracking) return;
+          tracking = false;
+          if (buyscreenShowAllProducts || buyscreenSearchQuery.trim()) return;
+          var touch = event.changedTouches && event.changedTouches[0];
+          if (!touch) return;
+          var dx = touch.clientX - startX;
+          var dy = touch.clientY - startY;
+          if (Math.abs(dx) < 28 || Math.abs(dx) <= Math.abs(dy)) return;
+          moveBuyscreenProducts(dx < 0 ? 1 : -1);
+        }, { passive: true });
+        vp.addEventListener("touchcancel", function () {
+          tracking = false;
+        }, { passive: true });
       }
     }
 
@@ -3460,6 +3499,7 @@
               </svg>
             </button>
           </div>
+          <p id="buyscreenProductsSwipeHint" class="mt-3 hidden text-center text-[11px] font-medium text-[#6b7280] lg:hidden">Swipe for more products</p>
         </section>
       </div>
     </section>
