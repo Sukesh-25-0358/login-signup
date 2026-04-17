@@ -87,14 +87,14 @@ function BuyProductActionButtons({
   onShareClick: () => void;
   compact?: boolean;
 }) {
-  const size = compact ? "h-7 w-7 sm:h-7 sm:w-7" : "h-7 w-7 sm:h-8 sm:w-8";
+  const size = compact ? "h-6 w-6 sm:h-6 sm:w-6" : "h-7 w-7 sm:h-8 sm:w-8";
   const shadow = compact ? "shadow-sm" : "shadow-md";
   const base =
     `flex shrink-0 items-center justify-center rounded-full border-2 border-[#ff664f] transition-colors duration-150 ${size} ${shadow}`;
   const inactive = `${base} bg-white text-[#ff664f] hover:bg-[#ff664f] hover:text-white`;
   const favoriteActive = `${base} bg-[#ff664f] text-white hover:bg-[#ff664f] hover:text-white`;
   const favoriteBtn = isFavorite ? favoriteActive : inactive;
-  const icon = compact ? 12 : 14;
+  const icon = compact ? 11 : 14;
   return (
     <>
       <button type="button" className={inactive} aria-label="Add to cart" onClick={(e) => {
@@ -388,7 +388,7 @@ export default function BuyScreenPage() {
               </ul>
 
               <div
-                className="mt-6 flex items-center justify-between gap-3 rounded-full border-2 px-3 py-2.5 sm:px-4"
+                className="mt-6 grid grid-cols-[auto,1fr,auto] items-center gap-3 overflow-hidden rounded-full border-2 p-2 sm:px-3"
                 style={{ borderColor: NAVY }}
               >
               <button
@@ -401,7 +401,7 @@ export default function BuyScreenPage() {
               >
                 <span className="text-lg font-light leading-none">−</span>
               </button>
-              <div className="min-w-[3rem] rounded-md border border-dashed border-[#cbd5e1] bg-[#f8fafc] px-3 py-1.5 text-center text-lg font-semibold tabular-nums text-[#0f172a]">
+              <div className="min-w-0 rounded-md border border-dashed border-[#cbd5e1] bg-[#f8fafc] px-3 py-1.5 text-center text-lg font-semibold tabular-nums text-[#0f172a]">
                 {licenseQty}
               </div>
               <button
@@ -686,7 +686,7 @@ export default function BuyScreenPage() {
                           </div>
                         </div>
                       </div>
-                      <div className="buyscreen-product-actions-mobile grid grid-cols-3 place-items-center gap-1 border-t border-[#f3f4f6] px-1 py-1.5 lg:hidden">
+                      <div className="buyscreen-product-actions-mobile grid grid-cols-3 place-items-center gap-0.5 overflow-hidden border-t border-[#f3f4f6] px-0.5 py-1 lg:hidden">
                         <BuyProductActionButtons
                           compact
                           isFavorite={favoriteProductIds.includes(product.id)}
