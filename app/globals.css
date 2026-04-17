@@ -128,6 +128,51 @@ body:has(> main.buyscreen-page) {
 .buyscreen-products-arrow:hover {
   color: #9ca3af;
 }
+.buyscreen-category-item {
+  padding: 0.42rem 0.9rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+}
+.buyscreen-category-item:hover,
+.buyscreen-category-item:focus-visible {
+  background: #2563eb !important;
+  color: #ffffff !important;
+  outline: none;
+}
+.buyscreen-all-categories-dropdown {
+  display: none;
+}
+.buyscreen-all-categories-dropdown--open {
+  display: block;
+}
+.buyscreen-all-categories-item {
+  display: block;
+  width: 100%;
+  border: 0;
+  border-bottom: 1px solid #e5e7eb;
+  background: transparent;
+  padding: 0.75rem 1rem;
+  text-align: left;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: #1f2937;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+.buyscreen-all-categories-item:last-child {
+  border-bottom: 0;
+}
+.buyscreen-all-categories-item:hover {
+  background: #2563eb;
+  color: #ffffff;
+}
+.buyscreen-all-categories-item:focus-visible {
+  outline: none;
+  background: #2563eb;
+  color: #ffffff;
+}
 .buyscreen-product-actions-mobile {
   overflow: hidden;
 }
@@ -150,9 +195,21 @@ body:has(> main.buyscreen-page) {
     display: flex;
     gap: 1.2rem;
     align-items: center;
-    overflow-x: auto;
+    overflow: visible;
     scrollbar-width: thin;
     -webkit-overflow-scrolling: touch;
+  }
+  .buyscreen-all-categories-dropdown {
+    position: absolute;
+    top: calc(100% + 10px);
+    left: 0;
+    z-index: 40;
+    min-width: 240px;
+    border: 1px solid #d1d5db;
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: 0 12px 28px rgba(2, 6, 23, 0.18);
+    overflow: hidden;
   }
 }
 .buyscreen-hero-content h1,
@@ -183,7 +240,7 @@ body:has(> main.buyscreen-page) {
     padding-right: 2rem !important;
   }
   .buyscreen-category-item {
-    padding: 0;
+    padding: 0.42rem 0.9rem;
     opacity: 1;
   }
 }
@@ -238,6 +295,21 @@ body:has(> main.buyscreen-page) {
   .buyscreen-categories-list {
     width: 100%;
     overflow-x: visible;
+  }
+  .buyscreen-all-categories-wrap {
+    width: 100%;
+  }
+  .buyscreen-all-categories-toggle {
+    width: 100%;
+    justify-content: space-between;
+  }
+  .buyscreen-all-categories-dropdown {
+    margin-top: 0.4rem;
+    width: 100%;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    background: #fff;
+    overflow: hidden;
   }
   .buyscreen-features {
     gap: 0.9rem !important;

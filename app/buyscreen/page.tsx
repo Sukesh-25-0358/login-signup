@@ -14,6 +14,21 @@ const buyCategories = [
   { label: "New Arrivals" },
 ];
 
+const buyAllSubCategories: Array<{ key: string; label: string; productIds: string[] }> = [
+  { key: "mobiles", label: "Mobiles", productIds: ["phone"] },
+  { key: "audio", label: "Audio", productIds: ["audio", "speaker"] },
+  { key: "laptops", label: "Laptops", productIds: ["laptop"] },
+  { key: "cameras", label: "Cameras", productIds: ["camera"] },
+  { key: "televisions", label: "Televisions", productIds: ["television"] },
+  { key: "tablets", label: "Tablets", productIds: ["tablet"] },
+  { key: "wearables", label: "Wearables", productIds: ["watch"] },
+  { key: "accessories", label: "Accessories", productIds: ["keyboard", "mouse"] },
+];
+
+const buyAllSubCategorySets = new Map(
+  buyAllSubCategories.map((entry) => [entry.key, new Set(entry.productIds)])
+);
+
 type BuyFeatureIconType = "responsive" | "secure" | "shipping" | "transparent";
 
 const buyFeatures: Array<{ icon: BuyFeatureIconType; title: string; subtitle: string }> = [
@@ -38,16 +53,16 @@ type CartItem = {
 };
 
 const buyProducts: BuyProduct[] = [
-  { id: "phone", name: "Phone", image: "/phone.jpg", badge: "", price: "$899.00", unitPriceCents: 899_00 },
-  { id: "audio", name: "Audio", image: "/audio.jpg", badge: "50%", price: "$149.00", unitPriceCents: 149_00 },
-  { id: "laptop", name: "Laptop", image: "/laptop.jpg", badge: "", price: "$1,299.00", unitPriceCents: 129_900 },
-  { id: "camera", name: "Camera", image: "/camera.jpg", badge: "", price: "$79.00", unitPriceCents: 79_00 },
-  { id: "television", name: "Television", image: "/television.jpg", badge: "", price: "$599.00", unitPriceCents: 599_00 },
-  { id: "tablet", name: "Tablet", image: "/tablet.jpg", badge: "", price: "$399.00", unitPriceCents: 399_00 },
-  { id: "watch", name: "Watch", image: "/watch.jpg", badge: "", price: "$199.00", unitPriceCents: 199_00 },
-  { id: "speaker", name: "Speaker", image: "/speaker.jpg", badge: "", price: "$89.00", unitPriceCents: 89_00 },
-  { id: "keyboard", name: "Keyboard", image: "/keyboard.jpg", badge: "", price: "$49.00", unitPriceCents: 49_00 },
-  { id: "mouse", name: "Mouse", image: "/mouse.jpg", badge: "", price: "$29.00", unitPriceCents: 29_00 },
+  { id: "phone", name: "Phone", image: "/phone.webp", badge: "", price: "$899.00", unitPriceCents: 899_00 },
+  { id: "audio", name: "Audio", image: "/audio.webp", badge: "50%", price: "$149.00", unitPriceCents: 149_00 },
+  { id: "laptop", name: "Laptop", image: "/laptop.webp", badge: "", price: "$1,299.00", unitPriceCents: 129_900 },
+  { id: "camera", name: "Camera", image: "/camera.webp", badge: "", price: "$79.00", unitPriceCents: 79_00 },
+  { id: "television", name: "Television", image: "/television.webp", badge: "", price: "$599.00", unitPriceCents: 599_00 },
+  { id: "tablet", name: "Tablet", image: "/tablet.webp", badge: "", price: "$399.00", unitPriceCents: 399_00 },
+  { id: "watch", name: "Watch", image: "/watch.webp", badge: "", price: "$199.00", unitPriceCents: 199_00 },
+  { id: "speaker", name: "Speaker", image: "/speaker.webp", badge: "", price: "$89.00", unitPriceCents: 89_00 },
+  { id: "keyboard", name: "Keyboard", image: "/keyboard.webp", badge: "", price: "$49.00", unitPriceCents: 49_00 },
+  { id: "mouse", name: "Mouse", image: "/mouse.webp", badge: "", price: "$29.00", unitPriceCents: 29_00 },
 ];
 
 const bestSellerIds = new Set(["phone", "laptop", "television", "camera", "audio"]);
@@ -167,6 +182,8 @@ export default function BuyScreenPage() {
   const [showAllProducts, setShowAllProducts] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategoryLabel, setActiveCategoryLabel] = useState("All Categories");
+  const [activeSubCategoryKey, setActiveSubCategoryKey] = useState<string | null>(null);
+  const [isAllCategoriesDropdownOpen, setIsAllCategoriesDropdownOpen] = useState(false);
   const [isCategoryMenuOpen, setIsCategoryMenuOpen] = useState(false);
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [favoriteProductIds, setFavoriteProductIds] = useState<string[]>([]);
@@ -175,6 +192,7 @@ export default function BuyScreenPage() {
   const [licenseQty, setLicenseQty] = useState(1);
   const [actionToast, setActionToast] = useState<string | null>(null);
   const toastTimerRef = useRef<number | null>(null);
+  const allCategoriesWrapRef = useRef<HTMLDivElement | null>(null);
   const featuredProductsRef = useRef<HTMLElement | null>(null);
   const productsViewportRef = useRef<HTMLDivElement | null>(null);
   const productsTouchStartXRef = useRef<number | null>(null);
@@ -183,6 +201,10 @@ export default function BuyScreenPage() {
 
   const normalizedSearchQuery = searchQuery.trim().toLowerCase();
   const categoryFilteredProducts = buyProducts.filter((product) => {
+    if (activeSubCategoryKey) {
+      const subSet = buyAllSubCategorySets.get(activeSubCategoryKey);
+      if (subSet) return subSet.has(product.id);
+    }
     if (activeCategoryLabel === "All Categories" || activeCategoryLabel === "Products") return true;
     if (activeCategoryLabel === "Limited Sale") return Boolean(product.badge);
     if (activeCategoryLabel === "Best Seller") return bestSellerIds.has(product.id);
@@ -299,6 +321,19 @@ export default function BuyScreenPage() {
     };
   }, []);
 
+  useEffect(() => {
+    if (!isAllCategoriesDropdownOpen) return;
+    const onPointerDown = (event: MouseEvent) => {
+      const target = event.target as Node | null;
+      if (!target) return;
+      if (!allCategoriesWrapRef.current?.contains(target)) {
+        setIsAllCategoriesDropdownOpen(false);
+      }
+    };
+    window.addEventListener("mousedown", onPointerDown);
+    return () => window.removeEventListener("mousedown", onPointerDown);
+  }, [isAllCategoriesDropdownOpen]);
+
   useLayoutEffect(() => {
     if (!isCarouselMode) return;
     const el = productsViewportRef.current;
@@ -323,6 +358,8 @@ export default function BuyScreenPage() {
         router.push("/page-not-found");
         return;
       }
+      setActiveSubCategoryKey(null);
+      setIsAllCategoriesDropdownOpen(false);
       setActiveCategoryLabel(label);
       setShowAllProducts(false);
       setSearchQuery("");
@@ -332,6 +369,17 @@ export default function BuyScreenPage() {
     },
     [router]
   );
+
+  const handleSubCategoryClick = useCallback((key: string) => {
+    setActiveCategoryLabel("All Categories");
+    setActiveSubCategoryKey(key);
+    setIsAllCategoriesDropdownOpen(false);
+    setShowAllProducts(false);
+    setSearchQuery("");
+    setActiveProductStart(0);
+    featuredProductsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    setIsCategoryMenuOpen(false);
+  }, []);
 
   const handleProductsTouchStart = useCallback(
     (e: React.TouchEvent<HTMLDivElement>) => {
@@ -639,14 +687,42 @@ export default function BuyScreenPage() {
               className={`buyscreen-categories-list ${isCategoryMenuOpen ? "buyscreen-categories-list--open" : ""}`}
             >
               {buyCategories.map((item) => (
-                <button
-                  key={item.label}
-                  type="button"
-                  className={`buyscreen-category-item shrink-0 rounded-md text-left transition-colors duration-150 hover:bg-white hover:text-[#06224C] ${item.label === "Limited Sale" ? "lg:ml-auto" : ""}`}
-                  onClick={() => handleCategoryClick(item.label)}
-                >
-                  {item.label}
-                </button>
+                item.label === "All Categories" ? (
+                  <div key={item.label} ref={allCategoriesWrapRef} className="buyscreen-all-categories-wrap relative shrink-0">
+                    <button
+                      type="button"
+                      aria-expanded={isAllCategoriesDropdownOpen}
+                      className="buyscreen-all-categories-toggle inline-flex items-center gap-1 rounded-md px-2 py-1 text-left text-[10px] font-semibold transition-colors duration-150 hover:bg-white hover:text-[#06224C] sm:text-xs"
+                      onClick={() => setIsAllCategoriesDropdownOpen((prev) => !prev)}
+                    >
+                      All Categories
+                      <svg width="12" height="12" viewBox="0 0 20 20" fill="none" aria-hidden>
+                        <path d="m5 7.5 5 5 5-5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    </button>
+                    <div className={`buyscreen-all-categories-dropdown ${isAllCategoriesDropdownOpen ? "buyscreen-all-categories-dropdown--open" : ""}`}>
+                      {buyAllSubCategories.map((subCategory) => (
+                        <button
+                          key={subCategory.key}
+                          type="button"
+                          className="buyscreen-all-categories-item"
+                          onClick={() => handleSubCategoryClick(subCategory.key)}
+                        >
+                          {subCategory.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  <button
+                    key={item.label}
+                    type="button"
+                    className={`buyscreen-category-item shrink-0 rounded-md text-left transition-colors duration-150 hover:bg-white hover:text-[#06224C] ${item.label === "Limited Sale" ? "lg:ml-auto" : ""}`}
+                    onClick={() => handleCategoryClick(item.label)}
+                  >
+                    {item.label}
+                  </button>
+                )
               ))}
             </div>
           </nav>
@@ -654,7 +730,7 @@ export default function BuyScreenPage() {
           <div className="space-y-10 px-4 py-10 sm:space-y-12 sm:px-8 sm:py-12">
             <section className="buyscreen-hero relative flex min-h-[320px] items-center overflow-hidden rounded-xl border border-[#efefef] p-6 sm:min-h-[380px] sm:p-8 lg:p-10">
               <Image
-                src="/background.png"
+                src="/background.webp"
                 alt=""
                 fill
                 className="object-fill object-center"
@@ -662,7 +738,7 @@ export default function BuyScreenPage() {
                 priority
               />
               <div className="buyscreen-hero-content relative z-10 min-w-0 max-w-xl text-center lg:text-left">
-                <h1 className="text-2xl font-bold leading-tight text-[#171717] sm:text-3xl lg:text-4xl">
+                <h1 className="text-2xl font-bold leading-tight text-white sm:text-3xl lg:text-4xl">
                   Your One-Stop Electronic Market
                 </h1>
                 <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-white sm:text-base lg:mx-0">

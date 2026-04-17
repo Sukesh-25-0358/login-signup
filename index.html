@@ -149,8 +149,16 @@
       align-items: center;
       gap: 0.25rem;
       white-space: nowrap;
-      padding: 0.1rem 0.2rem;
+      padding: 0.42rem 0.9rem;
+      border-radius: 0.5rem;
+      cursor: pointer;
       opacity: 0.95;
+    }
+    #buyscreenPage .buyscreen-category-item:hover,
+    #buyscreenPage .buyscreen-category-item:focus-visible {
+      background: #2563eb !important;
+      color: #ffffff !important;
+      outline: none;
     }
     #buyscreenPage .buyscreen-category-item--push {
       margin-left: auto;
@@ -219,6 +227,54 @@
     #buyscreenPage .buyscreen-products-arrow:hover {
       color: #9ca3af;
     }
+    #buyscreenPage .buyscreen-all-categories-dropdown {
+      display: none;
+    }
+    #buyscreenPage .buyscreen-all-categories-dropdown--open {
+      display: block;
+    }
+    #buyscreenPage .buyscreen-all-categories-item {
+      display: block;
+      width: 100%;
+      border: 0;
+      border-bottom: 1px solid #e5e7eb;
+      background: transparent;
+      padding: 0.75rem 1rem;
+      text-align: left;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      color: #1f2937;
+      cursor: pointer;
+      transition: background-color 0.15s ease, color 0.15s ease;
+    }
+    #buyscreenPage .buyscreen-all-categories-item:last-child {
+      border-bottom: 0;
+    }
+    #buyscreenPage .buyscreen-all-categories-item:hover {
+      background: #2563eb;
+      color: #ffffff;
+    }
+    #buyscreenPage .buyscreen-all-categories-item:focus-visible {
+      outline: none;
+      background: #2563eb;
+      color: #ffffff;
+    }
+    @media (min-width: 1024px) {
+      #buyscreenPage .buyscreen-all-categories-dropdown {
+        position: absolute;
+        top: calc(100% + 10px);
+        left: 0;
+        z-index: 40;
+        min-width: 240px;
+        border: 1px solid #d1d5db;
+        border-radius: 12px;
+        background: #fff;
+        box-shadow: 0 12px 28px rgba(2, 6, 23, 0.18);
+        overflow: hidden;
+      }
+    }
     @media (max-width: 480px) {
       #buyscreenPage .buyscreen-products-row .buyscreen-products-arrow {
         display: none !important;
@@ -279,6 +335,21 @@
         width: 100%;
         overflow-x: visible;
       }
+      #buyscreenPage .buyscreen-all-categories-wrap {
+        width: 100%;
+      }
+      #buyscreenPage .buyscreen-all-categories-toggle {
+        width: 100%;
+        justify-content: space-between;
+      }
+      #buyscreenPage .buyscreen-all-categories-dropdown {
+        margin-top: 0.4rem;
+        width: 100%;
+        border: 1px solid #d1d5db;
+        border-radius: 10px;
+        background: #fff;
+        overflow: hidden;
+      }
       #buyscreenPage .buyscreen-features {
         gap: 0.9rem !important;
       }
@@ -316,7 +387,7 @@
         padding-right: 2rem !important;
       }
       #buyscreenPage .buyscreen-category-item {
-        padding: 0;
+        padding: 0.42rem 0.9rem;
         opacity: 1;
       }
     }
@@ -1908,8 +1979,20 @@
     var buyscreenProductStart = 0;
     var buyscreenVisibleCount = 3;
     var buyscreenActiveCategory = "all categories";
+    var buyscreenActiveSubCategory = "";
+    var buyscreenAllCategoryDropdownOpen = false;
     var buyscreenBestSellerSet = new Set(["phone", "laptop", "television", "camera", "audio"]);
     var buyscreenNewArrivalSet = new Set(["watch", "speaker", "keyboard", "mouse", "tablet"]);
+    var buyscreenSubCategorySets = {
+      mobiles: new Set(["phone"]),
+      audio: new Set(["audio", "speaker"]),
+      laptops: new Set(["laptop"]),
+      cameras: new Set(["camera"]),
+      televisions: new Set(["television"]),
+      tablets: new Set(["tablet"]),
+      wearables: new Set(["watch"]),
+      accessories: new Set(["keyboard", "mouse"])
+    };
 
     function buyscreenCarouselColsFromWidth(w) {
       if (!w || w <= 0) return 1;
@@ -1931,6 +2014,8 @@
     function renderBuyscreenCategoryMenu() {
       var menu = document.getElementById("buyscreenCategoryMenu");
       var toggle = document.getElementById("buyscreenCategoryToggle");
+      var allToggle = document.getElementById("buyscreenAllCategoriesToggle");
+      var allDropdown = document.getElementById("buyscreenAllCategoriesDropdown");
       if (!menu || !toggle) return;
       if (buyscreenCategoryMenuOpen) {
         menu.classList.add("buyscreen-categories-list--open");
@@ -1938,6 +2023,14 @@
         menu.classList.remove("buyscreen-categories-list--open");
       }
       toggle.setAttribute("aria-expanded", buyscreenCategoryMenuOpen ? "true" : "false");
+      if (allToggle) allToggle.setAttribute("aria-expanded", buyscreenAllCategoryDropdownOpen ? "true" : "false");
+      if (allDropdown) {
+        if (buyscreenAllCategoryDropdownOpen) {
+          allDropdown.classList.add("buyscreen-all-categories-dropdown--open");
+        } else {
+          allDropdown.classList.remove("buyscreen-all-categories-dropdown--open");
+        }
+      }
     }
 
     function buyscreenCardName(card) {
@@ -1966,6 +2059,10 @@
       var query = buyscreenSearchQuery.trim().toLowerCase();
       var categoryCards = cards.filter(function (card) {
         var name = buyscreenCardName(card);
+        if (buyscreenActiveSubCategory) {
+          var subSet = buyscreenSubCategorySets[buyscreenActiveSubCategory];
+          if (subSet) return subSet.has(name);
+        }
         if (buyscreenActiveCategory === "all categories" || buyscreenActiveCategory === "products") return true;
         if (buyscreenActiveCategory === "limited sale") return name === "audio";
         if (buyscreenActiveCategory === "best seller") return buyscreenBestSellerSet.has(name);
@@ -2379,10 +2476,47 @@
       page.addEventListener("click", function (e) {
         var t = e.target;
         if (!t || !t.closest) return;
+        if (
+          buyscreenAllCategoryDropdownOpen &&
+          !t.closest("[data-buyscreen-all-categories-toggle]") &&
+          !t.closest("[data-buyscreen-subcategory-btn]")
+        ) {
+          buyscreenAllCategoryDropdownOpen = false;
+          renderBuyscreenCategoryMenu();
+        }
         var categoryToggle = t.closest("[data-buyscreen-categories-toggle]");
         if (categoryToggle) {
           e.preventDefault();
           buyscreenCategoryMenuOpen = !buyscreenCategoryMenuOpen;
+          renderBuyscreenCategoryMenu();
+          return;
+        }
+        var allCategoriesToggle = t.closest("[data-buyscreen-all-categories-toggle]");
+        if (allCategoriesToggle) {
+          e.preventDefault();
+          buyscreenAllCategoryDropdownOpen = !buyscreenAllCategoryDropdownOpen;
+          renderBuyscreenCategoryMenu();
+          return;
+        }
+        var subCategoryBtn = t.closest("[data-buyscreen-subcategory-btn]");
+        if (subCategoryBtn) {
+          e.preventDefault();
+          buyscreenActiveCategory = "all categories";
+          buyscreenActiveSubCategory = (subCategoryBtn.getAttribute("data-buyscreen-subcategory-btn") || "").toLowerCase();
+          buyscreenAllCategoryDropdownOpen = false;
+          buyscreenShowAllProducts = false;
+          buyscreenSearchQuery = "";
+          buyscreenProductStart = 0;
+          var subSearchInput = document.getElementById("buyscreenSearchInput");
+          if (subSearchInput) subSearchInput.value = "";
+          renderBuyscreenProductCarousel();
+          var subFeaturedSection = document.getElementById("buyscreenFeaturedProducts");
+          if (subFeaturedSection && subFeaturedSection.scrollIntoView) {
+            subFeaturedSection.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
+          if (window.innerWidth < 1024) {
+            buyscreenCategoryMenuOpen = false;
+          }
           renderBuyscreenCategoryMenu();
           return;
         }
@@ -2396,6 +2530,8 @@
             return;
           }
           buyscreenActiveCategory = categoryLabel;
+          buyscreenActiveSubCategory = "";
+          buyscreenAllCategoryDropdownOpen = false;
           buyscreenShowAllProducts = false;
           buyscreenSearchQuery = "";
           buyscreenProductStart = 0;
@@ -3112,7 +3248,24 @@
           </button>
         </div>
         <div id="buyscreenCategoryMenu" class="buyscreen-categories-list">
-          <button type="button" data-buyscreen-category-btn="1" class="buyscreen-category-item shrink-0 rounded-md text-left transition-colors duration-150 hover:bg-white hover:text-[#06224C]">All Categories</button>
+          <div class="buyscreen-all-categories-wrap relative shrink-0">
+            <button type="button" id="buyscreenAllCategoriesToggle" data-buyscreen-all-categories-toggle="1" aria-expanded="false" class="buyscreen-all-categories-toggle inline-flex items-center gap-1 rounded-md px-2 py-1 text-left text-[10px] font-semibold transition-colors duration-150 hover:bg-white hover:text-[#06224C] sm:text-xs">
+              All Categories
+              <svg width="12" height="12" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                <path d="m5 7.5 5 5 5-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+              </svg>
+            </button>
+            <div id="buyscreenAllCategoriesDropdown" class="buyscreen-all-categories-dropdown">
+              <button type="button" data-buyscreen-subcategory-btn="mobiles" class="buyscreen-all-categories-item">Mobiles</button>
+              <button type="button" data-buyscreen-subcategory-btn="audio" class="buyscreen-all-categories-item">Audio</button>
+              <button type="button" data-buyscreen-subcategory-btn="laptops" class="buyscreen-all-categories-item">Laptops</button>
+              <button type="button" data-buyscreen-subcategory-btn="cameras" class="buyscreen-all-categories-item">Cameras</button>
+              <button type="button" data-buyscreen-subcategory-btn="televisions" class="buyscreen-all-categories-item">Televisions</button>
+              <button type="button" data-buyscreen-subcategory-btn="tablets" class="buyscreen-all-categories-item">Tablets</button>
+              <button type="button" data-buyscreen-subcategory-btn="wearables" class="buyscreen-all-categories-item">Wearables</button>
+              <button type="button" data-buyscreen-subcategory-btn="accessories" class="buyscreen-all-categories-item">Accessories</button>
+            </div>
+          </div>
           <button type="button" data-buyscreen-category-btn="1" class="buyscreen-category-item shrink-0 rounded-md text-left transition-colors duration-150 hover:bg-white hover:text-[#06224C]">Products</button>
           <button type="button" data-buyscreen-category-btn="1" class="buyscreen-category-item shrink-0 rounded-md text-left transition-colors duration-150 hover:bg-white hover:text-[#06224C]">Blog</button>
           <button type="button" data-buyscreen-category-btn="1" class="buyscreen-category-item shrink-0 rounded-md text-left transition-colors duration-150 hover:bg-white hover:text-[#06224C]">Contact</button>
@@ -3124,9 +3277,9 @@
 
       <div class="space-y-10 px-4 py-10 sm:space-y-12 sm:px-8 sm:py-12">
         <section class="buyscreen-hero relative flex min-h-[320px] items-center overflow-hidden rounded-xl border border-[#efefef] p-6 sm:min-h-[380px] sm:p-8 lg:p-10">
-          <img src="./public/background.png" alt="" class="absolute inset-0 h-full w-full object-fill object-center" width="640" height="360" />
+          <img src="./public/background.webp" alt="" class="absolute inset-0 h-full w-full object-fill object-center" width="640" height="360" />
           <div class="buyscreen-hero-content relative z-10 min-w-0 max-w-xl text-center lg:text-left">
-            <h1 class="text-2xl font-bold leading-tight text-[#171717] sm:text-3xl lg:text-4xl">Your One-Stop Electronic Market</h1>
+            <h1 class="text-2xl font-bold leading-tight text-white sm:text-3xl lg:text-4xl">Your One-Stop Electronic Market</h1>
             <p class="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-white sm:text-base lg:mx-0">
               Welcome to e-shop, a place where you can buy everything about electronics. Sale every day.
             </p>
@@ -3206,7 +3359,7 @@
               <div id="buyscreenProductsGrid" class="buyscreen-products buyscreen-products--carousel">
                 <article data-buyscreen-product-card class="buyscreen-product-card group relative flex min-w-0 flex-col rounded-lg border border-[#ececec] bg-white p-2 shadow-sm transition-[box-shadow,border-color] duration-200 hover:border-[#d4d4d4] hover:shadow-lg sm:p-3">
                   <div class="buyscreen-product-image-wrap relative aspect-[4/3] w-full overflow-hidden rounded-md bg-white">
-                    <div class="absolute inset-2 rounded-sm bg-contain bg-center bg-no-repeat bg-white" style="background-image:url('./public/phone.jpg');"></div>
+                    <div class="absolute inset-2 rounded-sm bg-contain bg-center bg-no-repeat bg-white" style="background-image:url('./public/phone.webp');"></div>
                     <div class="pointer-events-none absolute inset-x-0 bottom-0 z-10 hidden justify-center px-1 pb-2 pt-6 opacity-0 transition-opacity duration-200 group-hover:pointer-events-auto group-hover:opacity-100 lg:flex">
                       <div class="pointer-events-auto flex items-center gap-1.5 sm:gap-2">
                         <button type="button" data-buyscreen-license-open="1" data-unit-cents="89900" data-product-name="Phone" data-unit-price="$899.00" class="flex h-7 w-7 items-center justify-center rounded-full border-2 border-[#ff664f] bg-white text-[#ff664f] shadow-md transition-colors duration-150 hover:bg-[#ff664f] hover:text-white sm:h-8 sm:w-8" aria-label="Add to cart">
@@ -3239,7 +3392,7 @@
                 </article>
                 <article data-buyscreen-product-card class="buyscreen-product-card group relative flex min-w-0 flex-col rounded-lg border border-[#ececec] bg-white p-2 shadow-sm transition-[box-shadow,border-color] duration-200 hover:border-[#d4d4d4] hover:shadow-lg sm:p-3">
                   <div class="buyscreen-product-image-wrap relative aspect-[4/3] w-full overflow-hidden rounded-md bg-white">
-                    <div class="absolute inset-2 rounded-sm bg-contain bg-center bg-no-repeat bg-white" style="background-image:url('./public/audio.jpg');"></div>
+                    <div class="absolute inset-2 rounded-sm bg-contain bg-center bg-no-repeat bg-white" style="background-image:url('./public/audio.webp');"></div>
                     <div class="pointer-events-none absolute inset-x-0 bottom-0 z-10 hidden justify-center px-1 pb-2 pt-6 opacity-0 transition-opacity duration-200 group-hover:pointer-events-auto group-hover:opacity-100 lg:flex">
                       <div class="pointer-events-auto flex items-center gap-1.5 sm:gap-2">
                         <button type="button" data-buyscreen-license-open="1" data-unit-cents="14900" data-product-name="Audio" data-unit-price="$149.00" class="flex h-7 w-7 items-center justify-center rounded-full border-2 border-[#ff664f] bg-white text-[#ff664f] shadow-md transition-colors duration-150 hover:bg-[#ff664f] hover:text-white sm:h-8 sm:w-8" aria-label="Add to cart">
@@ -3273,7 +3426,7 @@
                 </article>
                 <article data-buyscreen-product-card class="buyscreen-product-card group relative flex min-w-0 flex-col rounded-lg border border-[#ececec] bg-white p-2 shadow-sm transition-[box-shadow,border-color] duration-200 hover:border-[#d4d4d4] hover:shadow-lg sm:p-3">
                   <div class="buyscreen-product-image-wrap relative aspect-[4/3] w-full overflow-hidden rounded-md bg-white">
-                    <div class="absolute inset-2 rounded-sm bg-contain bg-center bg-no-repeat bg-white" style="background-image:url('./public/laptop.jpg');"></div>
+                    <div class="absolute inset-2 rounded-sm bg-contain bg-center bg-no-repeat bg-white" style="background-image:url('./public/laptop.webp');"></div>
                     <div class="pointer-events-none absolute inset-x-0 bottom-0 z-10 hidden justify-center px-1 pb-2 pt-6 opacity-0 transition-opacity duration-200 group-hover:pointer-events-auto group-hover:opacity-100 lg:flex">
                       <div class="pointer-events-auto flex items-center gap-1.5 sm:gap-2">
                         <button type="button" data-buyscreen-license-open="1" data-unit-cents="129900" data-product-name="Laptop" data-unit-price="$1,299.00" class="flex h-7 w-7 items-center justify-center rounded-full border-2 border-[#ff664f] bg-white text-[#ff664f] shadow-md transition-colors duration-150 hover:bg-[#ff664f] hover:text-white sm:h-8 sm:w-8" aria-label="Add to cart">
@@ -3306,7 +3459,7 @@
                 </article>
                 <article data-buyscreen-product-card class="buyscreen-product-card group relative flex min-w-0 flex-col rounded-lg border border-[#ececec] bg-white p-2 shadow-sm transition-[box-shadow,border-color] duration-200 hover:border-[#d4d4d4] hover:shadow-lg sm:p-3">
                   <div class="buyscreen-product-image-wrap relative aspect-[4/3] w-full overflow-hidden rounded-md bg-white">
-                    <div class="absolute inset-2 rounded-sm bg-contain bg-center bg-no-repeat bg-white" style="background-image:url('./public/camera.jpg');"></div>
+                    <div class="absolute inset-2 rounded-sm bg-contain bg-center bg-no-repeat bg-white" style="background-image:url('./public/camera.webp');"></div>
                     <div class="pointer-events-none absolute inset-x-0 bottom-0 z-10 hidden justify-center px-1 pb-2 pt-6 opacity-0 transition-opacity duration-200 group-hover:pointer-events-auto group-hover:opacity-100 lg:flex">
                       <div class="pointer-events-auto flex items-center gap-1.5 sm:gap-2">
                         <button type="button" data-buyscreen-license-open="1" data-unit-cents="7900" data-product-name="Camera" data-unit-price="$79.00" class="flex h-7 w-7 items-center justify-center rounded-full border-2 border-[#ff664f] bg-white text-[#ff664f] shadow-md transition-colors duration-150 hover:bg-[#ff664f] hover:text-white sm:h-8 sm:w-8" aria-label="Add to cart">
@@ -3339,7 +3492,7 @@
                 </article>
                 <article data-buyscreen-product-card class="buyscreen-product-card group relative flex min-w-0 flex-col rounded-lg border border-[#ececec] bg-white p-2 shadow-sm transition-[box-shadow,border-color] duration-200 hover:border-[#d4d4d4] hover:shadow-lg sm:p-3">
                   <div class="buyscreen-product-image-wrap relative aspect-[4/3] w-full overflow-hidden rounded-md bg-white">
-                    <div class="absolute inset-2 rounded-sm bg-contain bg-center bg-no-repeat bg-white" style="background-image:url('./public/television.jpg');"></div>
+                    <div class="absolute inset-2 rounded-sm bg-contain bg-center bg-no-repeat bg-white" style="background-image:url('./public/television.webp');"></div>
                     <div class="pointer-events-none absolute inset-x-0 bottom-0 z-10 hidden justify-center px-1 pb-2 pt-6 opacity-0 transition-opacity duration-200 group-hover:pointer-events-auto group-hover:opacity-100 lg:flex">
                       <div class="pointer-events-auto flex items-center gap-1.5 sm:gap-2">
                         <button type="button" data-buyscreen-license-open="1" data-unit-cents="59900" data-product-name="Television" data-unit-price="$599.00" class="flex h-7 w-7 items-center justify-center rounded-full border-2 border-[#ff664f] bg-white text-[#ff664f] shadow-md transition-colors duration-150 hover:bg-[#ff664f] hover:text-white sm:h-8 sm:w-8" aria-label="Add to cart">
@@ -3372,7 +3525,7 @@
                 </article>
                 <article data-buyscreen-product-card class="buyscreen-product-card group relative flex min-w-0 flex-col rounded-lg border border-[#ececec] bg-white p-2 shadow-sm transition-[box-shadow,border-color] duration-200 hover:border-[#d4d4d4] hover:shadow-lg sm:p-3">
                   <div class="buyscreen-product-image-wrap relative aspect-[4/3] w-full overflow-hidden rounded-md bg-white">
-                    <div class="absolute inset-2 rounded-sm bg-contain bg-center bg-no-repeat bg-white" style="background-image:url('./public/tablet.jpg');"></div>
+                    <div class="absolute inset-2 rounded-sm bg-contain bg-center bg-no-repeat bg-white" style="background-image:url('./public/tablet.webp');"></div>
                     <div class="pointer-events-none absolute inset-x-0 bottom-0 z-10 hidden justify-center px-1 pb-2 pt-6 opacity-0 transition-opacity duration-200 group-hover:pointer-events-auto group-hover:opacity-100 lg:flex">
                       <div class="pointer-events-auto flex items-center gap-1.5 sm:gap-2">
                         <button type="button" data-buyscreen-license-open="1" data-unit-cents="39900" data-product-name="Tablet" data-unit-price="$399.00" class="flex h-7 w-7 items-center justify-center rounded-full border-2 border-[#ff664f] bg-white text-[#ff664f] shadow-md transition-colors duration-150 hover:bg-[#ff664f] hover:text-white sm:h-8 sm:w-8" aria-label="Add to cart">
@@ -3405,7 +3558,7 @@
                 </article>
                 <article data-buyscreen-product-card class="buyscreen-product-card group relative flex min-w-0 flex-col rounded-lg border border-[#ececec] bg-white p-2 shadow-sm transition-[box-shadow,border-color] duration-200 hover:border-[#d4d4d4] hover:shadow-lg sm:p-3">
                   <div class="buyscreen-product-image-wrap relative aspect-[4/3] w-full overflow-hidden rounded-md bg-white">
-                    <div class="absolute inset-2 rounded-sm bg-contain bg-center bg-no-repeat bg-white" style="background-image:url('./public/watch.jpg');"></div>
+                    <div class="absolute inset-2 rounded-sm bg-contain bg-center bg-no-repeat bg-white" style="background-image:url('./public/watch.webp');"></div>
                     <div class="pointer-events-none absolute inset-x-0 bottom-0 z-10 hidden justify-center px-1 pb-2 pt-6 opacity-0 transition-opacity duration-200 group-hover:pointer-events-auto group-hover:opacity-100 lg:flex">
                       <div class="pointer-events-auto flex items-center gap-1.5 sm:gap-2">
                         <button type="button" data-buyscreen-license-open="1" data-unit-cents="19900" data-product-name="Watch" data-unit-price="$199.00" class="flex h-7 w-7 items-center justify-center rounded-full border-2 border-[#ff664f] bg-white text-[#ff664f] shadow-md transition-colors duration-150 hover:bg-[#ff664f] hover:text-white sm:h-8 sm:w-8" aria-label="Add to cart">
@@ -3438,7 +3591,7 @@
                 </article>
                 <article data-buyscreen-product-card class="buyscreen-product-card group relative flex min-w-0 flex-col rounded-lg border border-[#ececec] bg-white p-2 shadow-sm transition-[box-shadow,border-color] duration-200 hover:border-[#d4d4d4] hover:shadow-lg sm:p-3">
                   <div class="buyscreen-product-image-wrap relative aspect-[4/3] w-full overflow-hidden rounded-md bg-white">
-                    <div class="absolute inset-2 rounded-sm bg-contain bg-center bg-no-repeat bg-white" style="background-image:url('./public/speaker.jpg');"></div>
+                    <div class="absolute inset-2 rounded-sm bg-contain bg-center bg-no-repeat bg-white" style="background-image:url('./public/speaker.webp');"></div>
                     <div class="pointer-events-none absolute inset-x-0 bottom-0 z-10 hidden justify-center px-1 pb-2 pt-6 opacity-0 transition-opacity duration-200 group-hover:pointer-events-auto group-hover:opacity-100 lg:flex">
                       <div class="pointer-events-auto flex items-center gap-1.5 sm:gap-2">
                         <button type="button" data-buyscreen-license-open="1" data-unit-cents="8900" data-product-name="Speaker" data-unit-price="$89.00" class="flex h-7 w-7 items-center justify-center rounded-full border-2 border-[#ff664f] bg-white text-[#ff664f] shadow-md transition-colors duration-150 hover:bg-[#ff664f] hover:text-white sm:h-8 sm:w-8" aria-label="Add to cart">
@@ -3471,7 +3624,7 @@
                 </article>
                 <article data-buyscreen-product-card class="buyscreen-product-card group relative flex min-w-0 flex-col rounded-lg border border-[#ececec] bg-white p-2 shadow-sm transition-[box-shadow,border-color] duration-200 hover:border-[#d4d4d4] hover:shadow-lg sm:p-3">
                   <div class="buyscreen-product-image-wrap relative aspect-[4/3] w-full overflow-hidden rounded-md bg-white">
-                    <div class="absolute inset-2 rounded-sm bg-contain bg-center bg-no-repeat bg-white" style="background-image:url('./public/keyboard.jpg');"></div>
+                    <div class="absolute inset-2 rounded-sm bg-contain bg-center bg-no-repeat bg-white" style="background-image:url('./public/keyboard.webp');"></div>
                     <div class="pointer-events-none absolute inset-x-0 bottom-0 z-10 hidden justify-center px-1 pb-2 pt-6 opacity-0 transition-opacity duration-200 group-hover:pointer-events-auto group-hover:opacity-100 lg:flex">
                       <div class="pointer-events-auto flex items-center gap-1.5 sm:gap-2">
                         <button type="button" data-buyscreen-license-open="1" data-unit-cents="4900" data-product-name="Keyboard" data-unit-price="$49.00" class="flex h-7 w-7 items-center justify-center rounded-full border-2 border-[#ff664f] bg-white text-[#ff664f] shadow-md transition-colors duration-150 hover:bg-[#ff664f] hover:text-white sm:h-8 sm:w-8" aria-label="Add to cart">
@@ -3504,7 +3657,7 @@
                 </article>
                 <article data-buyscreen-product-card class="buyscreen-product-card group relative flex min-w-0 flex-col rounded-lg border border-[#ececec] bg-white p-2 shadow-sm transition-[box-shadow,border-color] duration-200 hover:border-[#d4d4d4] hover:shadow-lg sm:p-3">
                   <div class="buyscreen-product-image-wrap relative aspect-[4/3] w-full overflow-hidden rounded-md bg-white">
-                    <div class="absolute inset-2 rounded-sm bg-contain bg-center bg-no-repeat bg-white" style="background-image:url('./public/mouse.jpg');"></div>
+                    <div class="absolute inset-2 rounded-sm bg-contain bg-center bg-no-repeat bg-white" style="background-image:url('./public/mouse.webp');"></div>
                     <div class="pointer-events-none absolute inset-x-0 bottom-0 z-10 hidden justify-center px-1 pb-2 pt-6 opacity-0 transition-opacity duration-200 group-hover:pointer-events-auto group-hover:opacity-100 lg:flex">
                       <div class="pointer-events-auto flex items-center gap-1.5 sm:gap-2">
                         <button type="button" data-buyscreen-license-open="1" data-unit-cents="2900" data-product-name="Mouse" data-unit-price="$29.00" class="flex h-7 w-7 items-center justify-center rounded-full border-2 border-[#ff664f] bg-white text-[#ff664f] shadow-md transition-colors duration-150 hover:bg-[#ff664f] hover:text-white sm:h-8 sm:w-8" aria-label="Add to cart">
