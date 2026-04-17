@@ -1941,7 +1941,13 @@
     }
 
     function buyscreenCardName(card) {
-      var nameEl = card ? card.querySelector("p") : null;
+      if (!card) return "";
+      var dataBtn = card.querySelector("[data-product-name]");
+      if (dataBtn && dataBtn.getAttribute) {
+        return (dataBtn.getAttribute("data-product-name") || "").trim().toLowerCase();
+      }
+      var nameEl = card.querySelector(".buyscreen-product-meta p:nth-last-child(2)");
+      if (!nameEl) nameEl = card.querySelector(".buyscreen-product-meta p");
       return (nameEl ? nameEl.textContent : "").trim().toLowerCase();
     }
 
