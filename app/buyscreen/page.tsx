@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 
 const buyCategories = [
@@ -48,6 +49,9 @@ const buyProducts: BuyProduct[] = [
   { id: "keyboard", name: "Keyboard", image: "/keyboard.jpg", badge: "", price: "$49.00", unitPriceCents: 49_00 },
   { id: "mouse", name: "Mouse", image: "/mouse.jpg", badge: "", price: "$29.00", unitPriceCents: 29_00 },
 ];
+
+const bestSellerIds = new Set(["phone", "laptop", "television", "camera", "audio"]);
+const newArrivalIds = new Set(["watch", "speaker", "keyboard", "mouse", "tablet"]);
 
 const licenseBullets = [
   "Quality checked by Stackly before delivery.",
@@ -158,9 +162,11 @@ function CheckIcon() {
 }
 
 export default function BuyScreenPage() {
+  const router = useRouter();
   const [activeProductStart, setActiveProductStart] = useState(0);
   const [showAllProducts, setShowAllProducts] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [activeCategoryLabel, setActiveCategoryLabel] = useState("All Categories");
   const [isCategoryMenuOpen, setIsCategoryMenuOpen] = useState(false);
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [favoriteProductIds, setFavoriteProductIds] = useState<string[]>([]);
@@ -176,9 +182,16 @@ export default function BuyScreenPage() {
   const [carouselCols, setCarouselCols] = useState(3);
 
   const normalizedSearchQuery = searchQuery.trim().toLowerCase();
+  const categoryFilteredProducts = buyProducts.filter((product) => {
+    if (activeCategoryLabel === "All Categories" || activeCategoryLabel === "Products") return true;
+    if (activeCategoryLabel === "Limited Sale") return Boolean(product.badge);
+    if (activeCategoryLabel === "Best Seller") return bestSellerIds.has(product.id);
+    if (activeCategoryLabel === "New Arrivals") return newArrivalIds.has(product.id);
+    return true;
+  });
   const searchFilteredProducts = normalizedSearchQuery
-    ? buyProducts.filter((product) => product.name.toLowerCase().includes(normalizedSearchQuery))
-    : buyProducts;
+    ? categoryFilteredProducts.filter((product) => product.name.toLowerCase().includes(normalizedSearchQuery))
+    : categoryFilteredProducts;
   const totalProducts = searchFilteredProducts.length;
   const isSearching = normalizedSearchQuery.length > 0;
   const isCarouselMode = !showAllProducts && !isSearching;
@@ -304,6 +317,22 @@ export default function BuyScreenPage() {
     setActiveProductStart((prev) => (prev + direction + totalProducts) % totalProducts);
   }
 
+  const handleCategoryClick = useCallback(
+    (label: string) => {
+      if (label === "Blog" || label === "Contact") {
+        router.push("/page-not-found");
+        return;
+      }
+      setActiveCategoryLabel(label);
+      setShowAllProducts(false);
+      setSearchQuery("");
+      setActiveProductStart(0);
+      featuredProductsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      setIsCategoryMenuOpen(false);
+    },
+    [router]
+  );
+
   const handleProductsTouchStart = useCallback(
     (e: React.TouchEvent<HTMLDivElement>) => {
       if (!isCarouselMode || typeof window === "undefined" || window.innerWidth > 1023 || e.touches.length !== 1) return;
@@ -383,7 +412,7 @@ export default function BuyScreenPage() {
   const productGridClass = showAllProducts || isSearching
     ? "buyscreen-products--grid grid grid-cols-2 gap-4 sm:gap-6 md:grid-cols-3 lg:grid-cols-5"
     : "buyscreen-products--carousel";
-  const carouselSlots = isCarouselMode ? Math.max(1, displayedProducts.length) : 1;
+  const carouselSlots = isCarouselMode ? Math.max(1, carouselCols) : 1;
 
   const lineTotalCents = licenseProduct ? licenseProduct.unitPriceCents * licenseQty : 0;
   const cartTotalCents = cartItems.reduce((sum, item) => sum + item.product.unitPriceCents * item.qty, 0);
@@ -614,7 +643,7 @@ export default function BuyScreenPage() {
                   key={item.label}
                   type="button"
                   className={`buyscreen-category-item shrink-0 rounded-md text-left transition-colors duration-150 hover:bg-white hover:text-[#06224C] ${item.label === "Limited Sale" ? "lg:ml-auto" : ""}`}
-                  onClick={() => setIsCategoryMenuOpen(false)}
+                  onClick={() => handleCategoryClick(item.label)}
                 >
                   {item.label}
                 </button>

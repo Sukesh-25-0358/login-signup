@@ -1907,6 +1907,9 @@
 
     var buyscreenProductStart = 0;
     var buyscreenVisibleCount = 3;
+    var buyscreenActiveCategory = "all categories";
+    var buyscreenBestSellerSet = new Set(["phone", "laptop", "television", "camera", "audio"]);
+    var buyscreenNewArrivalSet = new Set(["watch", "speaker", "keyboard", "mouse", "tablet"]);
 
     function buyscreenCarouselColsFromWidth(w) {
       if (!w || w <= 0) return 1;
@@ -1955,9 +1958,17 @@
       var emptyState = document.getElementById("buyscreenSearchEmpty");
       var swipeHint = document.getElementById("buyscreenProductsSwipeHint");
       var query = buyscreenSearchQuery.trim().toLowerCase();
+      var categoryCards = cards.filter(function (card) {
+        var name = buyscreenCardName(card);
+        if (buyscreenActiveCategory === "all categories" || buyscreenActiveCategory === "products") return true;
+        if (buyscreenActiveCategory === "limited sale") return name === "audio";
+        if (buyscreenActiveCategory === "best seller") return buyscreenBestSellerSet.has(name);
+        if (buyscreenActiveCategory === "new arrivals") return buyscreenNewArrivalSet.has(name);
+        return true;
+      });
       var filteredCards = query
-        ? cards.filter(function (card) { return buyscreenCardName(card).indexOf(query) !== -1; })
-        : cards;
+        ? categoryCards.filter(function (card) { return buyscreenCardName(card).indexOf(query) !== -1; })
+        : categoryCards;
 
       cards.forEach(function (card) {
         card.classList.add("hidden");
@@ -2016,7 +2027,7 @@
       if (buyscreenProductStart >= filteredTotal) buyscreenProductStart = 0;
       var visible = Math.min(buyscreenVisibleCount, filteredTotal);
       if (productsEl) {
-        productsEl.style.setProperty("--buyscreen-carousel-slots", String(Math.max(1, visible)));
+        productsEl.style.setProperty("--buyscreen-carousel-slots", String(Math.max(1, buyscreenVisibleCount)));
       }
       if (prev) prev.classList.remove("hidden");
       if (next) next.classList.remove("hidden");
@@ -2371,6 +2382,24 @@
         }
         var categoryBtn = t.closest("[data-buyscreen-category-btn]");
         if (categoryBtn) {
+          e.preventDefault();
+          var categoryLabel = (categoryBtn.textContent || "").trim().toLowerCase();
+          if (categoryLabel === "blog" || categoryLabel === "contact") {
+            location.hash = "notFound";
+            showPage("notFound");
+            return;
+          }
+          buyscreenActiveCategory = categoryLabel;
+          buyscreenShowAllProducts = false;
+          buyscreenSearchQuery = "";
+          buyscreenProductStart = 0;
+          var searchInput = document.getElementById("buyscreenSearchInput");
+          if (searchInput) searchInput.value = "";
+          renderBuyscreenProductCarousel();
+          var featuredSection = document.getElementById("buyscreenFeaturedProducts");
+          if (featuredSection && featuredSection.scrollIntoView) {
+            featuredSection.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
           if (window.innerWidth < 1024) {
             buyscreenCategoryMenuOpen = false;
             renderBuyscreenCategoryMenu();
