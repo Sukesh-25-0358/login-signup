@@ -362,7 +362,7 @@ export default function BuyScreenPage() {
             aria-labelledby="buyscreen-license-title"
             className="relative z-10 my-auto flex max-h-[min(90dvh,720px)] w-full max-w-md flex-col overflow-hidden rounded-2xl border border-[#e5e7eb] bg-white p-6 shadow-2xl sm:max-h-[85dvh] sm:p-8"
           >
-            <div className="shrink-0 flex items-start justify-between gap-3 border-b border-[#eef2f7] pb-4">
+            <div className="shrink-0 flex flex-wrap items-start justify-between gap-2 border-b border-[#eef2f7] pb-4">
               <div>
                 <h2 id="buyscreen-license-title" className="text-base font-semibold sm:text-lg" style={{ color: NAVY }}>
                   Regular license
@@ -371,8 +371,8 @@ export default function BuyScreenPage() {
                   {licenseProduct.name} · {licenseProduct.price} each
                 </p>
               </div>
-              <p className="text-lg font-bold tabular-nums sm:text-xl" style={{ color: NAVY }}>
-                {formatUsd(lineTotalCents)}
+              <p className="whitespace-nowrap text-lg font-bold tabular-nums sm:text-xl" style={{ color: NAVY }}>
+                {formatUsd(lineTotalCents).replace("$ ", "$")}
               </p>
             </div>
 

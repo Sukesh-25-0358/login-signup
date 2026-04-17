@@ -193,14 +193,14 @@
       word-break: normal;
     }
     #buyscreenPage .buyscreen-product-actions-mobile {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      align-items: center;
-      justify-items: center;
-      gap: 0.25rem;
-      padding-left: 0.5rem;
-      padding-right: 0.5rem;
-      overflow: hidden;
+      display: grid !important;
+      grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+      align-items: center !important;
+      justify-items: center !important;
+      gap: 0.25rem !important;
+      padding-left: 0.5rem !important;
+      padding-right: 0.5rem !important;
+      overflow: hidden !important;
     }
     #buyscreenPage .buyscreen-product-actions-mobile > button {
       width: 1.65rem !important;
@@ -223,17 +223,20 @@
       }
     }
     #buyscreenPage .buyscreen-license-qty-row {
-      display: grid;
-      grid-template-columns: auto minmax(3rem, 1fr) auto;
-      align-items: center;
-      gap: 0.5rem;
-      overflow: hidden;
-      padding: 0.5rem 0.625rem;
+      display: grid !important;
+      grid-template-columns: auto minmax(3rem, 1fr) auto !important;
+      align-items: center !important;
+      gap: 0.5rem !important;
+      overflow: hidden !important;
+      padding: 0.5rem 0.625rem !important;
     }
     #buyscreenPage .buyscreen-license-qty-row > button {
       width: 2rem !important;
       height: 2rem !important;
       min-width: 2rem !important;
+    }
+    #buyscreenPage #buyscreenLicenseLineTotal {
+      white-space: nowrap;
     }
     @media (min-width: 640px) {
       #buyscreenPage .buyscreen-license-qty-row > button {
@@ -2291,7 +2294,7 @@
       var el = document.getElementById("buyscreenLicenseLineTotal");
       var qtyEl = document.getElementById("buyscreenLicenseQty");
       if (qtyEl) qtyEl.textContent = String(buyscreenLicenseQty);
-      if (el) el.textContent = buyscreenFormatUsd(buyscreenLicenseUnitCents * buyscreenLicenseQty);
+      if (el) el.textContent = buyscreenFormatUsd(buyscreenLicenseUnitCents * buyscreenLicenseQty).replace("$ ", "$");
       var dec = document.getElementById("buyscreenLicenseDec");
       if (dec) dec.disabled = buyscreenLicenseQty <= 1;
     }
@@ -3502,7 +3505,7 @@
     <div id="buyscreenLicenseModal" class="fixed inset-0 z-[200] hidden overflow-y-auto overscroll-contain p-4 sm:p-6">
       <button type="button" id="buyscreenLicenseBackdrop" class="pointer-events-auto absolute inset-0 bg-black/45 backdrop-blur-[1px]" aria-label="Close dialog"></button>
       <div role="dialog" aria-modal="true" aria-labelledby="buyscreenLicenseTitle" class="pointer-events-auto relative z-10 my-auto flex max-h-[min(90dvh,720px)] w-full max-w-md flex-col overflow-hidden rounded-2xl border border-[#e5e7eb] bg-white p-6 shadow-2xl sm:max-h-[85dvh] sm:p-8">
-        <div class="shrink-0 flex items-start justify-between gap-3 border-b border-[#eef2f7] pb-4">
+        <div class="shrink-0 flex flex-wrap items-start justify-between gap-2 border-b border-[#eef2f7] pb-4">
           <div>
             <h2 id="buyscreenLicenseTitle" class="text-base font-semibold text-[#06224C] sm:text-lg">Regular license</h2>
             <p id="buyscreenLicenseSubtitle" class="mt-1 text-xs text-[#6b7280]"></p>
