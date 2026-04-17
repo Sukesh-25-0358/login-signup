@@ -247,6 +247,20 @@ body:has(> main.buyscreen-page) {
   }
 }
 
+@media (max-width: 420px) {
+  .buyscreen-header-trailing {
+    gap: 0.35rem !important;
+  }
+  .buyscreen-cart-trigger,
+  .buyscreen-user-summary {
+    gap: 0.35rem !important;
+  }
+  .buyscreen-cart-secondary,
+  .buyscreen-user-secondary {
+    display: none !important;
+  }
+}
+
 /* Planning invoice mobile safety: prevent clipping/overlap at 100-200% zoom */
 .planning-invoice-row {
   grid-template-columns: 96px 14px minmax(0, 1fr) !important;

@@ -495,12 +495,12 @@ export default function BuyScreenPage() {
                           {item.product.price} x {item.qty}
                         </p>
                       </div>
-                      <div className="flex shrink-0 items-center gap-3">
+                      <div className="flex w-full flex-wrap items-center justify-end gap-2 sm:w-auto sm:flex-nowrap sm:gap-3">
                         <span className="text-sm font-bold tabular-nums text-[#111827]">{formatUsd(item.product.unitPriceCents * item.qty)}</span>
                         <button
                           type="button"
                           onClick={() => removeCartItem(item.product.id)}
-                          className="rounded-md border border-[#fecaca] px-2 py-1 text-xs font-semibold text-[#dc2626] hover:bg-[#fef2f2]"
+                          className="w-full rounded-md border border-[#fecaca] px-2 py-1 text-xs font-semibold text-[#dc2626] hover:bg-[#fef2f2] sm:w-auto"
                         >
                           Remove
                         </button>
@@ -572,7 +572,7 @@ export default function BuyScreenPage() {
                   </span>
                   <span className="min-w-0 leading-tight">
                     <span className="block text-[11px] font-semibold sm:text-xs">Cart</span>
-                    <span className="block text-[11px] tabular-nums sm:text-xs">{cartItems.length ? formatUsd(cartTotalCents) : "Empty"}</span>
+                    <span className="buyscreen-cart-secondary block text-[11px] tabular-nums sm:text-xs">{cartItems.length ? formatUsd(cartTotalCents) : "Empty"}</span>
                   </span>
                 </button>
                 <span className="h-6 w-px shrink-0 bg-[#d1d5db]" aria-hidden />
@@ -583,7 +583,7 @@ export default function BuyScreenPage() {
                   </svg>
                   <span className="min-w-0 leading-tight">
                     <span className="block text-[11px] font-semibold sm:text-xs">User</span>
-                    <span className="block text-[11px] sm:text-xs">Account</span>
+                    <span className="buyscreen-user-secondary block text-[11px] sm:text-xs">Account</span>
                   </span>
                 </div>
               </div>
