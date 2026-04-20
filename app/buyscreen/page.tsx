@@ -821,7 +821,7 @@ export default function BuyScreenPage() {
       ) : null}
 
       <section className="relative left-1/2 mb-4 w-screen -translate-x-1/2 overflow-hidden bg-[#06224C]">
-        <div className="mx-auto flex w-full max-w-[1280px] min-w-0 flex-nowrap items-center gap-2 px-3 py-2.5 sm:gap-3 sm:px-6 lg:px-6">
+        <div className="mx-auto flex w-full max-w-[1280px] min-w-0 flex-nowrap items-center gap-1.5 px-2.5 py-2.5 sm:gap-2 sm:px-6 lg:px-6">
             <button
               type="button"
               onClick={() => setIsTopHeaderMenuOpen((v) => !v)}
@@ -833,7 +833,7 @@ export default function BuyScreenPage() {
                 <path d="M3 5.5H17M3 10H17M3 14.5H17" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
               </svg>
             </button>
-            <div className="flex h-9 min-w-[92px] items-center justify-center overflow-hidden rounded-[50%] bg-white px-3">
+            <div className="flex h-8 min-w-[82px] items-center justify-center overflow-hidden rounded-[50%] bg-white px-2.5 sm:h-9 sm:min-w-[92px] sm:px-3">
               <Image src="/stackly-logo.webp" alt="Stackly logo" width={160} height={40} className="h-[18px] w-auto" unoptimized />
             </div>
 
@@ -857,17 +857,20 @@ export default function BuyScreenPage() {
               </div>
             </div>
 
-            <div className="ml-auto flex shrink-0 items-center gap-2 sm:gap-3">
-              <button type="button" className="hidden items-center gap-2 rounded-full border border-white/80 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-white/15 hover:text-[#fef3c7] sm:inline-flex">
+            <div className="ml-auto flex shrink-0 items-center gap-1.5 sm:gap-2">
+              <button
+                type="button"
+                className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-white/80 text-white transition-colors hover:bg-white/15 hover:text-[#fef3c7] sm:h-8 sm:w-8"
+                aria-label="Cart"
+              >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden>
                   <path d="M3 4h2l1.6 9.2a1 1 0 0 0 1 .8H18a1 1 0 0 0 1-.8L20.6 7H7" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
                   <circle cx="10" cy="19" r="1.4" fill="currentColor" />
                   <circle cx="17" cy="19" r="1.4" fill="currentColor" />
                 </svg>
-                Cart
               </button>
 
-              <button type="button" className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white text-[#06224C] transition-colors hover:bg-[#fef3c7] hover:text-[#06224C]" aria-label="Search">
+              <button type="button" className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white text-[#06224C] transition-colors hover:bg-[#fef3c7] hover:text-[#06224C] sm:h-8 sm:w-8" aria-label="Search">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden>
                   <circle cx="11" cy="11" r="6.5" stroke="currentColor" strokeWidth="1.7" />
                   <path d="m16 16 4 4" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
@@ -875,7 +878,7 @@ export default function BuyScreenPage() {
               </button>
 
               <button type="button" className="overflow-hidden rounded-full border border-white/40 transition-colors hover:border-[#fef3c7] hover:bg-white/10" aria-label="Profile">
-                <Image src="/photo.webp" alt="Profile" width={36} height={36} className="h-8 w-8 object-cover sm:h-9 sm:w-9" unoptimized />
+                <Image src="/photo.webp" alt="Profile" width={36} height={36} className="h-7 w-7 object-cover sm:h-8 sm:w-8" unoptimized />
               </button>
             </div>
           </div>
