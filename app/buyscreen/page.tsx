@@ -982,7 +982,7 @@ export default function BuyScreenPage() {
                 src="/background.webp"
                 alt=""
                 fill
-                className="object-cover object-center"
+                className="object-cover object-top"
                 unoptimized
                 priority
               />
