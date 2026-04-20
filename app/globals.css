@@ -173,6 +173,56 @@ body:has(> main.buyscreen-page) {
   background: #2563eb;
   color: #ffffff;
 }
+/* Stronger than Tailwind preflight/utilities — cart + user must show hover fill */
+main.buyscreen-page button.buyscreen-cart-trigger,
+main.buyscreen-page button.buyscreen-user-trigger {
+  transition: background-color 0.15s ease, box-shadow 0.15s ease;
+}
+main.buyscreen-page button.buyscreen-cart-trigger:hover,
+main.buyscreen-page button.buyscreen-cart-trigger:focus-visible,
+main.buyscreen-page button.buyscreen-user-trigger:hover,
+main.buyscreen-page button.buyscreen-user-trigger:focus-visible {
+  background-color: #cbd5e1 !important;
+  box-shadow: inset 0 0 0 1px #94a3b8 !important;
+  outline: none !important;
+}
+.buyscreen-user-menu-wrap {
+  position: relative;
+}
+.buyscreen-user-menu-dropdown {
+  display: none;
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  z-index: 50;
+  min-width: 140px;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 10px 24px rgba(2, 6, 23, 0.14);
+  overflow: hidden;
+}
+.buyscreen-user-menu-dropdown--open {
+  display: block;
+}
+.buyscreen-user-menu-item {
+  display: block;
+  width: 100%;
+  border: 0;
+  background: transparent;
+  padding: 0.65rem 1rem;
+  text-align: left;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #1f2937;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+.buyscreen-user-menu-item:hover,
+.buyscreen-user-menu-item:focus-visible {
+  background: #f3f4f6;
+  outline: none;
+}
 .buyscreen-product-actions-mobile {
   overflow: hidden;
 }
@@ -324,7 +374,8 @@ body:has(> main.buyscreen-page) {
     gap: 0.35rem !important;
   }
   .buyscreen-cart-trigger,
-  .buyscreen-user-summary {
+  .buyscreen-user-summary,
+  .buyscreen-user-trigger {
     gap: 0.35rem !important;
   }
   .buyscreen-cart-secondary,

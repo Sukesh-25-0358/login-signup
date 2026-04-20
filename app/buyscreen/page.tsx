@@ -3,6 +3,16 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import {
+  FaEnvelope,
+  FaFacebookF,
+  FaGlobe,
+  FaInstagram,
+  FaLinkedinIn,
+  FaPaperPlane,
+  FaYoutube,
+} from "react-icons/fa";
+import { FaXTwitter } from "react-icons/fa6";
 
 const buyCategories = [
   { label: "All Categories" },
@@ -176,6 +186,196 @@ function CheckIcon() {
   );
 }
 
+function BuyScreenStacklyFooter() {
+  const [footerEmail, setFooterEmail] = useState("");
+  const [footerToast, setFooterToast] = useState<string | null>(null);
+  const footerToastTimerRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (footerToastTimerRef.current) {
+        window.clearTimeout(footerToastTimerRef.current);
+      }
+    };
+  }, []);
+
+  const handleFooterSend = useCallback(() => {
+    const trimmedEmail = footerEmail.trim();
+    if (!trimmedEmail) {
+      setFooterToast("Please enter your email.");
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
+      setFooterToast("Please enter a valid email address.");
+    } else {
+      setFooterEmail("");
+      setFooterToast("Mail sent successfully.");
+    }
+    if (footerToastTimerRef.current) {
+      window.clearTimeout(footerToastTimerRef.current);
+    }
+    footerToastTimerRef.current = window.setTimeout(() => {
+      setFooterToast(null);
+    }, 2200);
+  }, [footerEmail]);
+
+  return (
+    <footer className="buyscreen-stackly-footer mt-10 w-full bg-[#001632] text-[#d1d5db] antialiased sm:mt-12">
+      <div className="mx-auto max-w-[1280px] px-4 py-12 sm:px-8 sm:py-14 lg:py-16">
+        <div className="grid gap-12 sm:gap-14 lg:grid-cols-5 lg:gap-8 xl:gap-12">
+          <div className="min-w-0 lg:col-span-1">
+            <form
+              className="flex max-w-[20rem] items-center gap-2.5"
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleFooterSend();
+              }}
+            >
+              <div className="flex min-w-0 flex-1 items-center rounded-full bg-white px-3 py-1.5 shadow-sm">
+                <FaEnvelope className="h-4 w-4 shrink-0 text-[#9ca3af]" aria-hidden />
+                <input
+                  type="email"
+                  name="footer-email"
+                  autoComplete="email"
+                  value={footerEmail}
+                  onChange={(e) => setFooterEmail(e.target.value)}
+                  placeholder="Your email"
+                  className="min-w-0 flex-1 bg-transparent px-2 text-sm text-[#374151] outline-none placeholder:text-[#c4b5fd]"
+                />
+              </div>
+              <button
+                type="submit"
+                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-white transition-colors hover:bg-white/10"
+                aria-label="Subscribe to newsletter"
+              >
+                <FaPaperPlane className="h-4 w-4" aria-hidden />
+              </button>
+            </form>
+            <h3 className="mt-8 text-sm font-bold text-white">Headquarters</h3>
+            <p className="mt-2 text-sm leading-relaxed text-[#d1d5db]">
+              MMR COMPLEX, SALEM,
+              <br />
+              Tamil Nadu 636008
+            </p>
+          </div>
+
+          <div>
+            <h3 className="mb-4 text-sm font-bold text-white">Product</h3>
+            <ul className="space-y-2.5 text-sm">
+              {[
+                { label: "Features", href: "/page-not-found" },
+                { label: "Templates", href: "/page-not-found" },
+                { label: "Pricing", href: "/page-not-found" },
+                { label: "Changelog", href: "/page-not-found" },
+              ].map((item) => (
+                <li key={item.label}>
+                  <a href={item.href} className="text-[#d1d5db] transition-colors hover:text-white">
+                    {item.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <h3 className="mb-4 text-sm font-bold text-white">Resources</h3>
+            <ul className="space-y-2.5 text-sm">
+              {[
+                { label: "Documentation", href: "/page-not-found" },
+                { label: "API Reference", href: "/page-not-found" },
+                { label: "Blog", href: "/page-not-found" },
+                { label: "Status", href: "/page-not-found" },
+              ].map((item) => (
+                <li key={item.label}>
+                  <a href={item.href} className="text-[#d1d5db] transition-colors hover:text-white">
+                    {item.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <h3 className="mb-4 text-sm font-bold text-white">Company</h3>
+            <ul className="space-y-2.5 text-sm">
+              {[
+                { label: "About", href: "/page-not-found" },
+                { label: "Privacy Policy", href: "/page-not-found" },
+                { label: "Terms of Service", href: "/page-not-found" },
+                { label: "Contact", href: "/page-not-found" },
+              ].map((item) => (
+                <li key={item.label}>
+                  <a href={item.href} className="text-[#d1d5db] transition-colors hover:text-white">
+                    {item.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="min-w-0 lg:col-span-1">
+            <div className="inline-flex h-8 w-fit min-w-[92px] items-center justify-center overflow-hidden rounded-[50%] bg-white px-3 sm:h-9 sm:min-w-[104px]">
+              <Image
+                src="/stackly-logo.webp"
+                alt="Stackly logo"
+                width={160}
+                height={40}
+                className="h-[18px] w-auto sm:h-[20px]"
+                unoptimized
+              />
+            </div>
+            <p className="mt-5 text-sm leading-relaxed text-[#d1d5db]">
+              The <strong className="font-semibold text-white">NO-CODE</strong> website builder for everyone. Powered by AWS infrastructure,
+              built by The <strong className="font-semibold text-white">Stackly</strong> team.
+            </p>
+          </div>
+        </div>
+
+        <div className="mt-14 flex flex-col gap-8 border-t border-white/15 pt-10 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
+          <div className="inline-flex w-fit max-w-full flex-wrap items-center gap-4 rounded-full bg-white px-4 py-2.5 text-[#001632] shadow-sm sm:gap-5">
+            <a href="https://www.facebook.com/thestackly" target="_blank" rel="noreferrer" className="transition-colors hover:text-[#1877f2]" aria-label="Facebook">
+              <FaFacebookF className="h-4 w-4" />
+            </a>
+            <a href="https://www.youtube.com/@thestackly" target="_blank" rel="noreferrer" className="transition-colors hover:text-[#ff0000]" aria-label="YouTube">
+              <FaYoutube className="h-4 w-4" />
+            </a>
+            <a href="https://www.instagram.com/thestackly" target="_blank" rel="noreferrer" className="transition-colors hover:text-[#e4405f]" aria-label="Instagram">
+              <FaInstagram className="h-4 w-4" />
+            </a>
+            <a href="https://x.com/thestackly" target="_blank" rel="noreferrer" className="transition-colors hover:text-[#111827]" aria-label="X">
+              <FaXTwitter className="h-4 w-4" />
+            </a>
+            <a href="https://www.linkedin.com/company/thestackly" target="_blank" rel="noreferrer" className="transition-colors hover:text-[#0a66c2]" aria-label="LinkedIn">
+              <FaLinkedinIn className="h-4 w-4" />
+            </a>
+            <a href="https://thestackly.com" target="_blank" rel="noreferrer" className="transition-colors hover:text-[#18a3a4]" aria-label="Website">
+              <FaGlobe className="h-4 w-4" />
+            </a>
+          </div>
+          <div className="flex min-w-0 flex-wrap items-center gap-x-4 gap-y-2 text-xs text-[#d1d5db] sm:justify-end">
+            <a href="https://thestackly.com/terms-of-service" target="_blank" rel="noreferrer" className="transition-colors hover:text-white">
+              Terms of Use
+            </a>
+            <span className="hidden text-white/25 sm:inline" aria-hidden>
+              |
+            </span>
+            <a href="https://thestackly.com/privacy-policy" target="_blank" rel="noreferrer" className="transition-colors hover:text-white">
+              Privacy Policy
+            </a>
+            <span className="hidden text-white/25 sm:inline" aria-hidden>
+              |
+            </span>
+            <span className="text-[#d1d5db]">© 2018-2026 thestackly.com, Inc.</span>
+          </div>
+        </div>
+      </div>
+      {footerToast ? (
+        <div className="pointer-events-none fixed bottom-5 left-1/2 z-[240] -translate-x-1/2 rounded-full bg-white px-4 py-2 text-xs font-semibold text-[#06224C] shadow-lg">
+          {footerToast}
+        </div>
+      ) : null}
+    </footer>
+  );
+}
+
 export default function BuyScreenPage() {
   const router = useRouter();
   const [activeProductStart, setActiveProductStart] = useState(0);
@@ -184,6 +384,7 @@ export default function BuyScreenPage() {
   const [activeCategoryLabel, setActiveCategoryLabel] = useState("All Categories");
   const [activeSubCategoryKey, setActiveSubCategoryKey] = useState<string | null>(null);
   const [isAllCategoriesDropdownOpen, setIsAllCategoriesDropdownOpen] = useState(false);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isCategoryMenuOpen, setIsCategoryMenuOpen] = useState(false);
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [favoriteProductIds, setFavoriteProductIds] = useState<string[]>([]);
@@ -193,6 +394,7 @@ export default function BuyScreenPage() {
   const [actionToast, setActionToast] = useState<string | null>(null);
   const toastTimerRef = useRef<number | null>(null);
   const allCategoriesWrapRef = useRef<HTMLDivElement | null>(null);
+  const userMenuWrapRef = useRef<HTMLDivElement | null>(null);
   const featuredProductsRef = useRef<HTMLElement | null>(null);
   const productsViewportRef = useRef<HTMLDivElement | null>(null);
   const productsTouchStartXRef = useRef<number | null>(null);
@@ -334,6 +536,26 @@ export default function BuyScreenPage() {
     return () => window.removeEventListener("mousedown", onPointerDown);
   }, [isAllCategoriesDropdownOpen]);
 
+  useEffect(() => {
+    if (!isUserMenuOpen) return;
+    const onPointerDown = (event: MouseEvent) => {
+      const target = event.target as Node | null;
+      if (!target) return;
+      if (!userMenuWrapRef.current?.contains(target)) {
+        setIsUserMenuOpen(false);
+      }
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setIsUserMenuOpen(false);
+    };
+    window.addEventListener("mousedown", onPointerDown);
+    window.addEventListener("keydown", onKey);
+    return () => {
+      window.removeEventListener("mousedown", onPointerDown);
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [isUserMenuOpen]);
+
   useLayoutEffect(() => {
     if (!isCarouselMode) return;
     const el = productsViewportRef.current;
@@ -360,6 +582,7 @@ export default function BuyScreenPage() {
       }
       setActiveSubCategoryKey(null);
       setIsAllCategoriesDropdownOpen(false);
+      setIsUserMenuOpen(false);
       setActiveCategoryLabel(label);
       setShowAllProducts(false);
       setSearchQuery("");
@@ -374,6 +597,7 @@ export default function BuyScreenPage() {
     setActiveCategoryLabel("All Categories");
     setActiveSubCategoryKey(key);
     setIsAllCategoriesDropdownOpen(false);
+    setIsUserMenuOpen(false);
     setShowAllProducts(false);
     setSearchQuery("");
     setActiveProductStart(0);
@@ -634,7 +858,7 @@ export default function BuyScreenPage() {
                 </svg>
               </label>
               <div className="buyscreen-header-trailing flex min-w-0 flex-1 items-center justify-end gap-2 sm:gap-3">
-                <button type="button" className="buyscreen-cart-trigger flex items-center gap-2 rounded-md px-2 py-1 transition-colors hover:bg-[#f5f5f5]" onClick={() => setIsCartOpen(true)}>
+                <button type="button" className="buyscreen-cart-trigger flex items-center gap-2 rounded-md px-2 py-1" onClick={() => setIsCartOpen(true)}>
                   <span className="relative shrink-0">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
                       <path d="M3 4h2l1.6 9.2a1 1 0 0 0 1 .8H18a1 1 0 0 0 1-.8L20.6 7H7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
@@ -653,15 +877,40 @@ export default function BuyScreenPage() {
                   </span>
                 </button>
                 <span className="h-6 w-px shrink-0 bg-[#d1d5db]" aria-hidden />
-                <div className="buyscreen-user-summary flex min-w-0 items-center gap-2">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="shrink-0" aria-hidden>
-                    <circle cx="12" cy="8" r="3.2" stroke="currentColor" strokeWidth="1.8" />
-                    <path d="M5.8 19.2c1.1-2.5 3.3-3.8 6.2-3.8s5.1 1.3 6.2 3.8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-                  </svg>
-                  <span className="min-w-0 leading-tight">
-                    <span className="block text-[11px] font-semibold sm:text-xs">User</span>
-                    <span className="buyscreen-user-secondary block text-[11px] sm:text-xs">Account</span>
-                  </span>
+                <div ref={userMenuWrapRef} className="buyscreen-user-menu-wrap relative shrink-0">
+                  <button
+                    type="button"
+                    aria-expanded={isUserMenuOpen}
+                    aria-haspopup="menu"
+                    className="buyscreen-user-summary buyscreen-user-trigger flex min-w-0 items-center gap-2 rounded-md border-0 bg-transparent px-2 py-1 text-left text-inherit"
+                    onClick={() => setIsUserMenuOpen((prev) => !prev)}
+                  >
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="shrink-0" aria-hidden>
+                      <circle cx="12" cy="8" r="3.2" stroke="currentColor" strokeWidth="1.8" />
+                      <path d="M5.8 19.2c1.1-2.5 3.3-3.8 6.2-3.8s5.1 1.3 6.2 3.8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+                    </svg>
+                    <span className="min-w-0 leading-tight">
+                      <span className="block text-[11px] font-semibold sm:text-xs">User</span>
+                      <span className="buyscreen-user-secondary block text-[11px] sm:text-xs">Account</span>
+                    </span>
+                  </button>
+                  <div
+                    className={`buyscreen-user-menu-dropdown ${isUserMenuOpen ? "buyscreen-user-menu-dropdown--open" : ""}`}
+                    role="menu"
+                    aria-hidden={!isUserMenuOpen}
+                  >
+                    <button
+                      type="button"
+                      role="menuitem"
+                      className="buyscreen-user-menu-item"
+                      onClick={() => {
+                        setIsUserMenuOpen(false);
+                        router.push("/login");
+                      }}
+                    >
+                      Logout
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -728,15 +977,16 @@ export default function BuyScreenPage() {
           </nav>
 
           <div className="space-y-10 px-4 py-10 sm:space-y-12 sm:px-8 sm:py-12">
-            <section className="buyscreen-hero relative flex min-h-[320px] items-center overflow-hidden rounded-xl border border-[#efefef] p-6 sm:min-h-[380px] sm:p-8 lg:p-10">
+            <section className="buyscreen-hero relative flex min-h-[220px] items-center overflow-hidden rounded-xl border border-[#efefef] p-5 sm:min-h-[300px] sm:p-8 lg:min-h-[380px] lg:p-10">
               <Image
                 src="/background.webp"
                 alt=""
                 fill
-                className="object-fill object-center"
+                className="object-cover object-center"
                 unoptimized
                 priority
               />
+              <div className="absolute inset-0 z-[1] bg-[#001632]/45" aria-hidden />
               <div className="buyscreen-hero-content relative z-10 min-w-0 max-w-xl text-center lg:text-left">
                 <h1 className="text-2xl font-bold leading-tight text-white sm:text-3xl lg:text-4xl">
                   Your One-Stop Electronic Market
@@ -887,6 +1137,7 @@ export default function BuyScreenPage() {
           </div>
         </section>
       </div>
+      <BuyScreenStacklyFooter />
       {actionToast ? (
         <div className="pointer-events-none fixed bottom-4 right-4 z-[130] max-w-[260px] rounded-md bg-[#111827] px-3 py-2 text-xs font-medium text-white shadow-lg sm:text-sm">
           {actionToast}

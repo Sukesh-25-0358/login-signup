@@ -261,6 +261,65 @@
       background: #2563eb;
       color: #ffffff;
     }
+    /* Tailwind CDN loads after this block — use button + !important so hover wins */
+    #buyscreenPage button.buyscreen-cart-trigger,
+    #buyscreenPage button.buyscreen-user-trigger {
+      transition: background-color 0.15s ease, box-shadow 0.15s ease;
+    }
+    #buyscreenPage button.buyscreen-cart-trigger:hover,
+    #buyscreenPage button.buyscreen-cart-trigger:focus-visible,
+    #buyscreenPage button.buyscreen-user-trigger:hover,
+    #buyscreenPage button.buyscreen-user-trigger:focus-visible {
+      background-color: #cbd5e1 !important;
+      box-shadow: inset 0 0 0 1px #94a3b8 !important;
+      outline: none !important;
+    }
+    #buyscreenPage .buyscreen-user-menu-wrap {
+      position: relative;
+    }
+    #buyscreenPage .buyscreen-user-menu-dropdown {
+      display: none;
+      position: absolute;
+      top: calc(100% + 4px);
+      right: 0;
+      z-index: 50;
+      min-width: 140px;
+      border: 1px solid #d1d5db;
+      border-radius: 10px;
+      background: #fff;
+      box-shadow: 0 10px 24px rgba(2, 6, 23, 0.14);
+      overflow: hidden;
+    }
+    #buyscreenPage .buyscreen-user-menu-dropdown--open {
+      display: block;
+    }
+    #buyscreenPage .buyscreen-user-menu-item {
+      display: block;
+      width: 100%;
+      border: 0;
+      background: transparent;
+      padding: 0.65rem 1rem;
+      text-align: left;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: #1f2937;
+      cursor: pointer;
+      transition: background-color 0.15s ease;
+    }
+    #buyscreenPage .buyscreen-user-menu-item:hover,
+    #buyscreenPage .buyscreen-user-menu-item:focus-visible {
+      background: #f3f4f6;
+      outline: none;
+    }
+    #buyscreenPage .buyscreen-social-link {
+      transition: color 0.15s ease;
+    }
+    #buyscreenPage .buyscreen-social-facebook:hover { color: #1877f2; }
+    #buyscreenPage .buyscreen-social-youtube:hover { color: #ff0000; }
+    #buyscreenPage .buyscreen-social-instagram:hover { color: #e4405f; }
+    #buyscreenPage .buyscreen-social-x:hover { color: #111827; }
+    #buyscreenPage .buyscreen-social-linkedin:hover { color: #0a66c2; }
+    #buyscreenPage .buyscreen-social-web:hover { color: #18a3a4; }
     @media (min-width: 1024px) {
       #buyscreenPage .buyscreen-all-categories-dropdown {
         position: absolute;
@@ -362,7 +421,8 @@
         gap: 0.35rem !important;
       }
       #buyscreenPage .buyscreen-cart-trigger,
-      #buyscreenPage .buyscreen-user-summary {
+      #buyscreenPage .buyscreen-user-summary,
+      #buyscreenPage .buyscreen-user-trigger {
         gap: 0.35rem !important;
       }
       #buyscreenPage .buyscreen-cart-secondary,
@@ -1981,6 +2041,7 @@
     var buyscreenActiveCategory = "all categories";
     var buyscreenActiveSubCategory = "";
     var buyscreenAllCategoryDropdownOpen = false;
+    var buyscreenUserMenuOpen = false;
     var buyscreenBestSellerSet = new Set(["phone", "laptop", "television", "camera", "audio"]);
     var buyscreenNewArrivalSet = new Set(["watch", "speaker", "keyboard", "mouse", "tablet"]);
     var buyscreenSubCategorySets = {
@@ -2010,6 +2071,46 @@
     var buyscreenShowAllProducts = false;
     var buyscreenSearchQuery = "";
     var buyscreenCategoryMenuOpen = false;
+    var buyscreenFooterToastTimer = null;
+
+    function sendBuyscreenFooterMail() {
+      var input = document.getElementById("buyscreenFooterEmailInput");
+      var toast = document.getElementById("buyscreenFooterMailToast");
+      if (!input || !toast) return false;
+      var email = (input.value || "").trim();
+      var message = "";
+      if (!email) {
+        message = "Please enter your email.";
+      } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        message = "Please enter a valid email address.";
+      } else {
+        message = "Mail sent successfully.";
+        input.value = "";
+      }
+      toast.textContent = message;
+      toast.classList.remove("hidden");
+      if (buyscreenFooterToastTimer) {
+        clearTimeout(buyscreenFooterToastTimer);
+      }
+      buyscreenFooterToastTimer = setTimeout(function () {
+        toast.classList.add("hidden");
+      }, 2200);
+      return false;
+    }
+
+    function renderBuyscreenUserMenu() {
+      var userToggle = document.getElementById("buyscreenUserMenuToggle");
+      var userDropdown = document.getElementById("buyscreenUserMenuDropdown");
+      if (userToggle) userToggle.setAttribute("aria-expanded", buyscreenUserMenuOpen ? "true" : "false");
+      if (userDropdown) {
+        userDropdown.setAttribute("aria-hidden", buyscreenUserMenuOpen ? "false" : "true");
+        if (buyscreenUserMenuOpen) {
+          userDropdown.classList.add("buyscreen-user-menu-dropdown--open");
+        } else {
+          userDropdown.classList.remove("buyscreen-user-menu-dropdown--open");
+        }
+      }
+    }
 
     function renderBuyscreenCategoryMenu() {
       var menu = document.getElementById("buyscreenCategoryMenu");
@@ -2484,6 +2585,30 @@
           buyscreenAllCategoryDropdownOpen = false;
           renderBuyscreenCategoryMenu();
         }
+        if (
+          buyscreenUserMenuOpen &&
+          !t.closest("[data-buyscreen-user-menu-toggle]") &&
+          !t.closest("[data-buyscreen-user-logout]")
+        ) {
+          buyscreenUserMenuOpen = false;
+          renderBuyscreenUserMenu();
+        }
+        var userMenuToggle = t.closest("[data-buyscreen-user-menu-toggle]");
+        if (userMenuToggle) {
+          e.preventDefault();
+          buyscreenUserMenuOpen = !buyscreenUserMenuOpen;
+          renderBuyscreenUserMenu();
+          return;
+        }
+        var userLogoutBtn = t.closest("[data-buyscreen-user-logout]");
+        if (userLogoutBtn) {
+          e.preventDefault();
+          buyscreenUserMenuOpen = false;
+          renderBuyscreenUserMenu();
+          location.hash = "login";
+          showPage("login");
+          return;
+        }
         var categoryToggle = t.closest("[data-buyscreen-categories-toggle]");
         if (categoryToggle) {
           e.preventDefault();
@@ -2504,6 +2629,8 @@
           buyscreenActiveCategory = "all categories";
           buyscreenActiveSubCategory = (subCategoryBtn.getAttribute("data-buyscreen-subcategory-btn") || "").toLowerCase();
           buyscreenAllCategoryDropdownOpen = false;
+          buyscreenUserMenuOpen = false;
+          renderBuyscreenUserMenu();
           buyscreenShowAllProducts = false;
           buyscreenSearchQuery = "";
           buyscreenProductStart = 0;
@@ -2532,6 +2659,8 @@
           buyscreenActiveCategory = categoryLabel;
           buyscreenActiveSubCategory = "";
           buyscreenAllCategoryDropdownOpen = false;
+          buyscreenUserMenuOpen = false;
+          renderBuyscreenUserMenu();
           buyscreenShowAllProducts = false;
           buyscreenSearchQuery = "";
           buyscreenProductStart = 0;
@@ -2560,6 +2689,8 @@
         var cartOpen = t.closest("[data-buyscreen-cart-open]");
         if (cartOpen) {
           e.preventDefault();
+          buyscreenUserMenuOpen = false;
+          renderBuyscreenUserMenu();
           openBuyscreenCartModal();
           return;
         }
@@ -2632,9 +2763,13 @@
           closeBuyscreenLicenseModal();
         } else if (e.key === "Escape" && cartModal && !cartModal.classList.contains("hidden")) {
           closeBuyscreenCartModal();
+        } else if (e.key === "Escape" && buyscreenUserMenuOpen) {
+          buyscreenUserMenuOpen = false;
+          renderBuyscreenUserMenu();
         }
       });
       renderBuyscreenCategoryMenu();
+      renderBuyscreenUserMenu();
       renderBuyscreenCartTotal();
     }
 
@@ -3202,7 +3337,7 @@
               </svg>
             </label>
             <div class="buyscreen-header-trailing flex min-w-0 flex-1 items-center justify-end gap-2 sm:gap-3">
-            <button type="button" data-buyscreen-cart-open="1" class="buyscreen-cart-trigger flex items-center gap-2 rounded-md px-2 py-1 transition-colors hover:bg-[#f5f5f5]">
+            <button type="button" data-buyscreen-cart-open="1" class="buyscreen-cart-trigger flex items-center gap-2 rounded-md px-2 py-1">
               <span class="relative shrink-0">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                   <path d="M3 4h2l1.6 9.2a1 1 0 0 0 1 .8H18a1 1 0 0 0 1-.8L20.6 7H7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
@@ -3217,15 +3352,27 @@
               </span>
             </button>
             <span class="h-6 w-px shrink-0 bg-[#d1d5db]" aria-hidden="true"></span>
-            <div class="buyscreen-user-summary flex min-w-0 items-center gap-2">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="shrink-0" aria-hidden="true">
-                <circle cx="12" cy="8" r="3.2" stroke="currentColor" stroke-width="1.8"></circle>
-                <path d="M5.8 19.2c1.1-2.5 3.3-3.8 6.2-3.8s5.1 1.3 6.2 3.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
-              </svg>
-              <span class="min-w-0 leading-tight">
-                <span class="block text-[11px] font-semibold sm:text-xs">User</span>
-              <span class="buyscreen-user-secondary block text-[11px] sm:text-xs">Account</span>
-              </span>
+            <div class="buyscreen-user-menu-wrap relative shrink-0">
+              <button
+                type="button"
+                id="buyscreenUserMenuToggle"
+                data-buyscreen-user-menu-toggle="1"
+                aria-expanded="false"
+                aria-haspopup="menu"
+                class="buyscreen-user-summary buyscreen-user-trigger flex min-w-0 items-center gap-2 rounded-md border-0 bg-transparent px-2 py-1 text-left text-inherit"
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="shrink-0" aria-hidden="true">
+                  <circle cx="12" cy="8" r="3.2" stroke="currentColor" stroke-width="1.8"></circle>
+                  <path d="M5.8 19.2c1.1-2.5 3.3-3.8 6.2-3.8s5.1 1.3 6.2 3.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+                </svg>
+                <span class="min-w-0 leading-tight">
+                  <span class="block text-[11px] font-semibold sm:text-xs">User</span>
+                  <span class="buyscreen-user-secondary block text-[11px] sm:text-xs">Account</span>
+                </span>
+              </button>
+              <div id="buyscreenUserMenuDropdown" class="buyscreen-user-menu-dropdown" role="menu" aria-hidden="true">
+                <button type="button" role="menuitem" data-buyscreen-user-logout="1" class="buyscreen-user-menu-item">Logout</button>
+              </div>
             </div>
             </div>
           </div>
@@ -3276,8 +3423,9 @@
       </nav>
 
       <div class="space-y-10 px-4 py-10 sm:space-y-12 sm:px-8 sm:py-12">
-        <section class="buyscreen-hero relative flex min-h-[320px] items-center overflow-hidden rounded-xl border border-[#efefef] p-6 sm:min-h-[380px] sm:p-8 lg:p-10">
-          <img src="./public/background.webp" alt="" class="absolute inset-0 h-full w-full object-fill object-center" width="640" height="360" />
+        <section class="buyscreen-hero relative flex min-h-[220px] items-center overflow-hidden rounded-xl border border-[#efefef] p-5 sm:min-h-[300px] sm:p-8 lg:min-h-[380px] lg:p-10">
+          <img src="./public/background.webp" alt="" class="absolute inset-0 h-full w-full object-cover object-center" width="640" height="360" />
+          <div class="absolute inset-0 z-[1] bg-[#001632]/45" aria-hidden="true"></div>
           <div class="buyscreen-hero-content relative z-10 min-w-0 max-w-xl text-center lg:text-left">
             <h1 class="text-2xl font-bold leading-tight text-white sm:text-3xl lg:text-4xl">Your One-Stop Electronic Market</h1>
             <p class="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-white sm:text-base lg:mx-0">
@@ -3705,6 +3853,77 @@
       </div>
     </section>
     </div>
+
+    <footer class="buyscreen-stackly-footer mt-10 w-full bg-[#001632] text-[#d1d5db] antialiased sm:mt-12">
+      <div class="mx-auto max-w-[1280px] px-4 py-12 sm:px-8 sm:py-14 lg:py-16">
+        <div class="grid gap-12 sm:gap-14 lg:grid-cols-5 lg:gap-8 xl:gap-12">
+          <div class="min-w-0 lg:col-span-1">
+            <form class="flex max-w-[20rem] items-center gap-2.5" onsubmit="return sendBuyscreenFooterMail();">
+              <div class="flex min-w-0 flex-1 items-center rounded-full bg-white px-3 py-1.5 shadow-sm">
+                <i class="fa-solid fa-envelope shrink-0 text-sm text-[#9ca3af]" aria-hidden="true"></i>
+                <input id="buyscreenFooterEmailInput" type="email" name="footer-email" autocomplete="email" placeholder="Your email" class="min-w-0 flex-1 bg-transparent px-2 text-sm text-[#374151] outline-none placeholder:text-[#c4b5fd]">
+              </div>
+              <button type="submit" class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-white transition-colors hover:bg-white/10" aria-label="Subscribe to newsletter">
+                <i class="fa-solid fa-paper-plane text-sm" aria-hidden="true"></i>
+              </button>
+            </form>
+            <h3 class="mt-8 text-sm font-bold text-white">Headquarters</h3>
+            <p class="mt-2 text-sm leading-relaxed text-[#d1d5db]">MMR COMPLEX, SALEM,<br>Tamil Nadu 636008</p>
+          </div>
+          <div>
+            <h3 class="mb-4 text-sm font-bold text-white">Product</h3>
+            <ul class="space-y-2.5 text-sm">
+              <li><a href="#notFound" class="text-[#d1d5db] transition-colors hover:text-white">Features</a></li>
+              <li><a href="#notFound" class="text-[#d1d5db] transition-colors hover:text-white">Templates</a></li>
+              <li><a href="#notFound" class="text-[#d1d5db] transition-colors hover:text-white">Pricing</a></li>
+              <li><a href="#notFound" class="text-[#d1d5db] transition-colors hover:text-white">Changelog</a></li>
+            </ul>
+          </div>
+          <div>
+            <h3 class="mb-4 text-sm font-bold text-white">Resources</h3>
+            <ul class="space-y-2.5 text-sm">
+              <li><a href="#notFound" class="text-[#d1d5db] transition-colors hover:text-white">Documentation</a></li>
+              <li><a href="#notFound" class="text-[#d1d5db] transition-colors hover:text-white">API Reference</a></li>
+              <li><a href="#notFound" class="text-[#d1d5db] transition-colors hover:text-white">Blog</a></li>
+              <li><a href="#notFound" class="text-[#d1d5db] transition-colors hover:text-white">Status</a></li>
+            </ul>
+          </div>
+          <div>
+            <h3 class="mb-4 text-sm font-bold text-white">Company</h3>
+            <ul class="space-y-2.5 text-sm">
+              <li><a href="#notFound" class="text-[#d1d5db] transition-colors hover:text-white">About</a></li>
+              <li><a href="#notFound" class="text-[#d1d5db] transition-colors hover:text-white">Privacy Policy</a></li>
+              <li><a href="#notFound" class="text-[#d1d5db] transition-colors hover:text-white">Terms of Service</a></li>
+              <li><a href="#notFound" class="text-[#d1d5db] transition-colors hover:text-white">Contact</a></li>
+            </ul>
+          </div>
+          <div class="min-w-0 lg:col-span-1">
+            <div class="inline-flex h-8 w-fit min-w-[92px] items-center justify-center overflow-hidden rounded-[50%] bg-white px-3 sm:h-9 sm:min-w-[104px]">
+              <img src="./public/stackly-logo.webp" alt="Stackly logo" class="h-[18px] w-auto sm:h-[20px]">
+            </div>
+            <p class="mt-5 text-sm leading-relaxed text-[#d1d5db]">The <strong class="font-semibold text-white">NO-CODE</strong> website builder for everyone. Powered by AWS infrastructure, built by The <strong class="font-semibold text-white">Stackly</strong> team.</p>
+          </div>
+        </div>
+        <div class="mt-14 flex flex-col gap-8 border-t border-white/15 pt-10 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
+          <div class="inline-flex w-fit max-w-full flex-wrap items-center gap-4 rounded-full bg-white px-4 py-2.5 text-[#001632] shadow-sm sm:gap-5">
+            <a href="https://www.facebook.com/thestackly" target="_blank" rel="noreferrer" class="buyscreen-social-link buyscreen-social-facebook transition-opacity hover:opacity-90" aria-label="Facebook"><i class="fa-brands fa-facebook-f text-base"></i></a>
+            <a href="https://www.youtube.com/@thestackly" target="_blank" rel="noreferrer" class="buyscreen-social-link buyscreen-social-youtube transition-opacity hover:opacity-90" aria-label="YouTube"><i class="fa-brands fa-youtube text-base"></i></a>
+            <a href="https://www.instagram.com/thestackly" target="_blank" rel="noreferrer" class="buyscreen-social-link buyscreen-social-instagram transition-opacity hover:opacity-90" aria-label="Instagram"><i class="fa-brands fa-instagram text-base"></i></a>
+            <a href="https://x.com/thestackly" target="_blank" rel="noreferrer" class="buyscreen-social-link buyscreen-social-x transition-opacity hover:opacity-90" aria-label="X"><i class="fa-brands fa-x-twitter text-base"></i></a>
+            <a href="https://www.linkedin.com/company/thestackly" target="_blank" rel="noreferrer" class="buyscreen-social-link buyscreen-social-linkedin transition-opacity hover:opacity-90" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in text-base"></i></a>
+            <a href="https://thestackly.com" target="_blank" rel="noreferrer" class="buyscreen-social-link buyscreen-social-web transition-opacity hover:opacity-90" aria-label="Website"><i class="fa-solid fa-globe text-base"></i></a>
+          </div>
+          <div class="flex min-w-0 flex-wrap items-center gap-x-4 gap-y-2 text-xs text-[#d1d5db] sm:justify-end">
+            <a href="https://thestackly.com/terms-of-service" target="_blank" rel="noreferrer" class="transition-colors hover:text-white">Terms of Use</a>
+            <span class="hidden text-white/25 sm:inline" aria-hidden="true">|</span>
+            <a href="https://thestackly.com/privacy-policy" target="_blank" rel="noreferrer" class="transition-colors hover:text-white">Privacy Policy</a>
+            <span class="hidden text-white/25 sm:inline" aria-hidden="true">|</span>
+            <span class="text-[#d1d5db]">© 2018-2026 thestackly.com, Inc.</span>
+          </div>
+        </div>
+      </div>
+    </footer>
+    <div id="buyscreenFooterMailToast" class="pointer-events-none fixed bottom-5 left-1/2 z-[240] hidden -translate-x-1/2 rounded-full bg-white px-4 py-2 text-xs font-semibold text-[#06224C] shadow-lg">Mail sent successfully.</div>
 
     <div id="buyscreenLicenseModal" class="fixed inset-0 z-[200] hidden overflow-y-auto overscroll-contain p-4 sm:p-6">
       <button type="button" id="buyscreenLicenseBackdrop" class="pointer-events-auto fixed inset-0 bg-black/45 backdrop-blur-[1px]" aria-label="Close dialog"></button>
