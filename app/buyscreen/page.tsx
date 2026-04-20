@@ -384,6 +384,7 @@ export default function BuyScreenPage() {
   const [activeCategoryLabel, setActiveCategoryLabel] = useState("All Categories");
   const [activeSubCategoryKey, setActiveSubCategoryKey] = useState<string | null>(null);
   const [isAllCategoriesDropdownOpen, setIsAllCategoriesDropdownOpen] = useState(false);
+  const [isTopHeaderMenuOpen, setIsTopHeaderMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isCategoryMenuOpen, setIsCategoryMenuOpen] = useState(false);
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
@@ -819,7 +820,85 @@ export default function BuyScreenPage() {
         </div>
       ) : null}
 
-      <div className="mx-auto w-full max-w-[1280px] px-4 pb-3 pt-8 sm:px-6 sm:pb-4 sm:pt-10 lg:pb-6 lg:pt-12">
+      <section className="relative left-1/2 mb-4 w-screen -translate-x-1/2 overflow-hidden bg-[#06224C]">
+        <div className="mx-auto flex w-full max-w-[1280px] min-w-0 flex-nowrap items-center gap-2 px-3 py-2.5 sm:gap-3 sm:px-6 lg:px-6">
+            <button
+              type="button"
+              onClick={() => setIsTopHeaderMenuOpen((v) => !v)}
+              className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-white/25 text-white transition-colors hover:bg-white/15 lg:hidden planning-zoom-show-hamburger"
+              aria-label="Toggle top navigation menu"
+              aria-expanded={isTopHeaderMenuOpen}
+            >
+              <svg width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden>
+                <path d="M3 5.5H17M3 10H17M3 14.5H17" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+              </svg>
+            </button>
+            <div className="flex h-9 min-w-[92px] items-center justify-center overflow-hidden rounded-[50%] bg-white px-3">
+              <Image src="/stackly-logo.webp" alt="Stackly logo" width={160} height={40} className="h-[18px] w-auto" unoptimized />
+            </div>
+
+            <div className="hidden min-w-0 flex-1 lg:flex lg:items-center planning-zoom-hide-primary-nav">
+              <div className="flex min-w-max items-center gap-3 whitespace-nowrap text-xs font-semibold text-white sm:gap-5 sm:text-sm">
+                <button type="button" className="rounded-md px-2 py-1 transition-colors hover:bg-white/15 hover:text-[#fef3c7]">Home</button>
+                <button type="button" className="rounded-md px-2 py-1 transition-colors hover:bg-white/15 hover:text-[#fef3c7]">About Us</button>
+                <button type="button" className="inline-flex items-center gap-1 rounded-md px-2 py-1 transition-colors hover:bg-white/15 hover:text-[#fef3c7]">
+                  Our Products
+                  <svg width="12" height="12" viewBox="0 0 20 20" fill="none" aria-hidden>
+                    <path d="m5.5 7.5 4.5 5 4.5-5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </button>
+                <button type="button" className="inline-flex items-center gap-1 rounded-md px-2 py-1 transition-colors hover:bg-white/15 hover:text-[#fef3c7]">
+                  Categories
+                  <svg width="12" height="12" viewBox="0 0 20 20" fill="none" aria-hidden>
+                    <path d="m5.5 7.5 4.5 5 4.5-5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </button>
+                <button type="button" className="rounded-md px-2 py-1 transition-colors hover:bg-white/15 hover:text-[#fef3c7]">Contact</button>
+              </div>
+            </div>
+
+            <div className="ml-auto flex shrink-0 items-center gap-2 sm:gap-3">
+              <button type="button" className="hidden items-center gap-2 rounded-full border border-white/80 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-white/15 hover:text-[#fef3c7] sm:inline-flex">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden>
+                  <path d="M3 4h2l1.6 9.2a1 1 0 0 0 1 .8H18a1 1 0 0 0 1-.8L20.6 7H7" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+                  <circle cx="10" cy="19" r="1.4" fill="currentColor" />
+                  <circle cx="17" cy="19" r="1.4" fill="currentColor" />
+                </svg>
+                Cart
+              </button>
+
+              <button type="button" className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white text-[#06224C] transition-colors hover:bg-[#fef3c7] hover:text-[#06224C]" aria-label="Search">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden>
+                  <circle cx="11" cy="11" r="6.5" stroke="currentColor" strokeWidth="1.7" />
+                  <path d="m16 16 4 4" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+                </svg>
+              </button>
+
+              <button type="button" className="overflow-hidden rounded-full border border-white/40 transition-colors hover:border-[#fef3c7] hover:bg-white/10" aria-label="Profile">
+                <Image src="/photo.webp" alt="Profile" width={36} height={36} className="h-8 w-8 object-cover sm:h-9 sm:w-9" unoptimized />
+              </button>
+            </div>
+          </div>
+          {isTopHeaderMenuOpen ? (
+            <div className="border-t border-white/20 px-3 pb-3 pt-2 lg:hidden planning-zoom-show-mobile-menu">
+              <div className="grid grid-cols-2 gap-2">
+                {["Home", "About Us", "Our Products", "Categories", "Contact"].map((item) => (
+                  <button
+                    key={item}
+                    type="button"
+                    className="rounded-md border border-white/25 px-2 py-2 text-left text-xs text-white transition-colors hover:bg-white/15 hover:text-[#fef3c7]"
+                    onClick={() => setIsTopHeaderMenuOpen(false)}
+                  >
+                    {item}
+                  </button>
+                ))}
+              </div>
+            </div>
+          ) : null}
+      </section>
+
+      <div className="mx-auto w-full max-w-[1280px] px-4 pb-3 pt-0 sm:px-6 sm:pb-4 sm:pt-0 lg:pb-6 lg:pt-0">
+
         <div className="mb-6 flex justify-end sm:mb-8">
           <button
             type="button"
