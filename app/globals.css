@@ -41,10 +41,10 @@ body:has(> main.planning-page) {
   background-color: #efefef;
 }
 
-/* Buy screen (/buyscreen): use neutral page background like mockup */
+/* Buy screen (/buyscreen): keep page background pure white */
 html:has(body > main.buyscreen-page),
 body:has(> main.buyscreen-page) {
-  background-color: #efefef;
+  background-color: #ffffff;
 }
 
 .buyscreen-shell {

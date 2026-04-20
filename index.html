@@ -2609,6 +2609,13 @@
           showPage("login");
           return;
         }
+        var buyNowBtn = t.closest("[data-buyscreen-buy-now]");
+        if (buyNowBtn) {
+          e.preventDefault();
+          location.hash = "notFound";
+          showPage("notFound");
+          return;
+        }
         var categoryToggle = t.closest("[data-buyscreen-categories-toggle]");
         if (categoryToggle) {
           e.preventDefault();
@@ -3315,10 +3322,10 @@
   </script>
 
   <!-- ================= BUY SCREEN PAGE ================= -->
-  <div id="buyscreenPage" class="hidden min-h-[100dvh] w-full overflow-x-hidden bg-[#efefef] text-[#111827]">
+  <div id="buyscreenPage" class="hidden min-h-[100dvh] w-full overflow-x-hidden bg-white text-[#111827]">
     <div class="mx-auto w-full max-w-[1280px] px-4 pb-3 pt-8 sm:px-6 sm:pb-4 sm:pt-10 lg:pb-6 lg:pt-12">
       <div class="mb-6 flex justify-end sm:mb-8">
-        <button type="button" class="rounded-md bg-[#171717] px-4 py-2 text-xs font-semibold text-white transition-opacity hover:opacity-90">
+        <button type="button" data-buyscreen-buy-now="1" class="rounded-md bg-[#171717] px-4 py-2 text-xs font-semibold text-white transition-colors hover:bg-[#0f2f66] hover:text-white">
           Buy Now
         </button>
       </div>

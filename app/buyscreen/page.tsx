@@ -691,7 +691,7 @@ export default function BuyScreenPage() {
   const cartItemCount = cartItems.reduce((sum, item) => sum + item.qty, 0);
 
   return (
-    <main className="buyscreen-page min-h-[100dvh] overflow-x-hidden bg-[#efefef] text-[#111827]">
+    <main className="buyscreen-page min-h-[100dvh] overflow-x-hidden bg-white text-[#111827]">
       {licenseProduct ? (
         <div className="fixed inset-0 z-[100] flex items-start justify-center overflow-y-auto overscroll-contain p-4 sm:items-center sm:p-6">
           <button
@@ -823,7 +823,8 @@ export default function BuyScreenPage() {
         <div className="mb-6 flex justify-end sm:mb-8">
           <button
             type="button"
-            className="rounded-md bg-[#171717] px-4 py-2 text-xs font-semibold text-white transition-opacity hover:opacity-90"
+            className="rounded-md bg-[#171717] px-4 py-2 text-xs font-semibold text-white transition-colors hover:bg-[#0f2f66] hover:text-white"
+            onClick={() => router.push("/page-not-found")}
           >
             Buy Now
           </button>
