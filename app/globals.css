@@ -689,8 +689,6 @@ main.buyscreen-page button.buyscreen-user-trigger:focus-visible {
     row-gap: 0.45rem;
   }
   .buyscreen-top-header-actions {
-    flex: 0 0 100%;
-    width: 100%;
     justify-content: flex-end;
     padding-top: 0.1rem;
   }
@@ -702,8 +700,6 @@ main.buyscreen-page button.buyscreen-user-trigger:focus-visible {
     row-gap: 0.45rem;
   }
   .buyscreen-top-header-actions {
-    flex: 0 0 100%;
-    width: 100%;
     justify-content: flex-end;
     padding-top: 0.1rem;
   }
