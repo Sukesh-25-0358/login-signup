@@ -821,7 +821,7 @@ export default function BuyScreenPage() {
       ) : null}
 
       <section className="relative left-1/2 mb-4 w-screen -translate-x-1/2 overflow-hidden bg-[#06224C]">
-        <div className="mx-auto flex w-full max-w-[1280px] min-w-0 flex-nowrap items-center gap-1.5 px-2.5 py-2.5 sm:gap-2 sm:px-6 lg:px-6">
+        <div className="buyscreen-top-header-row mx-auto flex w-full max-w-[1280px] min-w-0 flex-nowrap items-center gap-1.5 px-2.5 py-2.5 sm:gap-2 sm:px-6 lg:px-6">
             <button
               type="button"
               onClick={() => setIsTopHeaderMenuOpen((v) => !v)}
@@ -857,7 +857,7 @@ export default function BuyScreenPage() {
               </div>
             </div>
 
-            <div className="ml-auto flex shrink-0 items-center gap-1.5 sm:gap-2">
+            <div className="buyscreen-top-header-actions ml-auto flex shrink-0 items-center gap-1.5 sm:gap-2">
               <button
                 type="button"
                 className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-white/80 text-white transition-colors hover:bg-white/15 hover:text-[#fef3c7] sm:h-8 sm:w-8"

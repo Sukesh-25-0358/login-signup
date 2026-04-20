@@ -721,6 +721,32 @@
       }
     }
 
+    @media (max-width: 640px) {
+      .buyscreen-top-header-row {
+        flex-wrap: wrap !important;
+        row-gap: 0.45rem;
+      }
+      .buyscreen-top-header-actions {
+        flex: 0 0 100%;
+        width: 100%;
+        justify-content: flex-end;
+        padding-top: 0.1rem;
+      }
+    }
+
+    @media (hover: hover) and (pointer: fine) and (max-width: 1150px) and (min-resolution: 1.4dppx) {
+      .buyscreen-top-header-row {
+        flex-wrap: wrap !important;
+        row-gap: 0.45rem;
+      }
+      .buyscreen-top-header-actions {
+        flex: 0 0 100%;
+        width: 100%;
+        justify-content: flex-end;
+        padding-top: 0.1rem;
+      }
+    }
+
     @media (max-width: 400px) {
       .font-welcome-heading {
         text-align: center;
@@ -3350,7 +3376,7 @@
   <!-- ================= BUY SCREEN PAGE ================= -->
   <div id="buyscreenPage" class="hidden min-h-[100dvh] w-full overflow-x-hidden bg-white text-[#111827]">
     <section class="relative left-1/2 mb-4 w-screen -translate-x-1/2 overflow-hidden bg-[#06224C]">
-      <div class="mx-auto flex w-full max-w-[1280px] min-w-0 flex-nowrap items-center gap-1.5 px-2.5 py-2.5 sm:gap-2 sm:px-6 lg:px-6">
+      <div class="buyscreen-top-header-row mx-auto flex w-full max-w-[1280px] min-w-0 flex-nowrap items-center gap-1.5 px-2.5 py-2.5 sm:gap-2 sm:px-6 lg:px-6">
           <button
             type="button"
             id="buyscreenTopHeaderToggle"
@@ -3387,7 +3413,7 @@
             </div>
           </div>
 
-          <div class="ml-auto flex shrink-0 items-center gap-1.5 sm:gap-2">
+          <div class="buyscreen-top-header-actions ml-auto flex shrink-0 items-center gap-1.5 sm:gap-2">
             <button type="button" class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-white/80 text-white transition-colors hover:bg-white/15 hover:text-[#fef3c7] sm:h-8 sm:w-8" aria-label="Cart">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                 <path d="M3 4h2l1.6 9.2a1 1 0 0 0 1 .8H18a1 1 0 0 0 1-.8L20.6 7H7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path>

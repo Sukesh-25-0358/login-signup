@@ -682,6 +682,33 @@ main.buyscreen-page button.buyscreen-user-trigger:focus-visible {
   }
 }
 
+/* Buy screen top bar: keep right icons from clipping at mobile/high zoom by wrapping to row 2 */
+@media (max-width: 640px) {
+  .buyscreen-top-header-row {
+    flex-wrap: wrap !important;
+    row-gap: 0.45rem;
+  }
+  .buyscreen-top-header-actions {
+    flex: 0 0 100%;
+    width: 100%;
+    justify-content: flex-end;
+    padding-top: 0.1rem;
+  }
+}
+
+@media (hover: hover) and (pointer: fine) and (max-width: 1150px) and (min-resolution: 1.4dppx) {
+  .buyscreen-top-header-row {
+    flex-wrap: wrap !important;
+    row-gap: 0.45rem;
+  }
+  .buyscreen-top-header-actions {
+    flex: 0 0 100%;
+    width: 100%;
+    justify-content: flex-end;
+    padding-top: 0.1rem;
+  }
+}
+
 /*
  * iOS Safari: make 100% / min-height chain resolve to the *visible* viewport.
  * Without this, auth pages can render too short, leave gaps, or flex children collapse.
