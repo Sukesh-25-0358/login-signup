@@ -982,7 +982,7 @@ export default function BuyScreenPage() {
                 src="/mobilebackground.png"
                 alt=""
                 fill
-                className="object-contain object-top lg:hidden"
+                className="object-cover object-top lg:hidden"
                 unoptimized
                 priority
               />
