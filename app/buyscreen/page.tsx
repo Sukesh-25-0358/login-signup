@@ -218,7 +218,7 @@ function BuyScreenStacklyFooter() {
   }, [footerEmail]);
 
   return (
-    <footer className="buyscreen-stackly-footer mt-10 w-full bg-[#001632] text-[#d1d5db] antialiased sm:mt-12">
+    <footer className="buyscreen-stackly-footer mt-3 w-full bg-[#001632] text-[#d1d5db] antialiased sm:mt-4">
       <div className="mx-auto max-w-[1280px] px-4 py-12 sm:px-8 sm:py-14 lg:py-16">
         <div className="grid gap-12 sm:gap-14 lg:grid-cols-5 lg:gap-8 xl:gap-12">
           <div className="min-w-0 lg:col-span-1">
@@ -819,7 +819,7 @@ export default function BuyScreenPage() {
         </div>
       ) : null}
 
-      <div className="mx-auto w-full max-w-[1280px] px-4 py-8 sm:px-6 sm:py-10 lg:py-12">
+      <div className="mx-auto w-full max-w-[1280px] px-4 pb-3 pt-8 sm:px-6 sm:pb-4 sm:pt-10 lg:pb-6 lg:pt-12">
         <div className="mb-6 flex justify-end sm:mb-8">
           <button
             type="button"
