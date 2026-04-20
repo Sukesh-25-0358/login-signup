@@ -977,12 +977,12 @@ export default function BuyScreenPage() {
           </nav>
 
           <div className="space-y-10 px-4 py-10 sm:space-y-12 sm:px-8 sm:py-12">
-            <section className="buyscreen-hero relative flex min-h-[220px] items-center overflow-hidden rounded-xl border border-[#efefef] p-5 sm:min-h-[300px] sm:p-8 lg:min-h-[380px] lg:p-10">
+            <section className="buyscreen-hero relative flex min-h-[220px] items-center overflow-hidden rounded-xl border border-[#efefef] p-5 sm:min-h-[300px] sm:p-8 lg:min-h-0 lg:aspect-[16/9] lg:p-10">
               <Image
                 src="/background.webp"
                 alt=""
                 fill
-                className="object-cover object-top"
+                className="object-cover object-top lg:object-center"
                 unoptimized
                 priority
               />
