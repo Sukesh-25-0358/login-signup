@@ -2126,6 +2126,7 @@
     var buyscreenCategoryMenuOpen = false;
     var buyscreenTopHeaderMenuOpen = false;
     var buyscreenTopHeaderSearchOpen = false;
+    var buyscreenTopHeaderProfileMenuOpen = false;
     var buyscreenFooterToastTimer = null;
 
     function sendBuyscreenFooterMail() {
@@ -2196,6 +2197,22 @@
           }, 0);
         }
       }
+    }
+
+    function renderBuyscreenTopHeaderProfileMenu() {
+      var toggles = document.querySelectorAll("#buyscreenPage [data-buyscreen-top-header-profile-toggle]");
+      var menus = document.querySelectorAll("#buyscreenPage [data-buyscreen-top-header-profile-menu]");
+      toggles.forEach(function (btn) {
+        btn.setAttribute("aria-expanded", buyscreenTopHeaderProfileMenuOpen ? "true" : "false");
+      });
+      menus.forEach(function (menu) {
+        menu.setAttribute("aria-hidden", buyscreenTopHeaderProfileMenuOpen ? "false" : "true");
+        if (buyscreenTopHeaderProfileMenuOpen) {
+          menu.classList.add("buyscreen-user-menu-dropdown--open");
+        } else {
+          menu.classList.remove("buyscreen-user-menu-dropdown--open");
+        }
+      });
     }
 
     function renderBuyscreenCategoryMenu() {
@@ -2690,6 +2707,13 @@
           renderBuyscreenTopHeaderSearch();
         }
         if (
+          buyscreenTopHeaderProfileMenuOpen &&
+          !t.closest("[data-buyscreen-top-header-profile-wrap]")
+        ) {
+          buyscreenTopHeaderProfileMenuOpen = false;
+          renderBuyscreenTopHeaderProfileMenu();
+        }
+        if (
           buyscreenAllCategoryDropdownOpen &&
           !t.closest("[data-buyscreen-all-categories-toggle]") &&
           !t.closest("[data-buyscreen-subcategory-btn]")
@@ -2733,6 +2757,22 @@
           e.preventDefault();
           buyscreenTopHeaderSearchOpen = !buyscreenTopHeaderSearchOpen;
           renderBuyscreenTopHeaderSearch();
+          return;
+        }
+        var topHeaderProfileToggle = t.closest("[data-buyscreen-top-header-profile-toggle]");
+        if (topHeaderProfileToggle) {
+          e.preventDefault();
+          buyscreenTopHeaderProfileMenuOpen = !buyscreenTopHeaderProfileMenuOpen;
+          renderBuyscreenTopHeaderProfileMenu();
+          return;
+        }
+        var topHeaderProfileLogout = t.closest("[data-buyscreen-top-header-profile-logout]");
+        if (topHeaderProfileLogout) {
+          e.preventDefault();
+          buyscreenTopHeaderProfileMenuOpen = false;
+          renderBuyscreenTopHeaderProfileMenu();
+          location.hash = "login";
+          showPage("login");
           return;
         }
         var topHeaderCart = t.closest("[data-buyscreen-top-header-cart]");
@@ -2926,12 +2966,16 @@
         } else if (e.key === "Escape" && buyscreenTopHeaderSearchOpen) {
           buyscreenTopHeaderSearchOpen = false;
           renderBuyscreenTopHeaderSearch();
+        } else if (e.key === "Escape" && buyscreenTopHeaderProfileMenuOpen) {
+          buyscreenTopHeaderProfileMenuOpen = false;
+          renderBuyscreenTopHeaderProfileMenu();
         }
       });
       renderBuyscreenCategoryMenu();
       renderBuyscreenUserMenu();
       renderBuyscreenTopHeaderMenu();
       renderBuyscreenTopHeaderSearch();
+      renderBuyscreenTopHeaderProfileMenu();
       renderBuyscreenCartTotal();
     }
 
@@ -3478,7 +3522,7 @@
 
   <!-- ================= BUY SCREEN PAGE ================= -->
   <div id="buyscreenPage" class="hidden min-h-[100dvh] w-full overflow-x-hidden bg-white text-[#111827]">
-    <section class="relative left-1/2 mb-4 w-screen -translate-x-1/2 overflow-hidden bg-[#06224C]">
+    <section class="relative left-1/2 mb-4 w-screen -translate-x-1/2 overflow-visible bg-[#06224C]">
       <div id="buyscreenTopHeaderBar">
       <div class="buyscreen-top-header-inner mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="buyscreen-top-header-row buyscreen-top-header-mobile-row flex min-w-0 flex-wrap items-center justify-between gap-2 py-2.5 lg:hidden">
@@ -3513,9 +3557,14 @@
                 <path d="m16 16 4 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"></path>
               </svg>
             </button>
-            <button type="button" class="overflow-hidden rounded-full border border-white/40 transition-colors hover:border-[#fef3c7] hover:bg-white/10" aria-label="Profile">
-              <img src="./public/photo.webp" alt="Profile" width="36" height="36" class="h-7 w-7 object-cover sm:h-8 sm:w-8">
-            </button>
+            <div data-buyscreen-top-header-profile-wrap="1" class="buyscreen-user-menu-wrap relative shrink-0">
+              <button type="button" data-buyscreen-top-header-profile-toggle="1" aria-expanded="false" aria-haspopup="menu" class="overflow-hidden rounded-full border border-white/40 transition-colors hover:border-[#fef3c7] hover:bg-white/10" aria-label="Profile">
+                <img src="./public/photo.webp" alt="Profile" width="36" height="36" class="h-7 w-7 object-cover sm:h-8 sm:w-8">
+              </button>
+              <div data-buyscreen-top-header-profile-menu="1" class="buyscreen-user-menu-dropdown" role="menu" aria-hidden="true">
+                <button type="button" role="menuitem" data-buyscreen-top-header-profile-logout="1" class="buyscreen-user-menu-item">Logout</button>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -3554,9 +3603,14 @@
                   <path d="m16 16 4 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"></path>
                 </svg>
               </button>
-              <button type="button" class="overflow-hidden rounded-full border border-white/40 transition-colors hover:border-[#fef3c7] hover:bg-white/10" aria-label="Profile">
-                <img src="./public/photo.webp" alt="Profile" width="36" height="36" class="h-9 w-9 object-cover">
-              </button>
+              <div data-buyscreen-top-header-profile-wrap="1" class="buyscreen-user-menu-wrap relative shrink-0">
+                <button type="button" data-buyscreen-top-header-profile-toggle="1" aria-expanded="false" aria-haspopup="menu" class="overflow-hidden rounded-full border border-white/40 transition-colors hover:border-[#fef3c7] hover:bg-white/10" aria-label="Profile">
+                  <img src="./public/photo.webp" alt="Profile" width="36" height="36" class="h-9 w-9 object-cover">
+                </button>
+                <div data-buyscreen-top-header-profile-menu="1" class="buyscreen-user-menu-dropdown" role="menu" aria-hidden="true">
+                  <button type="button" role="menuitem" data-buyscreen-top-header-profile-logout="1" class="buyscreen-user-menu-item">Logout</button>
+                </div>
+              </div>
             </div>
           </nav>
         </div>
@@ -3700,8 +3754,11 @@
       </nav>
 
       <div class="space-y-10 px-4 py-10 sm:space-y-12 sm:px-8 sm:py-12">
-        <section class="buyscreen-hero relative flex min-h-[220px] items-center overflow-hidden rounded-xl border border-[#efefef] p-4 sm:min-h-[300px] sm:p-8 lg:aspect-[16/9] lg:min-h-0 lg:p-10">
-          <img src="./public/background.webp" alt="" class="absolute inset-0 h-full w-full object-cover object-center" width="640" height="360" />
+        <section class="buyscreen-hero relative flex aspect-[4/5] items-center overflow-hidden rounded-xl border border-[#efefef] p-4 sm:aspect-[16/10] sm:p-8 lg:aspect-[16/9] lg:p-10">
+          <picture class="absolute inset-0 block h-full w-full">
+            <source media="(max-width: 767px)" srcset="./public/hero-mobile.webp">
+            <img src="./public/background.webp" alt="Electronics hero background" class="h-full w-full object-cover object-center" width="640" height="360" onerror="if (!this.dataset.fallback){this.dataset.fallback='1'; this.src='./public/background.webp';}">
+          </picture>
           <div class="absolute inset-0 z-[1] bg-[#001632]/45" aria-hidden="true"></div>
           <div class="buyscreen-hero-content relative z-10 w-full min-w-0 max-w-full px-1 text-center sm:max-w-xl sm:px-0 lg:text-left">
             <h1 class="text-[clamp(1.05rem,5.1vw,1.75rem)] font-bold leading-tight text-white sm:text-3xl lg:text-4xl">Your One-Stop Electronic Market</h1>

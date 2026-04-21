@@ -386,6 +386,8 @@ export default function BuyScreenPage() {
   const [isAllCategoriesDropdownOpen, setIsAllCategoriesDropdownOpen] = useState(false);
   const [isTopHeaderMenuOpen, setIsTopHeaderMenuOpen] = useState(false);
   const [isTopHeaderSearchOpen, setIsTopHeaderSearchOpen] = useState(false);
+  const [isTopHeaderProfileMenuOpen, setIsTopHeaderProfileMenuOpen] = useState(false);
+  const [isMobileHeroViewport, setIsMobileHeroViewport] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isCategoryMenuOpen, setIsCategoryMenuOpen] = useState(false);
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
@@ -579,6 +581,34 @@ export default function BuyScreenPage() {
       window.removeEventListener("keydown", onKey);
     };
   }, [isTopHeaderSearchOpen]);
+
+  useEffect(() => {
+    if (!isTopHeaderProfileMenuOpen) return;
+    const onPointerDown = (event: MouseEvent) => {
+      const target = event.target as Element | null;
+      if (!target) return;
+      if (!target.closest("[data-top-header-profile-wrap]")) {
+        setIsTopHeaderProfileMenuOpen(false);
+      }
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setIsTopHeaderProfileMenuOpen(false);
+    };
+    window.addEventListener("mousedown", onPointerDown);
+    window.addEventListener("keydown", onKey);
+    return () => {
+      window.removeEventListener("mousedown", onPointerDown);
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [isTopHeaderProfileMenuOpen]);
+
+  useEffect(() => {
+    const media = window.matchMedia("(max-width: 767px)");
+    const sync = () => setIsMobileHeroViewport(media.matches);
+    sync();
+    media.addEventListener("change", sync);
+    return () => media.removeEventListener("change", sync);
+  }, []);
 
   useEffect(() => {
     if (!isTopHeaderSearchOpen) return;
@@ -862,7 +892,7 @@ export default function BuyScreenPage() {
         </div>
       ) : null}
 
-      <section className="relative left-1/2 mb-4 w-screen -translate-x-1/2 overflow-hidden bg-[#06224C]">
+      <section className="relative left-1/2 mb-4 w-screen -translate-x-1/2 overflow-visible bg-[#06224C]">
         <div ref={topHeaderBarRef}>
         <div className="buyscreen-top-header-inner mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Mobile / tablet / desktop-zoom: hamburger + logo + actions (cart/search/profile stay right) */}
@@ -912,9 +942,38 @@ export default function BuyScreenPage() {
                 <path d="m16 16 4 4" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
               </svg>
             </button>
-            <button type="button" className="overflow-hidden rounded-full border border-white/40 transition-colors hover:border-[#fef3c7] hover:bg-white/10" aria-label="Profile">
-              <Image src="/photo.webp" alt="Profile" width={36} height={36} className="h-7 w-7 object-cover sm:h-8 sm:w-8" unoptimized />
-            </button>
+            <div data-top-header-profile-wrap className="buyscreen-user-menu-wrap relative shrink-0">
+              <button
+                type="button"
+                className="overflow-hidden rounded-full border border-white/40 transition-colors hover:border-[#fef3c7] hover:bg-white/10"
+                aria-label="Profile"
+                aria-expanded={isTopHeaderProfileMenuOpen}
+                aria-haspopup="menu"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsTopHeaderProfileMenuOpen((prev) => !prev);
+                }}
+              >
+                <Image src="/photo.webp" alt="Profile" width={36} height={36} className="h-7 w-7 object-cover sm:h-8 sm:w-8" unoptimized />
+              </button>
+              <div
+                className={`buyscreen-user-menu-dropdown ${isTopHeaderProfileMenuOpen ? "buyscreen-user-menu-dropdown--open" : ""}`}
+                role="menu"
+                aria-hidden={!isTopHeaderProfileMenuOpen}
+              >
+                <button
+                  type="button"
+                  role="menuitem"
+                  className="buyscreen-user-menu-item"
+                  onClick={() => {
+                    setIsTopHeaderProfileMenuOpen(false);
+                    router.push("/login");
+                  }}
+                >
+                  Logout
+                </button>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -997,9 +1056,38 @@ export default function BuyScreenPage() {
                   <path d="m16 16 4 4" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
                 </svg>
               </button>
-              <button type="button" className="overflow-hidden rounded-full border border-white/40 transition-colors hover:border-[#fef3c7] hover:bg-white/10" aria-label="Profile">
-                <Image src="/photo.webp" alt="Profile" width={36} height={36} className="h-9 w-9 object-cover" unoptimized />
-              </button>
+              <div data-top-header-profile-wrap className="buyscreen-user-menu-wrap relative shrink-0">
+                <button
+                  type="button"
+                  className="overflow-hidden rounded-full border border-white/40 transition-colors hover:border-[#fef3c7] hover:bg-white/10"
+                  aria-label="Profile"
+                  aria-expanded={isTopHeaderProfileMenuOpen}
+                  aria-haspopup="menu"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setIsTopHeaderProfileMenuOpen((prev) => !prev);
+                  }}
+                >
+                  <Image src="/photo.webp" alt="Profile" width={36} height={36} className="h-9 w-9 object-cover" unoptimized />
+                </button>
+                <div
+                  className={`buyscreen-user-menu-dropdown ${isTopHeaderProfileMenuOpen ? "buyscreen-user-menu-dropdown--open" : ""}`}
+                  role="menu"
+                  aria-hidden={!isTopHeaderProfileMenuOpen}
+                >
+                  <button
+                    type="button"
+                    role="menuitem"
+                    className="buyscreen-user-menu-item"
+                    onClick={() => {
+                      setIsTopHeaderProfileMenuOpen(false);
+                      router.push("/login");
+                    }}
+                  >
+                    Logout
+                  </button>
+                </div>
+              </div>
             </div>
           </nav>
         </div>
@@ -1214,14 +1302,17 @@ export default function BuyScreenPage() {
           </nav>
 
           <div className="space-y-10 px-4 py-10 sm:space-y-12 sm:px-8 sm:py-12">
-            <section className="buyscreen-hero relative flex min-h-[220px] items-center overflow-hidden rounded-xl border border-[#efefef] p-4 sm:min-h-[300px] sm:p-8 lg:aspect-[16/9] lg:min-h-0 lg:p-10">
+            <section className="buyscreen-hero relative flex aspect-[4/5] items-center overflow-hidden rounded-xl border border-[#efefef] p-4 sm:aspect-[16/10] sm:p-8 lg:aspect-[16/9] lg:p-10">
               <Image
-                src="/background.webp"
-                alt=""
+                src={isMobileHeroViewport ? "/hero-mobile.webp" : "/background.webp"}
+                alt="Electronics hero background"
                 fill
                 className="object-cover object-center"
                 unoptimized
                 priority
+                onError={() => {
+                  setIsMobileHeroViewport(false);
+                }}
               />
               <div className="absolute inset-0 z-[1] bg-[#001632]/45" aria-hidden />
               <div className="buyscreen-hero-content relative z-10 w-full min-w-0 max-w-full px-1 text-center sm:max-w-xl sm:px-0 lg:text-left">
