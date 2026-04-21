@@ -743,6 +743,35 @@
       }
     }
 
+    @media (hover: hover) and (pointer: fine) and (max-width: 1150px) and (min-resolution: 1.4dppx) {
+      #buyscreenPage .buyscreen-top-header-desktop-row {
+        display: none !important;
+      }
+      #buyscreenPage .buyscreen-top-header-mobile-row {
+        display: flex !important;
+      }
+    }
+
+    /* Stackly top header nav — match category-row hover (blue pill, white text) */
+    #buyscreenPage button.buyscreen-top-header-nav-item {
+      padding: 0.42rem 0.9rem;
+      border-radius: 0.5rem;
+      border: none;
+      background: transparent;
+      color: #ffffff;
+      cursor: pointer;
+      transition: background-color 0.15s ease, color 0.15s ease;
+    }
+    #buyscreenPage button.buyscreen-top-header-nav-item:hover,
+    #buyscreenPage button.buyscreen-top-header-nav-item:focus-visible {
+      background: #2563eb !important;
+      color: #ffffff !important;
+      outline: none;
+    }
+    #buyscreenPage button.buyscreen-top-header-nav-item--grid {
+      border: 1px solid rgba(255, 255, 255, 0.28) !important;
+    }
+
     @media (max-width: 400px) {
       .font-welcome-heading {
         text-align: center;
@@ -2094,6 +2123,7 @@
     var buyscreenSearchQuery = "";
     var buyscreenCategoryMenuOpen = false;
     var buyscreenTopHeaderMenuOpen = false;
+    var buyscreenTopHeaderSearchOpen = false;
     var buyscreenFooterToastTimer = null;
 
     function sendBuyscreenFooterMail() {
@@ -2142,6 +2172,27 @@
       if (mobileMenu) {
         if (buyscreenTopHeaderMenuOpen) mobileMenu.classList.remove("hidden");
         else mobileMenu.classList.add("hidden");
+      }
+    }
+
+    function renderBuyscreenTopHeaderSearch() {
+      var panel = document.getElementById("buyscreenTopHeaderSearchPanel");
+      var buttons = document.querySelectorAll("#buyscreenPage [data-buyscreen-top-header-search-toggle]");
+      if (panel) {
+        if (buyscreenTopHeaderSearchOpen) panel.classList.remove("hidden");
+        else panel.classList.add("hidden");
+      }
+      buttons.forEach(function (btn) {
+        btn.setAttribute("aria-expanded", buyscreenTopHeaderSearchOpen ? "true" : "false");
+      });
+      if (buyscreenTopHeaderSearchOpen) {
+        var topInp = document.getElementById("buyscreenTopHeaderSearchInput");
+        if (topInp) {
+          topInp.value = buyscreenSearchQuery;
+          setTimeout(function () {
+            topInp.focus();
+          }, 0);
+        }
       }
     }
 
@@ -2319,12 +2370,31 @@
         searchInput.dataset.bound = "1";
         searchInput.addEventListener("input", function () {
           buyscreenSearchQuery = searchInput.value || "";
+          var topHeaderIn = document.getElementById("buyscreenTopHeaderSearchInput");
+          if (topHeaderIn) topHeaderIn.value = buyscreenSearchQuery;
           buyscreenProductStart = 0;
           buyscreenShowAllProducts = false;
           if (buyscreenSearchQuery.trim()) {
             var featuredSection = document.getElementById("buyscreenFeaturedProducts");
             if (featuredSection && featuredSection.scrollIntoView) {
               featuredSection.scrollIntoView({ behavior: "smooth", block: "start" });
+            }
+          }
+          renderBuyscreenProductCarousel();
+        });
+      }
+      var topHeaderSearchInput = document.getElementById("buyscreenTopHeaderSearchInput");
+      if (topHeaderSearchInput && !topHeaderSearchInput.dataset.bound) {
+        topHeaderSearchInput.dataset.bound = "1";
+        topHeaderSearchInput.addEventListener("input", function () {
+          buyscreenSearchQuery = topHeaderSearchInput.value || "";
+          if (searchInput) searchInput.value = buyscreenSearchQuery;
+          buyscreenProductStart = 0;
+          buyscreenShowAllProducts = false;
+          if (buyscreenSearchQuery.trim()) {
+            var featuredSection2 = document.getElementById("buyscreenFeaturedProducts");
+            if (featuredSection2 && featuredSection2.scrollIntoView) {
+              featuredSection2.scrollIntoView({ behavior: "smooth", block: "start" });
             }
           }
           renderBuyscreenProductCarousel();
@@ -2611,6 +2681,13 @@
         var t = e.target;
         if (!t || !t.closest) return;
         if (
+          buyscreenTopHeaderSearchOpen &&
+          !t.closest("#buyscreenTopHeaderBar")
+        ) {
+          buyscreenTopHeaderSearchOpen = false;
+          renderBuyscreenTopHeaderSearch();
+        }
+        if (
           buyscreenAllCategoryDropdownOpen &&
           !t.closest("[data-buyscreen-all-categories-toggle]") &&
           !t.closest("[data-buyscreen-subcategory-btn]")
@@ -2647,6 +2724,13 @@
           e.preventDefault();
           buyscreenTopHeaderMenuOpen = !buyscreenTopHeaderMenuOpen;
           renderBuyscreenTopHeaderMenu();
+          return;
+        }
+        var topHeaderSearchToggle = t.closest("[data-buyscreen-top-header-search-toggle]");
+        if (topHeaderSearchToggle) {
+          e.preventDefault();
+          buyscreenTopHeaderSearchOpen = !buyscreenTopHeaderSearchOpen;
+          renderBuyscreenTopHeaderSearch();
           return;
         }
         var topHeaderItem = t.closest("[data-buyscreen-top-header-item]");
@@ -2690,6 +2774,8 @@
           buyscreenProductStart = 0;
           var subSearchInput = document.getElementById("buyscreenSearchInput");
           if (subSearchInput) subSearchInput.value = "";
+          var subTopSearch = document.getElementById("buyscreenTopHeaderSearchInput");
+          if (subTopSearch) subTopSearch.value = "";
           renderBuyscreenProductCarousel();
           var subFeaturedSection = document.getElementById("buyscreenFeaturedProducts");
           if (subFeaturedSection && subFeaturedSection.scrollIntoView) {
@@ -2720,6 +2806,8 @@
           buyscreenProductStart = 0;
           var searchInput = document.getElementById("buyscreenSearchInput");
           if (searchInput) searchInput.value = "";
+          var topHeaderSearchClear = document.getElementById("buyscreenTopHeaderSearchInput");
+          if (topHeaderSearchClear) topHeaderSearchClear.value = "";
           renderBuyscreenProductCarousel();
           var featuredSection = document.getElementById("buyscreenFeaturedProducts");
           if (featuredSection && featuredSection.scrollIntoView) {
@@ -2820,11 +2908,15 @@
         } else if (e.key === "Escape" && buyscreenUserMenuOpen) {
           buyscreenUserMenuOpen = false;
           renderBuyscreenUserMenu();
+        } else if (e.key === "Escape" && buyscreenTopHeaderSearchOpen) {
+          buyscreenTopHeaderSearchOpen = false;
+          renderBuyscreenTopHeaderSearch();
         }
       });
       renderBuyscreenCategoryMenu();
       renderBuyscreenUserMenu();
       renderBuyscreenTopHeaderMenu();
+      renderBuyscreenTopHeaderSearch();
       renderBuyscreenCartTotal();
     }
 
@@ -3372,44 +3464,27 @@
   <!-- ================= BUY SCREEN PAGE ================= -->
   <div id="buyscreenPage" class="hidden min-h-[100dvh] w-full overflow-x-hidden bg-white text-[#111827]">
     <section class="relative left-1/2 mb-4 w-screen -translate-x-1/2 overflow-hidden bg-[#06224C]">
-      <div class="buyscreen-top-header-row mx-auto flex w-full max-w-[1280px] min-w-0 flex-nowrap items-center gap-1.5 px-2.5 py-2.5 sm:gap-2 sm:px-6 lg:px-6">
-          <button
-            type="button"
-            id="buyscreenTopHeaderToggle"
-            data-buyscreen-top-header-toggle="1"
-            aria-expanded="false"
-            class="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-white/25 text-white transition-colors hover:bg-white/15 lg:hidden planning-zoom-show-hamburger"
-            aria-label="Toggle top navigation menu"
-          >
-            <svg width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-              <path d="M3 5.5H17M3 10H17M3 14.5H17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
-            </svg>
-          </button>
-          <div class="flex h-8 min-w-[82px] items-center justify-center overflow-hidden rounded-[50%] bg-white px-2.5 sm:h-9 sm:min-w-[92px] sm:px-3">
-            <img src="./public/stackly-logo.webp" alt="Stackly logo" width="160" height="40" class="h-[18px] w-auto">
-          </div>
-
-          <div class="hidden min-w-0 flex-1 lg:flex lg:items-center planning-zoom-hide-primary-nav">
-            <div class="flex min-w-max items-center gap-3 whitespace-nowrap text-xs font-semibold text-white sm:gap-5 sm:text-sm">
-              <button type="button" data-buyscreen-top-header-item="1" class="rounded-md px-2 py-1 transition-colors hover:bg-white/15 hover:text-[#fef3c7]">Home</button>
-              <button type="button" data-buyscreen-top-header-item="1" class="rounded-md px-2 py-1 transition-colors hover:bg-white/15 hover:text-[#fef3c7]">About Us</button>
-              <button type="button" data-buyscreen-top-header-item="1" class="inline-flex items-center gap-1 rounded-md px-2 py-1 transition-colors hover:bg-white/15 hover:text-[#fef3c7]">
-                Our Products
-                <svg width="12" height="12" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-                  <path d="m5.5 7.5 4.5 5 4.5-5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path>
-                </svg>
-              </button>
-              <button type="button" data-buyscreen-top-header-item="1" class="inline-flex items-center gap-1 rounded-md px-2 py-1 transition-colors hover:bg-white/15 hover:text-[#fef3c7]">
-                Categories
-                <svg width="12" height="12" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-                  <path d="m5.5 7.5 4.5 5 4.5-5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path>
-                </svg>
-              </button>
-              <button type="button" data-buyscreen-top-header-item="1" class="rounded-md px-2 py-1 transition-colors hover:bg-white/15 hover:text-[#fef3c7]">Contact</button>
+      <div id="buyscreenTopHeaderBar">
+      <div class="buyscreen-top-header-inner mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="buyscreen-top-header-row buyscreen-top-header-mobile-row flex min-w-0 flex-wrap items-center justify-between gap-2 py-2.5 lg:hidden">
+          <div class="flex min-w-0 shrink-0 items-center gap-2">
+            <button
+              type="button"
+              id="buyscreenTopHeaderToggle"
+              data-buyscreen-top-header-toggle="1"
+              aria-expanded="false"
+              class="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-white/25 text-white transition-colors hover:bg-white/15 planning-zoom-show-hamburger"
+              aria-label="Toggle top navigation menu"
+            >
+              <svg width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                <path d="M3 5.5H17M3 10H17M3 14.5H17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+              </svg>
+            </button>
+            <div class="flex h-8 min-w-[82px] shrink-0 items-center justify-center overflow-hidden rounded-[50%] bg-white px-2.5 sm:h-9 sm:min-w-[92px] sm:px-3">
+              <img src="./public/stackly-logo.webp" alt="Stackly logo" width="160" height="40" class="h-[18px] w-auto sm:h-[20px]">
             </div>
           </div>
-
-          <div class="buyscreen-top-header-actions ml-auto flex shrink-0 items-center gap-1.5 sm:gap-2">
+          <div class="buyscreen-top-header-actions flex shrink-0 items-center gap-1.5 sm:gap-2">
             <button type="button" class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-white/80 text-white transition-colors hover:bg-white/15 hover:text-[#fef3c7] sm:h-8 sm:w-8" aria-label="Cart">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                 <path d="M3 4h2l1.6 9.2a1 1 0 0 0 1 .8H18a1 1 0 0 0 1-.8L20.6 7H7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path>
@@ -3417,31 +3492,92 @@
                 <circle cx="17" cy="19" r="1.4" fill="currentColor"></circle>
               </svg>
             </button>
-
-            <button type="button" class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white text-[#06224C] transition-colors hover:bg-[#fef3c7] hover:text-[#06224C] sm:h-8 sm:w-8" aria-label="Search">
+            <button type="button" data-buyscreen-top-header-search-toggle="1" aria-expanded="false" class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white text-[#06224C] transition-colors hover:bg-[#fef3c7] hover:text-[#06224C] sm:h-8 sm:w-8" aria-label="Search">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                 <circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="1.7"></circle>
                 <path d="m16 16 4 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"></path>
               </svg>
             </button>
-
             <button type="button" class="overflow-hidden rounded-full border border-white/40 transition-colors hover:border-[#fef3c7] hover:bg-white/10" aria-label="Profile">
               <img src="./public/photo.webp" alt="Profile" width="36" height="36" class="h-7 w-7 object-cover sm:h-8 sm:w-8">
             </button>
           </div>
         </div>
-        <div id="buyscreenTopHeaderMobileMenu" class="hidden border-t border-white/20 px-3 pb-3 pt-2 lg:hidden planning-zoom-show-mobile-menu">
-          <div class="grid grid-cols-2 gap-2">
-            <button type="button" data-buyscreen-top-header-item="1" class="rounded-md border border-white/25 px-2 py-2 text-left text-xs text-white transition-colors hover:bg-white/15 hover:text-[#fef3c7]">Home</button>
-            <button type="button" data-buyscreen-top-header-item="1" class="rounded-md border border-white/25 px-2 py-2 text-left text-xs text-white transition-colors hover:bg-white/15 hover:text-[#fef3c7]">About Us</button>
-            <button type="button" data-buyscreen-top-header-item="1" class="rounded-md border border-white/25 px-2 py-2 text-left text-xs text-white transition-colors hover:bg-white/15 hover:text-[#fef3c7]">Our Products</button>
-            <button type="button" data-buyscreen-top-header-item="1" class="rounded-md border border-white/25 px-2 py-2 text-left text-xs text-white transition-colors hover:bg-white/15 hover:text-[#fef3c7]">Categories</button>
-            <button type="button" data-buyscreen-top-header-item="1" class="rounded-md border border-white/25 px-2 py-2 text-left text-xs text-white transition-colors hover:bg-white/15 hover:text-[#fef3c7]">Contact</button>
+
+        <div class="buyscreen-top-header-row buyscreen-top-header-desktop-row hidden w-full min-w-0 items-center py-3 lg:flex">
+          <nav class="flex w-full min-w-0 flex-nowrap items-center justify-between gap-0 text-[13px] font-semibold text-white" aria-label="Main">
+            <div class="flex h-9 min-w-[104px] shrink-0 items-center justify-center overflow-hidden rounded-[50%] bg-white px-3">
+              <img src="./public/stackly-logo.webp" alt="Stackly logo" width="160" height="40" class="h-[20px] w-auto">
+            </div>
+            <button type="button" data-buyscreen-top-header-item="1" class="buyscreen-top-header-nav-item shrink-0 whitespace-nowrap text-[13px] font-semibold">Home</button>
+            <button type="button" data-buyscreen-top-header-item="1" class="buyscreen-top-header-nav-item shrink-0 whitespace-nowrap text-[13px] font-semibold">About Us</button>
+            <button type="button" data-buyscreen-top-header-item="1" class="buyscreen-top-header-nav-item inline-flex shrink-0 items-center gap-1 whitespace-nowrap text-[13px] font-semibold">
+              Our Products
+              <svg width="12" height="12" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                <path d="m5.5 7.5 4.5 5 4.5-5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path>
+              </svg>
+            </button>
+            <button type="button" data-buyscreen-top-header-item="1" class="buyscreen-top-header-nav-item inline-flex shrink-0 items-center gap-1 whitespace-nowrap text-[13px] font-semibold">
+              Categories
+              <svg width="12" height="12" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                <path d="m5.5 7.5 4.5 5 4.5-5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path>
+              </svg>
+            </button>
+            <button type="button" data-buyscreen-top-header-item="1" class="buyscreen-top-header-nav-item shrink-0 whitespace-nowrap text-[13px] font-semibold">Contact</button>
+            <div class="buyscreen-top-header-actions flex shrink-0 items-center gap-3 sm:gap-4">
+              <button type="button" class="inline-flex shrink-0 items-center gap-2 rounded-full border border-white/90 px-4 py-2 text-[13px] font-medium text-white transition-colors hover:bg-white/15 hover:text-[#fef3c7]" aria-label="Cart">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M3 4h2l1.6 9.2a1 1 0 0 0 1 .8H18a1 1 0 0 0 1-.8L20.6 7H7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path>
+                  <circle cx="10" cy="19" r="1.4" fill="currentColor"></circle>
+                  <circle cx="17" cy="19" r="1.4" fill="currentColor"></circle>
+                </svg>
+                Cart
+              </button>
+              <button type="button" data-buyscreen-top-header-search-toggle="1" aria-expanded="false" class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white text-[#06224C] transition-colors hover:bg-[#fef3c7] hover:text-[#06224C]" aria-label="Search">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="1.7"></circle>
+                  <path d="m16 16 4 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"></path>
+                </svg>
+              </button>
+              <button type="button" class="overflow-hidden rounded-full border border-white/40 transition-colors hover:border-[#fef3c7] hover:bg-white/10" aria-label="Profile">
+                <img src="./public/photo.webp" alt="Profile" width="36" height="36" class="h-9 w-9 object-cover">
+              </button>
+            </div>
+          </nav>
+        </div>
+      </div>
+      <div id="buyscreenTopHeaderSearchPanel" class="hidden border-t border-white/20">
+        <div class="mx-auto w-full max-w-7xl px-4 pb-3 pt-2 sm:px-6 lg:px-8">
+          <label class="flex h-10 w-full items-center gap-2 rounded-md border-2 border-[#cbd5e1] bg-white px-3 text-sm text-[#4b5563]">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" class="shrink-0 text-[#374151]" aria-hidden="true">
+              <circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="1.7"></circle>
+              <path d="m16 16 4 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"></path>
+            </svg>
+            <input
+              id="buyscreenTopHeaderSearchInput"
+              type="search"
+              placeholder="Search..."
+              class="min-w-0 flex-1 bg-transparent text-[#4b5563] outline-none placeholder:text-[#9ca3af]"
+              aria-label="Search products"
+            >
+          </label>
+        </div>
+      </div>
+      </div>
+        <div id="buyscreenTopHeaderMobileMenu" class="hidden border-t border-white/20 lg:hidden planning-zoom-show-mobile-menu">
+          <div class="mx-auto w-full max-w-7xl px-4 pb-3 pt-2 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-2 gap-2">
+              <button type="button" data-buyscreen-top-header-item="1" class="buyscreen-top-header-nav-item buyscreen-top-header-nav-item--grid px-2 py-2 text-left text-xs">Home</button>
+              <button type="button" data-buyscreen-top-header-item="1" class="buyscreen-top-header-nav-item buyscreen-top-header-nav-item--grid px-2 py-2 text-left text-xs">About Us</button>
+              <button type="button" data-buyscreen-top-header-item="1" class="buyscreen-top-header-nav-item buyscreen-top-header-nav-item--grid px-2 py-2 text-left text-xs">Our Products</button>
+              <button type="button" data-buyscreen-top-header-item="1" class="buyscreen-top-header-nav-item buyscreen-top-header-nav-item--grid px-2 py-2 text-left text-xs">Categories</button>
+              <button type="button" data-buyscreen-top-header-item="1" class="buyscreen-top-header-nav-item buyscreen-top-header-nav-item--grid px-2 py-2 text-left text-xs">Contact</button>
+            </div>
           </div>
         </div>
     </section>
 
-    <div class="mx-auto w-full max-w-[1280px] px-4 pb-3 pt-0 sm:px-6 sm:pb-4 sm:pt-0 lg:pb-6 lg:pt-0">
+    <div class="mx-auto w-full max-w-7xl px-4 pb-3 pt-0 sm:px-6 sm:pb-4 sm:pt-0 lg:px-8 lg:pb-6 lg:pt-0">
 
       <div class="mb-6 flex justify-end sm:mb-8">
         <button type="button" data-buyscreen-buy-now="1" class="rounded-md bg-[#171717] px-4 py-2 text-xs font-semibold text-white transition-colors hover:bg-[#0f2f66] hover:text-white">
@@ -3455,7 +3591,7 @@
             <span class="text-base font-bold tracking-tight text-[#2b2b2b] sm:text-lg">e-shop.</span>
           </div>
           <div class="buyscreen-header-actions flex w-full min-w-0 items-center justify-end gap-2 text-[#4b5563] sm:gap-3 lg:w-auto">
-            <label class="buyscreen-search flex h-8 w-[150px] items-center rounded-md border-2 border-[#cbd5e1] bg-[#fafafa] px-2 text-[11px] text-[#4b5563] sm:h-9 sm:w-[180px] sm:text-xs">
+            <label class="buyscreen-search flex h-8 w-[150px] items-center rounded-md border-2 border-[#cbd5e1] px-2 text-[11px] text-[#4b5563] sm:h-9 sm:w-[180px] sm:text-xs">
               <input id="buyscreenSearchInput" type="text" placeholder="Search..." class="min-w-0 flex-1 bg-transparent text-[#4b5563] outline-none placeholder:text-[#9ca3af]">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-[#374151]" aria-hidden="true">
                 <circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="1.7"></circle>

@@ -682,6 +682,30 @@ main.buyscreen-page button.buyscreen-user-trigger:focus-visible {
   }
 }
 
+/* Stackly top header nav — match category-row hover (blue pill, white text) */
+main.buyscreen-page button.buyscreen-top-header-nav-item,
+#buyscreenPage button.buyscreen-top-header-nav-item {
+  padding: 0.42rem 0.9rem;
+  border-radius: 0.5rem;
+  border: none;
+  background: transparent;
+  color: #ffffff;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+main.buyscreen-page button.buyscreen-top-header-nav-item:hover,
+main.buyscreen-page button.buyscreen-top-header-nav-item:focus-visible,
+#buyscreenPage button.buyscreen-top-header-nav-item:hover,
+#buyscreenPage button.buyscreen-top-header-nav-item:focus-visible {
+  background: #2563eb !important;
+  color: #ffffff !important;
+  outline: none;
+}
+main.buyscreen-page button.buyscreen-top-header-nav-item--grid,
+#buyscreenPage button.buyscreen-top-header-nav-item--grid {
+  border: 1px solid rgba(255, 255, 255, 0.28) !important;
+}
+
 /* Buy screen top bar: keep right icons from clipping at mobile/high zoom by wrapping to row 2 */
 @media (max-width: 640px) {
   .buyscreen-top-header-row {
@@ -702,6 +726,18 @@ main.buyscreen-page button.buyscreen-user-trigger:focus-visible {
   .buyscreen-top-header-actions {
     justify-content: flex-end;
     padding-top: 0.1rem;
+  }
+}
+
+/* Buy screen: desktop zoom = show compact bar + hamburger, hide full evenly-spaced bar */
+@media (hover: hover) and (pointer: fine) and (max-width: 1150px) and (min-resolution: 1.4dppx) {
+  main.buyscreen-page .buyscreen-top-header-desktop-row,
+  #buyscreenPage .buyscreen-top-header-desktop-row {
+    display: none !important;
+  }
+  main.buyscreen-page .buyscreen-top-header-mobile-row,
+  #buyscreenPage .buyscreen-top-header-mobile-row {
+    display: flex !important;
   }
 }
 

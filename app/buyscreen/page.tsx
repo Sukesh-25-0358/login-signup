@@ -385,6 +385,7 @@ export default function BuyScreenPage() {
   const [activeSubCategoryKey, setActiveSubCategoryKey] = useState<string | null>(null);
   const [isAllCategoriesDropdownOpen, setIsAllCategoriesDropdownOpen] = useState(false);
   const [isTopHeaderMenuOpen, setIsTopHeaderMenuOpen] = useState(false);
+  const [isTopHeaderSearchOpen, setIsTopHeaderSearchOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isCategoryMenuOpen, setIsCategoryMenuOpen] = useState(false);
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
@@ -397,6 +398,8 @@ export default function BuyScreenPage() {
   const allCategoriesWrapRef = useRef<HTMLDivElement | null>(null);
   const userMenuWrapRef = useRef<HTMLDivElement | null>(null);
   const featuredProductsRef = useRef<HTMLElement | null>(null);
+  const topHeaderBarRef = useRef<HTMLDivElement | null>(null);
+  const topHeaderSearchInputRef = useRef<HTMLInputElement | null>(null);
   const productsViewportRef = useRef<HTMLDivElement | null>(null);
   const productsTouchStartXRef = useRef<number | null>(null);
   const productsTouchStartYRef = useRef<number | null>(null);
@@ -556,6 +559,34 @@ export default function BuyScreenPage() {
       window.removeEventListener("keydown", onKey);
     };
   }, [isUserMenuOpen]);
+
+  useEffect(() => {
+    if (!isTopHeaderSearchOpen) return;
+    const onPointerDown = (event: MouseEvent) => {
+      const target = event.target as Node | null;
+      if (!target) return;
+      if (!topHeaderBarRef.current?.contains(target)) {
+        setIsTopHeaderSearchOpen(false);
+      }
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setIsTopHeaderSearchOpen(false);
+    };
+    window.addEventListener("mousedown", onPointerDown);
+    window.addEventListener("keydown", onKey);
+    return () => {
+      window.removeEventListener("mousedown", onPointerDown);
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [isTopHeaderSearchOpen]);
+
+  useEffect(() => {
+    if (!isTopHeaderSearchOpen) return;
+    const id = window.requestAnimationFrame(() => {
+      topHeaderSearchInputRef.current?.focus();
+    });
+    return () => window.cancelAnimationFrame(id);
+  }, [isTopHeaderSearchOpen]);
 
   useLayoutEffect(() => {
     if (!isCarouselMode) return;
@@ -821,86 +852,176 @@ export default function BuyScreenPage() {
       ) : null}
 
       <section className="relative left-1/2 mb-4 w-screen -translate-x-1/2 overflow-hidden bg-[#06224C]">
-        <div className="buyscreen-top-header-row mx-auto flex w-full max-w-[1280px] min-w-0 flex-nowrap items-center gap-1.5 px-2.5 py-2.5 sm:gap-2 sm:px-6 lg:px-6">
+        <div ref={topHeaderBarRef}>
+        <div className="buyscreen-top-header-inner mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+        {/* Mobile / tablet / desktop-zoom: hamburger + logo + actions (cart/search/profile stay right) */}
+        <div className="buyscreen-top-header-row buyscreen-top-header-mobile-row flex min-w-0 flex-wrap items-center justify-between gap-2 py-2.5 lg:hidden">
+          <div className="flex min-w-0 shrink-0 items-center gap-2">
+          <button
+            type="button"
+            onClick={() => setIsTopHeaderMenuOpen((v) => !v)}
+            className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-white/25 text-white transition-colors hover:bg-white/15 planning-zoom-show-hamburger"
+            aria-label="Toggle top navigation menu"
+            aria-expanded={isTopHeaderMenuOpen}
+          >
+            <svg width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden>
+              <path d="M3 5.5H17M3 10H17M3 14.5H17" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+            </svg>
+          </button>
+          <div className="flex h-8 min-w-[82px] shrink-0 items-center justify-center overflow-hidden rounded-[50%] bg-white px-2.5 sm:h-9 sm:min-w-[92px] sm:px-3">
+            <Image src="/stackly-logo.webp" alt="Stackly logo" width={160} height={40} className="h-[18px] w-auto sm:h-[20px]" unoptimized />
+          </div>
+          </div>
+
+          <div className="buyscreen-top-header-actions flex shrink-0 items-center gap-1.5 sm:gap-2">
             <button
               type="button"
-              onClick={() => setIsTopHeaderMenuOpen((v) => !v)}
-              className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-white/25 text-white transition-colors hover:bg-white/15 lg:hidden planning-zoom-show-hamburger"
-              aria-label="Toggle top navigation menu"
-              aria-expanded={isTopHeaderMenuOpen}
+              className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-white/80 text-white transition-colors hover:bg-white/15 hover:text-[#fef3c7] sm:h-8 sm:w-8"
+              aria-label="Cart"
             >
-              <svg width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden>
-                <path d="M3 5.5H17M3 10H17M3 14.5H17" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden>
+                <path d="M3 4h2l1.6 9.2a1 1 0 0 0 1 .8H18a1 1 0 0 0 1-.8L20.6 7H7" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+                <circle cx="10" cy="19" r="1.4" fill="currentColor" />
+                <circle cx="17" cy="19" r="1.4" fill="currentColor" />
               </svg>
             </button>
-            <div className="flex h-8 min-w-[82px] items-center justify-center overflow-hidden rounded-[50%] bg-white px-2.5 sm:h-9 sm:min-w-[92px] sm:px-3">
-              <Image src="/stackly-logo.webp" alt="Stackly logo" width={160} height={40} className="h-[18px] w-auto" unoptimized />
-            </div>
+            <button
+              type="button"
+              className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white text-[#06224C] transition-colors hover:bg-[#fef3c7] hover:text-[#06224C] sm:h-8 sm:w-8"
+              aria-label="Search"
+              aria-expanded={isTopHeaderSearchOpen}
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsTopHeaderSearchOpen((v) => !v);
+              }}
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden>
+                <circle cx="11" cy="11" r="6.5" stroke="currentColor" strokeWidth="1.7" />
+                <path d="m16 16 4 4" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+              </svg>
+            </button>
+            <button type="button" className="overflow-hidden rounded-full border border-white/40 transition-colors hover:border-[#fef3c7] hover:bg-white/10" aria-label="Profile">
+              <Image src="/photo.webp" alt="Profile" width={36} height={36} className="h-7 w-7 object-cover sm:h-8 sm:w-8" unoptimized />
+            </button>
+          </div>
+        </div>
 
-            <div className="hidden min-w-0 flex-1 lg:flex lg:items-center planning-zoom-hide-primary-nav">
-              <div className="flex min-w-max items-center gap-3 whitespace-nowrap text-xs font-semibold text-white sm:gap-5 sm:text-sm">
-                <button type="button" className="rounded-md px-2 py-1 transition-colors hover:bg-white/15 hover:text-[#fef3c7]">Home</button>
-                <button type="button" className="rounded-md px-2 py-1 transition-colors hover:bg-white/15 hover:text-[#fef3c7]">About Us</button>
-                <button type="button" className="inline-flex items-center gap-1 rounded-md px-2 py-1 transition-colors hover:bg-white/15 hover:text-[#fef3c7]">
-                  Our Products
-                  <svg width="12" height="12" viewBox="0 0 20 20" fill="none" aria-hidden>
-                    <path d="m5.5 7.5 4.5 5 4.5-5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                </button>
-                <button type="button" className="inline-flex items-center gap-1 rounded-md px-2 py-1 transition-colors hover:bg-white/15 hover:text-[#fef3c7]">
-                  Categories
-                  <svg width="12" height="12" viewBox="0 0 20 20" fill="none" aria-hidden>
-                    <path d="m5.5 7.5 4.5 5 4.5-5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                </button>
-                <button type="button" className="rounded-md px-2 py-1 transition-colors hover:bg-white/15 hover:text-[#fef3c7]">Contact</button>
-              </div>
+        {/* Desktop: equal space between each segment — logo … nav links … actions (cart stays right with inner icon gaps) */}
+        <div className="buyscreen-top-header-row buyscreen-top-header-desktop-row hidden w-full min-w-0 items-center py-3 lg:flex">
+          <nav
+            className="flex w-full min-w-0 flex-nowrap items-center justify-between gap-0 text-[13px] font-semibold text-white"
+            aria-label="Main"
+          >
+            <div className="flex h-9 min-w-[104px] shrink-0 items-center justify-center overflow-hidden rounded-[50%] bg-white px-3">
+              <Image src="/stackly-logo.webp" alt="Stackly logo" width={160} height={40} className="h-[20px] w-auto" unoptimized />
             </div>
-
-            <div className="buyscreen-top-header-actions ml-auto flex shrink-0 items-center gap-1.5 sm:gap-2">
+            <button type="button" className="buyscreen-top-header-nav-item shrink-0 whitespace-nowrap text-[13px] font-semibold">
+              Home
+            </button>
+            <button type="button" className="buyscreen-top-header-nav-item shrink-0 whitespace-nowrap text-[13px] font-semibold">
+              About Us
+            </button>
+            <button type="button" className="buyscreen-top-header-nav-item inline-flex shrink-0 items-center gap-1 whitespace-nowrap text-[13px] font-semibold">
+              Our Products
+              <svg width="12" height="12" viewBox="0 0 20 20" fill="none" aria-hidden className="shrink-0">
+                <path d="m5.5 7.5 4.5 5 4.5-5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </button>
+            <button type="button" className="buyscreen-top-header-nav-item inline-flex shrink-0 items-center gap-1 whitespace-nowrap text-[13px] font-semibold">
+              Categories
+              <svg width="12" height="12" viewBox="0 0 20 20" fill="none" aria-hidden className="shrink-0">
+                <path d="m5.5 7.5 4.5 5 4.5-5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </button>
+            <button type="button" className="buyscreen-top-header-nav-item shrink-0 whitespace-nowrap text-[13px] font-semibold">
+              Contact
+            </button>
+            <div className="buyscreen-top-header-actions flex shrink-0 items-center gap-3 sm:gap-4">
               <button
                 type="button"
-                className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-white/80 text-white transition-colors hover:bg-white/15 hover:text-[#fef3c7] sm:h-8 sm:w-8"
+                className="inline-flex shrink-0 items-center gap-2 rounded-full border border-white/90 px-4 py-2 text-[13px] font-medium text-white transition-colors hover:bg-white/15 hover:text-[#fef3c7]"
                 aria-label="Cart"
               >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden>
                   <path d="M3 4h2l1.6 9.2a1 1 0 0 0 1 .8H18a1 1 0 0 0 1-.8L20.6 7H7" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
                   <circle cx="10" cy="19" r="1.4" fill="currentColor" />
                   <circle cx="17" cy="19" r="1.4" fill="currentColor" />
                 </svg>
+                Cart
               </button>
-
-              <button type="button" className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white text-[#06224C] transition-colors hover:bg-[#fef3c7] hover:text-[#06224C] sm:h-8 sm:w-8" aria-label="Search">
+              <button
+                type="button"
+                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white text-[#06224C] transition-colors hover:bg-[#fef3c7] hover:text-[#06224C]"
+                aria-label="Search"
+                aria-expanded={isTopHeaderSearchOpen}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsTopHeaderSearchOpen((v) => !v);
+                }}
+              >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden>
                   <circle cx="11" cy="11" r="6.5" stroke="currentColor" strokeWidth="1.7" />
                   <path d="m16 16 4 4" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
                 </svg>
               </button>
-
               <button type="button" className="overflow-hidden rounded-full border border-white/40 transition-colors hover:border-[#fef3c7] hover:bg-white/10" aria-label="Profile">
-                <Image src="/photo.webp" alt="Profile" width={36} height={36} className="h-7 w-7 object-cover sm:h-8 sm:w-8" unoptimized />
+                <Image src="/photo.webp" alt="Profile" width={36} height={36} className="h-9 w-9 object-cover" unoptimized />
               </button>
             </div>
+          </nav>
+        </div>
+        </div>
+        {isTopHeaderSearchOpen ? (
+          <div className="border-t border-white/20">
+            <div className="mx-auto w-full max-w-7xl px-4 pb-3 pt-2 sm:px-6 lg:px-8">
+              <label className="flex h-10 w-full items-center gap-2 rounded-md border-2 border-[#cbd5e1] bg-white px-3 text-sm text-[#4b5563]">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" className="shrink-0 text-[#374151]" aria-hidden>
+                  <circle cx="11" cy="11" r="6.5" stroke="currentColor" strokeWidth="1.7" />
+                  <path d="m16 16 4 4" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+                </svg>
+                <input
+                  ref={topHeaderSearchInputRef}
+                  type="search"
+                  value={searchQuery}
+                  onChange={(e) => {
+                    const nextValue = e.target.value;
+                    setSearchQuery(nextValue);
+                    setActiveProductStart(0);
+                    setShowAllProducts(false);
+                    if (nextValue.trim()) {
+                      featuredProductsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+                    }
+                  }}
+                  placeholder="Search..."
+                  className="min-w-0 flex-1 bg-transparent text-[#4b5563] outline-none placeholder:text-[#9ca3af]"
+                  aria-label="Search products"
+                />
+              </label>
+            </div>
           </div>
+        ) : null}
+        </div>
           {isTopHeaderMenuOpen ? (
-            <div className="border-t border-white/20 px-3 pb-3 pt-2 lg:hidden planning-zoom-show-mobile-menu">
+            <div className="border-t border-white/20 lg:hidden planning-zoom-show-mobile-menu">
+              <div className="mx-auto w-full max-w-7xl px-4 pb-3 pt-2 sm:px-6 lg:px-8">
               <div className="grid grid-cols-2 gap-2">
                 {["Home", "About Us", "Our Products", "Categories", "Contact"].map((item) => (
                   <button
                     key={item}
                     type="button"
-                    className="rounded-md border border-white/25 px-2 py-2 text-left text-xs text-white transition-colors hover:bg-white/15 hover:text-[#fef3c7]"
+                    className="buyscreen-top-header-nav-item buyscreen-top-header-nav-item--grid px-2 py-2 text-left text-xs"
                     onClick={() => setIsTopHeaderMenuOpen(false)}
                   >
                     {item}
                   </button>
                 ))}
               </div>
+              </div>
             </div>
           ) : null}
       </section>
 
-      <div className="mx-auto w-full max-w-[1280px] px-4 pb-3 pt-0 sm:px-6 sm:pb-4 sm:pt-0 lg:pb-6 lg:pt-0">
+      <div className="mx-auto w-full max-w-7xl px-4 pb-3 pt-0 sm:px-6 sm:pb-4 sm:pt-0 lg:px-8 lg:pb-6 lg:pt-0">
 
         <div className="mb-6 flex justify-end sm:mb-8">
           <button
@@ -919,7 +1040,7 @@ export default function BuyScreenPage() {
             </div>
 
             <div className="buyscreen-header-actions flex w-full min-w-0 items-center justify-end gap-2 text-[#4b5563] sm:gap-3 lg:w-auto">
-              <label className="buyscreen-search flex h-8 w-[150px] items-center rounded-md border-2 border-[#cbd5e1] bg-[#fafafa] px-2 text-[11px] text-[#4b5563] sm:h-9 sm:w-[180px] sm:text-xs">
+              <label className="buyscreen-search flex h-8 w-[150px] items-center rounded-md border-2 border-[#cbd5e1] px-2 text-[11px] text-[#4b5563] sm:h-9 sm:w-[180px] sm:text-xs">
                 <input
                   type="text"
                   value={searchQuery}
