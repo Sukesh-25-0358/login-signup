@@ -637,6 +637,17 @@ export default function BuyScreenPage() {
     setIsCategoryMenuOpen(false);
   }, []);
 
+  const handleTopHeaderItemClick = useCallback(
+    (item: string) => {
+      if (item === "About Us" || item === "Contact") {
+        router.push("/page-not-found");
+        return;
+      }
+      setIsTopHeaderMenuOpen(false);
+    },
+    [router]
+  );
+
   const handleProductsTouchStart = useCallback(
     (e: React.TouchEvent<HTMLDivElement>) => {
       if (!isCarouselMode || typeof window === "undefined" || window.innerWidth > 1023 || e.touches.length !== 1) return;
@@ -878,6 +889,7 @@ export default function BuyScreenPage() {
               type="button"
               className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-white/80 text-white transition-colors hover:bg-white/15 hover:text-[#fef3c7] sm:h-8 sm:w-8"
               aria-label="Cart"
+              onClick={() => router.push("/page-not-found")}
             >
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden>
                 <path d="M3 4h2l1.6 9.2a1 1 0 0 0 1 .8H18a1 1 0 0 0 1-.8L20.6 7H7" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
@@ -915,25 +927,45 @@ export default function BuyScreenPage() {
             <div className="flex h-9 min-w-[104px] shrink-0 items-center justify-center overflow-hidden rounded-[50%] bg-white px-3">
               <Image src="/stackly-logo.webp" alt="Stackly logo" width={160} height={40} className="h-[20px] w-auto" unoptimized />
             </div>
-            <button type="button" className="buyscreen-top-header-nav-item shrink-0 whitespace-nowrap text-[13px] font-semibold">
+            <button
+              type="button"
+              className="buyscreen-top-header-nav-item shrink-0 whitespace-nowrap text-[13px] font-semibold"
+              onClick={() => handleTopHeaderItemClick("Home")}
+            >
               Home
             </button>
-            <button type="button" className="buyscreen-top-header-nav-item shrink-0 whitespace-nowrap text-[13px] font-semibold">
+            <button
+              type="button"
+              className="buyscreen-top-header-nav-item shrink-0 whitespace-nowrap text-[13px] font-semibold"
+              onClick={() => handleTopHeaderItemClick("About Us")}
+            >
               About Us
             </button>
-            <button type="button" className="buyscreen-top-header-nav-item inline-flex shrink-0 items-center gap-1 whitespace-nowrap text-[13px] font-semibold">
+            <button
+              type="button"
+              className="buyscreen-top-header-nav-item inline-flex shrink-0 items-center gap-1 whitespace-nowrap text-[13px] font-semibold"
+              onClick={() => handleTopHeaderItemClick("Our Products")}
+            >
               Our Products
               <svg width="12" height="12" viewBox="0 0 20 20" fill="none" aria-hidden className="shrink-0">
                 <path d="m5.5 7.5 4.5 5 4.5-5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </button>
-            <button type="button" className="buyscreen-top-header-nav-item inline-flex shrink-0 items-center gap-1 whitespace-nowrap text-[13px] font-semibold">
+            <button
+              type="button"
+              className="buyscreen-top-header-nav-item inline-flex shrink-0 items-center gap-1 whitespace-nowrap text-[13px] font-semibold"
+              onClick={() => handleTopHeaderItemClick("Categories")}
+            >
               Categories
               <svg width="12" height="12" viewBox="0 0 20 20" fill="none" aria-hidden className="shrink-0">
                 <path d="m5.5 7.5 4.5 5 4.5-5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </button>
-            <button type="button" className="buyscreen-top-header-nav-item shrink-0 whitespace-nowrap text-[13px] font-semibold">
+            <button
+              type="button"
+              className="buyscreen-top-header-nav-item shrink-0 whitespace-nowrap text-[13px] font-semibold"
+              onClick={() => handleTopHeaderItemClick("Contact")}
+            >
               Contact
             </button>
             <div className="buyscreen-top-header-actions flex shrink-0 items-center gap-3 sm:gap-4">
@@ -941,6 +973,7 @@ export default function BuyScreenPage() {
                 type="button"
                 className="inline-flex shrink-0 items-center gap-2 rounded-full border border-white/90 px-4 py-2 text-[13px] font-medium text-white transition-colors hover:bg-white/15 hover:text-[#fef3c7]"
                 aria-label="Cart"
+                onClick={() => router.push("/page-not-found")}
               >
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden>
                   <path d="M3 4h2l1.6 9.2a1 1 0 0 0 1 .8H18a1 1 0 0 0 1-.8L20.6 7H7" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
@@ -1010,7 +1043,7 @@ export default function BuyScreenPage() {
                     key={item}
                     type="button"
                     className="buyscreen-top-header-nav-item buyscreen-top-header-nav-item--grid px-2 py-2 text-left text-xs"
-                    onClick={() => setIsTopHeaderMenuOpen(false)}
+                    onClick={() => handleTopHeaderItemClick(item)}
                   >
                     {item}
                   </button>

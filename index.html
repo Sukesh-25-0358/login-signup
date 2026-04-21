@@ -727,6 +727,8 @@
         row-gap: 0.45rem;
       }
       .buyscreen-top-header-actions {
+        width: 100%;
+        margin-left: auto;
         justify-content: flex-end;
         padding-top: 0.1rem;
       }
@@ -738,6 +740,8 @@
         row-gap: 0.45rem;
       }
       .buyscreen-top-header-actions {
+        width: 100%;
+        margin-left: auto;
         justify-content: flex-end;
         padding-top: 0.1rem;
       }
@@ -764,8 +768,8 @@
     }
     #buyscreenPage button.buyscreen-top-header-nav-item:hover,
     #buyscreenPage button.buyscreen-top-header-nav-item:focus-visible {
-      background: #2563eb !important;
-      color: #ffffff !important;
+      background: #ffffff !important;
+      color: #06224c !important;
       outline: none;
     }
     #buyscreenPage button.buyscreen-top-header-nav-item--grid {
@@ -2733,9 +2737,22 @@
           renderBuyscreenTopHeaderSearch();
           return;
         }
+        var topHeaderCart = t.closest("[data-buyscreen-top-header-cart]");
+        if (topHeaderCart) {
+          e.preventDefault();
+          location.hash = "notFound";
+          showPage("notFound");
+          return;
+        }
         var topHeaderItem = t.closest("[data-buyscreen-top-header-item]");
         if (topHeaderItem) {
           e.preventDefault();
+          var topHeaderItemKey = (topHeaderItem.getAttribute("data-buyscreen-top-header-item") || "").toLowerCase();
+          if (topHeaderItemKey === "about-us" || topHeaderItemKey === "contact") {
+            location.hash = "notFound";
+            showPage("notFound");
+            return;
+          }
           buyscreenTopHeaderMenuOpen = false;
           renderBuyscreenTopHeaderMenu();
           return;
@@ -3485,7 +3502,7 @@
             </div>
           </div>
           <div class="buyscreen-top-header-actions flex shrink-0 items-center gap-1.5 sm:gap-2">
-            <button type="button" class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-white/80 text-white transition-colors hover:bg-white/15 hover:text-[#fef3c7] sm:h-8 sm:w-8" aria-label="Cart">
+            <button type="button" data-buyscreen-top-header-cart="1" class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-white/80 text-white transition-colors hover:bg-white/15 hover:text-[#fef3c7] sm:h-8 sm:w-8" aria-label="Cart">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                 <path d="M3 4h2l1.6 9.2a1 1 0 0 0 1 .8H18a1 1 0 0 0 1-.8L20.6 7H7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path>
                 <circle cx="10" cy="19" r="1.4" fill="currentColor"></circle>
@@ -3509,23 +3526,23 @@
             <div class="flex h-9 min-w-[104px] shrink-0 items-center justify-center overflow-hidden rounded-[50%] bg-white px-3">
               <img src="./public/stackly-logo.webp" alt="Stackly logo" width="160" height="40" class="h-[20px] w-auto">
             </div>
-            <button type="button" data-buyscreen-top-header-item="1" class="buyscreen-top-header-nav-item shrink-0 whitespace-nowrap text-[13px] font-semibold">Home</button>
-            <button type="button" data-buyscreen-top-header-item="1" class="buyscreen-top-header-nav-item shrink-0 whitespace-nowrap text-[13px] font-semibold">About Us</button>
-            <button type="button" data-buyscreen-top-header-item="1" class="buyscreen-top-header-nav-item inline-flex shrink-0 items-center gap-1 whitespace-nowrap text-[13px] font-semibold">
+            <button type="button" data-buyscreen-top-header-item="home" class="buyscreen-top-header-nav-item shrink-0 whitespace-nowrap text-[13px] font-semibold">Home</button>
+            <button type="button" data-buyscreen-top-header-item="about-us" class="buyscreen-top-header-nav-item shrink-0 whitespace-nowrap text-[13px] font-semibold">About Us</button>
+            <button type="button" data-buyscreen-top-header-item="our-products" class="buyscreen-top-header-nav-item inline-flex shrink-0 items-center gap-1 whitespace-nowrap text-[13px] font-semibold">
               Our Products
               <svg width="12" height="12" viewBox="0 0 20 20" fill="none" aria-hidden="true">
                 <path d="m5.5 7.5 4.5 5 4.5-5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path>
               </svg>
             </button>
-            <button type="button" data-buyscreen-top-header-item="1" class="buyscreen-top-header-nav-item inline-flex shrink-0 items-center gap-1 whitespace-nowrap text-[13px] font-semibold">
+            <button type="button" data-buyscreen-top-header-item="categories" class="buyscreen-top-header-nav-item inline-flex shrink-0 items-center gap-1 whitespace-nowrap text-[13px] font-semibold">
               Categories
               <svg width="12" height="12" viewBox="0 0 20 20" fill="none" aria-hidden="true">
                 <path d="m5.5 7.5 4.5 5 4.5-5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path>
               </svg>
             </button>
-            <button type="button" data-buyscreen-top-header-item="1" class="buyscreen-top-header-nav-item shrink-0 whitespace-nowrap text-[13px] font-semibold">Contact</button>
+            <button type="button" data-buyscreen-top-header-item="contact" class="buyscreen-top-header-nav-item shrink-0 whitespace-nowrap text-[13px] font-semibold">Contact</button>
             <div class="buyscreen-top-header-actions flex shrink-0 items-center gap-3 sm:gap-4">
-              <button type="button" class="inline-flex shrink-0 items-center gap-2 rounded-full border border-white/90 px-4 py-2 text-[13px] font-medium text-white transition-colors hover:bg-white/15 hover:text-[#fef3c7]" aria-label="Cart">
+              <button type="button" data-buyscreen-top-header-cart="1" class="inline-flex shrink-0 items-center gap-2 rounded-full border border-white/90 px-4 py-2 text-[13px] font-medium text-white transition-colors hover:bg-white/15 hover:text-[#fef3c7]" aria-label="Cart">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                   <path d="M3 4h2l1.6 9.2a1 1 0 0 0 1 .8H18a1 1 0 0 0 1-.8L20.6 7H7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path>
                   <circle cx="10" cy="19" r="1.4" fill="currentColor"></circle>
@@ -3567,11 +3584,11 @@
         <div id="buyscreenTopHeaderMobileMenu" class="hidden border-t border-white/20 lg:hidden planning-zoom-show-mobile-menu">
           <div class="mx-auto w-full max-w-7xl px-4 pb-3 pt-2 sm:px-6 lg:px-8">
             <div class="grid grid-cols-2 gap-2">
-              <button type="button" data-buyscreen-top-header-item="1" class="buyscreen-top-header-nav-item buyscreen-top-header-nav-item--grid px-2 py-2 text-left text-xs">Home</button>
-              <button type="button" data-buyscreen-top-header-item="1" class="buyscreen-top-header-nav-item buyscreen-top-header-nav-item--grid px-2 py-2 text-left text-xs">About Us</button>
-              <button type="button" data-buyscreen-top-header-item="1" class="buyscreen-top-header-nav-item buyscreen-top-header-nav-item--grid px-2 py-2 text-left text-xs">Our Products</button>
-              <button type="button" data-buyscreen-top-header-item="1" class="buyscreen-top-header-nav-item buyscreen-top-header-nav-item--grid px-2 py-2 text-left text-xs">Categories</button>
-              <button type="button" data-buyscreen-top-header-item="1" class="buyscreen-top-header-nav-item buyscreen-top-header-nav-item--grid px-2 py-2 text-left text-xs">Contact</button>
+              <button type="button" data-buyscreen-top-header-item="home" class="buyscreen-top-header-nav-item buyscreen-top-header-nav-item--grid px-2 py-2 text-left text-xs">Home</button>
+              <button type="button" data-buyscreen-top-header-item="about-us" class="buyscreen-top-header-nav-item buyscreen-top-header-nav-item--grid px-2 py-2 text-left text-xs">About Us</button>
+              <button type="button" data-buyscreen-top-header-item="our-products" class="buyscreen-top-header-nav-item buyscreen-top-header-nav-item--grid px-2 py-2 text-left text-xs">Our Products</button>
+              <button type="button" data-buyscreen-top-header-item="categories" class="buyscreen-top-header-nav-item buyscreen-top-header-nav-item--grid px-2 py-2 text-left text-xs">Categories</button>
+              <button type="button" data-buyscreen-top-header-item="contact" class="buyscreen-top-header-nav-item buyscreen-top-header-nav-item--grid px-2 py-2 text-left text-xs">Contact</button>
             </div>
           </div>
         </div>
