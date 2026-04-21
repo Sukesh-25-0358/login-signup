@@ -713,7 +713,6 @@ main.buyscreen-page button.buyscreen-top-header-nav-item--grid,
     row-gap: 0.45rem;
   }
   .buyscreen-top-header-actions {
-    width: 100%;
     margin-left: auto;
     justify-content: flex-end;
     padding-top: 0.1rem;
@@ -726,7 +725,6 @@ main.buyscreen-page button.buyscreen-top-header-nav-item--grid,
     row-gap: 0.45rem;
   }
   .buyscreen-top-header-actions {
-    width: 100%;
     margin-left: auto;
     justify-content: flex-end;
     padding-top: 0.1rem;
