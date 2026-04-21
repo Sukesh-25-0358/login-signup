@@ -431,21 +431,41 @@
       }
     }
     @media (max-width: 640px) {
-      #buyscreenPage .buyscreen-hero {
-        aspect-ratio: auto !important;
-        min-height: 430px !important;
-        align-items: flex-start !important;
-        padding-top: 1.15rem !important;
-        padding-bottom: 1.15rem !important;
-      }
       #buyscreenPage .buyscreen-hero-content {
         max-width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+        text-align: center !important;
+      }
+      #buyscreenPage .buyscreen-hero-content h1 {
+        font-size: clamp(1.15rem, 5.2vw, 1.5rem) !important;
+        line-height: 1.2 !important;
+      }
+      #buyscreenPage .buyscreen-hero-content p {
+        margin-top: 0.5rem !important;
+        font-size: clamp(0.78rem, 2.9vw, 0.95rem) !important;
+        line-height: 1.4 !important;
+        max-width: 28ch;
+        margin-left: auto;
+        margin-right: auto;
+      }
+      #buyscreenPage .buyscreen-hero-content button {
+        margin-top: 0.85rem !important;
       }
       #buyscreenPage .buyscreen-features {
         grid-template-columns: minmax(0, 1fr) !important;
       }
       #buyscreenPage .buyscreen-products.buyscreen-products--grid {
         grid-template-columns: minmax(0, 1fr) !important;
+      }
+    }
+    @media (max-width: 420px) {
+      #buyscreenPage .buyscreen-hero-content h1 {
+        font-size: clamp(1.02rem, 5.6vw, 1.3rem) !important;
+      }
+      #buyscreenPage .buyscreen-hero-content p {
+        font-size: clamp(0.72rem, 3vw, 0.86rem) !important;
+        max-width: 26ch;
       }
     }
     @media (min-width: 768px) {
