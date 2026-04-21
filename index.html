@@ -438,7 +438,7 @@
         align-items: center !important;
       }
       #buyscreenPage .buyscreen-hero img {
-        object-fit: cover !important;
+        object-fit: contain !important;
         object-position: center center !important;
       }
       #buyscreenPage .buyscreen-hero-content {
@@ -3772,8 +3772,11 @@
       </nav>
 
       <div class="space-y-10 px-4 py-10 sm:space-y-12 sm:px-8 sm:py-12">
-        <section class="buyscreen-hero relative flex min-h-[320px] items-center overflow-hidden rounded-xl border border-[#efefef] p-4 sm:min-h-[340px] sm:p-8 lg:aspect-[16/9] lg:min-h-0 lg:p-10">
-          <img src="./public/background.webp" alt="Electronics hero background" class="absolute inset-0 h-full w-full object-cover object-center" width="640" height="360" />
+        <section class="buyscreen-hero relative flex min-h-[320px] items-center overflow-hidden rounded-xl border border-[#efefef] bg-[#0a1f46] p-4 sm:min-h-[340px] sm:p-8 lg:aspect-[16/9] lg:min-h-0 lg:p-10">
+          <picture class="absolute inset-0 block h-full w-full">
+            <source media="(max-width: 767px)" srcset="https://images.pexels.com/photos/356056/pexels-photo-356056.jpeg?auto=compress&cs=tinysrgb&w=900&h=1125&fit=crop">
+            <img src="./public/background.webp" alt="Electronics hero background" class="h-full w-full object-contain object-center sm:object-cover" width="640" height="360" onerror="this.src='./public/background.webp';" />
+          </picture>
           <div class="absolute inset-0 z-[1] bg-[#001632]/45" aria-hidden="true"></div>
           <div class="buyscreen-hero-content relative z-10 w-full min-w-0 max-w-full px-1 text-center sm:max-w-xl sm:px-0 lg:text-left">
             <h1 class="text-[clamp(1.05rem,5.1vw,1.75rem)] font-bold leading-tight text-white sm:text-3xl lg:text-4xl">Your One-Stop Electronic Market</h1>

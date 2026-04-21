@@ -280,7 +280,7 @@ main.buyscreen-page button.buyscreen-user-trigger:focus-visible {
     align-items: center !important;
   }
   .buyscreen-hero img {
-    object-fit: cover !important;
+    object-fit: contain !important;
     object-position: center center !important;
   }
   .buyscreen-hero-content {

@@ -85,6 +85,7 @@ const licenseBullets = [
 ];
 
 const NAVY = "#06224C";
+const MOBILE_HERO_IMAGE_URL = "https://images.pexels.com/photos/356056/pexels-photo-356056.jpeg?auto=compress&cs=tinysrgb&w=900&h=1125&fit=crop";
 
 /** Fits ~1–5 cards in one row from track width (zoom / resize safe). */
 function getCarouselColumnCount(widthPx: number): number {
@@ -1293,15 +1294,21 @@ export default function BuyScreenPage() {
           </nav>
 
           <div className="space-y-10 px-4 py-10 sm:space-y-12 sm:px-8 sm:py-12">
-            <section className="buyscreen-hero relative flex min-h-[320px] items-center overflow-hidden rounded-xl border border-[#efefef] p-4 sm:min-h-[340px] sm:p-8 lg:aspect-[16/9] lg:min-h-0 lg:p-10">
-              <Image
-                src="/background.webp"
-                alt="Electronics hero background"
-                fill
-                className="object-cover object-center"
-                unoptimized
-                priority
-              />
+            <section className="buyscreen-hero relative flex min-h-[320px] items-center overflow-hidden rounded-xl border border-[#efefef] bg-[#0a1f46] p-4 sm:min-h-[340px] sm:p-8 lg:aspect-[16/9] lg:min-h-0 lg:p-10">
+              <picture className="absolute inset-0 block h-full w-full">
+                <source media="(max-width: 767px)" srcSet={MOBILE_HERO_IMAGE_URL} />
+                <img
+                  src="/background.webp"
+                  alt="Electronics hero background"
+                  className="h-full w-full object-contain object-center sm:object-cover"
+                  onError={(e) => {
+                    const img = e.currentTarget;
+                    if ((img.currentSrc || img.src).includes("pexels-photo-356056")) {
+                      img.src = "/background.webp";
+                    }
+                  }}
+                />
+              </picture>
               <div className="absolute inset-0 z-[1] bg-[#001632]/45" aria-hidden />
               <div className="buyscreen-hero-content relative z-10 w-full min-w-0 max-w-full px-1 text-center sm:max-w-xl sm:px-0 lg:text-left">
                 <h1 className="text-[clamp(1.05rem,5.1vw,1.75rem)] font-bold leading-tight text-white sm:text-3xl lg:text-4xl">
