@@ -2861,7 +2861,12 @@
         if (topHeaderItem) {
           e.preventDefault();
           var topHeaderItemKey = (topHeaderItem.getAttribute("data-buyscreen-top-header-item") || "").toLowerCase();
-          if (topHeaderItemKey === "about-us" || topHeaderItemKey === "contact") {
+          if (
+            topHeaderItemKey === "about-us" ||
+            topHeaderItemKey === "contact" ||
+            topHeaderItemKey === "our-products" ||
+            topHeaderItemKey === "categories"
+          ) {
             location.hash = "notFound";
             showPage("notFound");
             return;

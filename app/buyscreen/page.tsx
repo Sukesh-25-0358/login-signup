@@ -661,7 +661,7 @@ export default function BuyScreenPage() {
 
   const handleTopHeaderItemClick = useCallback(
     (item: string) => {
-      if (item === "About Us" || item === "Contact") {
+      if (item === "About Us" || item === "Contact" || item === "Our Products" || item === "Categories") {
         router.push("/page-not-found");
         return;
       }
