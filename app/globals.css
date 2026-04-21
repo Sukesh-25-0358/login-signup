@@ -310,6 +310,27 @@ main.buyscreen-page button.buyscreen-user-trigger:focus-visible {
     max-width: 26ch;
   }
 }
+@media (hover: hover) and (pointer: fine) and (max-width: 900px) and (min-resolution: 1.4dppx) {
+  .buyscreen-hero-content {
+    padding-left: 0.15rem !important;
+    padding-right: 0.15rem !important;
+  }
+  .buyscreen-hero-content h1 {
+    font-size: clamp(0.95rem, 4.3vw, 1.18rem) !important;
+    line-height: 1.15 !important;
+  }
+  .buyscreen-hero-content p {
+    margin-top: 0.35rem !important;
+    font-size: clamp(0.68rem, 2.45vw, 0.8rem) !important;
+    line-height: 1.3 !important;
+    max-width: 24ch !important;
+  }
+  .buyscreen-hero-content button {
+    margin-top: 0.65rem !important;
+    padding: 0.4rem 0.9rem !important;
+    font-size: 0.68rem !important;
+  }
+}
 @media (min-width: 768px) {
   .buyscreen-categories {
     gap: 1.2rem;
@@ -1223,7 +1244,7 @@ input[type="password"]::-ms-reveal {
     flex-direction: column;
     margin-top: 0;
     margin-bottom: 0;
-    overflow: hidden;
+  overflow: hidden;
   }
   .auth-form-card .auth-card-content,
   .auth-form-card .signup-card-content {
