@@ -273,8 +273,26 @@ main.buyscreen-page button.buyscreen-user-trigger:focus-visible {
   .buyscreen-shell {
     border-radius: 0.375rem;
   }
+  .buyscreen-hero {
+    min-height: 360px !important;
+    padding-top: 1.25rem !important;
+    padding-bottom: 1.25rem !important;
+    align-items: center !important;
+  }
+  .buyscreen-hero img {
+    object-fit: cover !important;
+    object-position: center center !important;
+  }
   .buyscreen-hero-content {
     max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center !important;
+  }
+  .buyscreen-hero-content p {
+    max-width: 34ch;
+    margin-left: auto;
+    margin-right: auto;
   }
   .buyscreen-features {
     grid-template-columns: minmax(0, 1fr) !important;

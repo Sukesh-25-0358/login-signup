@@ -1293,7 +1293,7 @@ export default function BuyScreenPage() {
           </nav>
 
           <div className="space-y-10 px-4 py-10 sm:space-y-12 sm:px-8 sm:py-12">
-            <section className="buyscreen-hero relative flex min-h-[300px] items-start overflow-hidden rounded-xl border border-[#efefef] p-4 pt-6 sm:min-h-[340px] sm:items-center sm:p-8 lg:aspect-[16/9] lg:min-h-0 lg:p-10">
+            <section className="buyscreen-hero relative flex min-h-[320px] items-center overflow-hidden rounded-xl border border-[#efefef] p-4 sm:min-h-[340px] sm:p-8 lg:aspect-[16/9] lg:min-h-0 lg:p-10">
               <Image
                 src="/background.webp"
                 alt="Electronics hero background"

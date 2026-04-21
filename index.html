@@ -431,8 +431,26 @@
       }
     }
     @media (max-width: 640px) {
+      #buyscreenPage .buyscreen-hero {
+        min-height: 360px !important;
+        padding-top: 1.25rem !important;
+        padding-bottom: 1.25rem !important;
+        align-items: center !important;
+      }
+      #buyscreenPage .buyscreen-hero img {
+        object-fit: cover !important;
+        object-position: center center !important;
+      }
       #buyscreenPage .buyscreen-hero-content {
         max-width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+        text-align: center !important;
+      }
+      #buyscreenPage .buyscreen-hero-content p {
+        max-width: 34ch;
+        margin-left: auto;
+        margin-right: auto;
       }
       #buyscreenPage .buyscreen-features {
         grid-template-columns: minmax(0, 1fr) !important;
@@ -3754,7 +3772,7 @@
       </nav>
 
       <div class="space-y-10 px-4 py-10 sm:space-y-12 sm:px-8 sm:py-12">
-        <section class="buyscreen-hero relative flex min-h-[300px] items-start overflow-hidden rounded-xl border border-[#efefef] p-4 pt-6 sm:min-h-[340px] sm:items-center sm:p-8 lg:aspect-[16/9] lg:min-h-0 lg:p-10">
+        <section class="buyscreen-hero relative flex min-h-[320px] items-center overflow-hidden rounded-xl border border-[#efefef] p-4 sm:min-h-[340px] sm:p-8 lg:aspect-[16/9] lg:min-h-0 lg:p-10">
           <img src="./public/background.webp" alt="Electronics hero background" class="absolute inset-0 h-full w-full object-cover object-center" width="640" height="360" />
           <div class="absolute inset-0 z-[1] bg-[#001632]/45" aria-hidden="true"></div>
           <div class="buyscreen-hero-content relative z-10 w-full min-w-0 max-w-full px-1 text-center sm:max-w-xl sm:px-0 lg:text-left">
