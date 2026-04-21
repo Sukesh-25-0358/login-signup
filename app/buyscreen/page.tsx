@@ -1300,7 +1300,7 @@ export default function BuyScreenPage() {
                 <img
                   src="/background.webp"
                   alt="Electronics hero background"
-                  className="h-full w-full object-contain object-center sm:object-cover"
+                  className="h-full w-full object-cover object-center"
                   onError={(e) => {
                     const img = e.currentTarget;
                     if ((img.currentSrc || img.src).includes("pexels-photo-356056")) {
