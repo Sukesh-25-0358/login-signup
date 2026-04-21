@@ -3558,8 +3558,8 @@
               </svg>
             </button>
             <div data-buyscreen-top-header-profile-wrap="1" class="buyscreen-user-menu-wrap relative shrink-0">
-              <button type="button" data-buyscreen-top-header-profile-toggle="1" aria-expanded="false" aria-haspopup="menu" class="overflow-hidden rounded-full border border-white/40 transition-colors hover:border-[#fef3c7] hover:bg-white/10" aria-label="Profile">
-                <img src="./public/photo.webp" alt="Profile" width="36" height="36" class="h-7 w-7 object-cover sm:h-8 sm:w-8">
+              <button type="button" data-buyscreen-top-header-profile-toggle="1" aria-expanded="false" aria-haspopup="menu" class="flex h-7 w-7 shrink-0 items-center justify-center overflow-hidden rounded-full border border-white/40 transition-colors hover:border-[#fef3c7] hover:bg-white/10 sm:h-8 sm:w-8" aria-label="Profile">
+                <img src="./public/photo.webp" alt="Profile" width="36" height="36" class="block h-full w-full object-cover">
               </button>
               <div data-buyscreen-top-header-profile-menu="1" class="buyscreen-user-menu-dropdown" role="menu" aria-hidden="true">
                 <button type="button" role="menuitem" data-buyscreen-top-header-profile-logout="1" class="buyscreen-user-menu-item">Logout</button>
@@ -3604,8 +3604,8 @@
                 </svg>
               </button>
               <div data-buyscreen-top-header-profile-wrap="1" class="buyscreen-user-menu-wrap relative shrink-0">
-                <button type="button" data-buyscreen-top-header-profile-toggle="1" aria-expanded="false" aria-haspopup="menu" class="overflow-hidden rounded-full border border-white/40 transition-colors hover:border-[#fef3c7] hover:bg-white/10" aria-label="Profile">
-                  <img src="./public/photo.webp" alt="Profile" width="36" height="36" class="h-9 w-9 object-cover">
+                <button type="button" data-buyscreen-top-header-profile-toggle="1" aria-expanded="false" aria-haspopup="menu" class="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full border border-white/40 transition-colors hover:border-[#fef3c7] hover:bg-white/10" aria-label="Profile">
+                  <img src="./public/photo.webp" alt="Profile" width="36" height="36" class="block h-full w-full object-cover">
                 </button>
                 <div data-buyscreen-top-header-profile-menu="1" class="buyscreen-user-menu-dropdown" role="menu" aria-hidden="true">
                   <button type="button" role="menuitem" data-buyscreen-top-header-profile-logout="1" class="buyscreen-user-menu-item">Logout</button>
@@ -3754,11 +3754,8 @@
       </nav>
 
       <div class="space-y-10 px-4 py-10 sm:space-y-12 sm:px-8 sm:py-12">
-        <section class="buyscreen-hero relative flex aspect-[4/5] items-center overflow-hidden rounded-xl border border-[#efefef] p-4 sm:aspect-[16/10] sm:p-8 lg:aspect-[16/9] lg:p-10">
-          <picture class="absolute inset-0 block h-full w-full">
-            <source media="(max-width: 767px)" srcset="./public/hero-mobile.webp">
-            <img src="./public/background.webp" alt="Electronics hero background" class="h-full w-full object-cover object-center" width="640" height="360" onerror="if (!this.dataset.fallback){this.dataset.fallback='1'; this.src='./public/background.webp';}">
-          </picture>
+        <section class="buyscreen-hero relative flex min-h-[300px] items-start overflow-hidden rounded-xl border border-[#efefef] p-4 pt-6 sm:min-h-[340px] sm:items-center sm:p-8 lg:aspect-[16/9] lg:min-h-0 lg:p-10">
+          <img src="./public/background.webp" alt="Electronics hero background" class="absolute inset-0 h-full w-full object-cover object-center" width="640" height="360" />
           <div class="absolute inset-0 z-[1] bg-[#001632]/45" aria-hidden="true"></div>
           <div class="buyscreen-hero-content relative z-10 w-full min-w-0 max-w-full px-1 text-center sm:max-w-xl sm:px-0 lg:text-left">
             <h1 class="text-[clamp(1.05rem,5.1vw,1.75rem)] font-bold leading-tight text-white sm:text-3xl lg:text-4xl">Your One-Stop Electronic Market</h1>
