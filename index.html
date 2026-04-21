@@ -432,6 +432,19 @@
     }
     @media (max-width: 640px) {
       #buyscreenPage .buyscreen-hero-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        max-height: calc(100% - 0.2rem);
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        scrollbar-width: none;
+      }
+      #buyscreenPage .buyscreen-hero-content::-webkit-scrollbar {
+        display: none;
+      }
+      #buyscreenPage .buyscreen-hero-content {
         max-width: 100%;
         margin-left: auto;
         margin-right: auto;
