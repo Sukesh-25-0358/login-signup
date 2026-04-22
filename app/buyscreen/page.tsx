@@ -397,6 +397,7 @@ export default function BuyScreenPage() {
   const [licenseQty, setLicenseQty] = useState(1);
   const [actionToast, setActionToast] = useState<string | null>(null);
   const toastTimerRef = useRef<number | null>(null);
+  const contentStartRef = useRef<HTMLDivElement | null>(null);
   const allCategoriesWrapRef = useRef<HTMLDivElement | null>(null);
   const userMenuWrapRef = useRef<HTMLDivElement | null>(null);
   const featuredProductsRef = useRef<HTMLElement | null>(null);
@@ -661,6 +662,15 @@ export default function BuyScreenPage() {
 
   const handleTopHeaderItemClick = useCallback(
     (item: string) => {
+      if (item === "Home") {
+        setIsTopHeaderMenuOpen(false);
+        setIsTopHeaderSearchOpen(false);
+        setIsTopHeaderProfileMenuOpen(false);
+        window.requestAnimationFrame(() => {
+          contentStartRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+        });
+        return;
+      }
       if (item === "About Us" || item === "Contact" || item === "Our Products" || item === "Categories") {
         router.push("/page-not-found");
         return;
@@ -1134,7 +1144,7 @@ export default function BuyScreenPage() {
           ) : null}
       </section>
 
-      <div className="mx-auto w-full max-w-7xl px-4 pb-3 pt-0 sm:px-6 sm:pb-4 sm:pt-0 lg:px-8 lg:pb-6 lg:pt-0">
+      <div ref={contentStartRef} className="mx-auto w-full max-w-7xl px-4 pb-3 pt-0 sm:px-6 sm:pb-4 sm:pt-0 lg:px-8 lg:pb-6 lg:pt-0">
 
         <div className="mb-6 flex justify-end sm:mb-8">
           <button
