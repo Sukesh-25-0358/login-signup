@@ -231,7 +231,7 @@ function BuyScreenStacklyFooter() {
               }}
             >
               <div className="flex min-w-0 flex-1 items-center rounded-full bg-white px-3 py-1.5 shadow-sm">
-                <FaEnvelope className="h-4 w-4 shrink-0 text-[#9ca3af]" aria-hidden />
+                <FaEnvelope className="h-4 w-4 shrink-0 text-[#4b5563]" aria-hidden />
                 <input
                   type="email"
                   name="footer-email"
@@ -239,7 +239,7 @@ function BuyScreenStacklyFooter() {
                   value={footerEmail}
                   onChange={(e) => setFooterEmail(e.target.value)}
                   placeholder="Your email"
-                  className="min-w-0 flex-1 bg-transparent px-2 text-sm text-[#374151] outline-none placeholder:text-[#c4b5fd]"
+                  className="min-w-0 flex-1 bg-transparent px-2 text-sm text-[#374151] outline-none placeholder:text-[#6b7280]"
                 />
               </div>
               <button
@@ -252,7 +252,7 @@ function BuyScreenStacklyFooter() {
             </form>
             <h3 className="mt-8 text-sm font-bold text-white">Headquarters</h3>
             <p className="mt-2 text-sm leading-relaxed text-[#d1d5db]">
-              MMR COMPLEX, SALEM,
+              MMR Complex, Salem,
               <br />
               Tamil Nadu 636008
             </p>
