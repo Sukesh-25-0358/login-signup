@@ -269,25 +269,17 @@ main.buyscreen-page button.buyscreen-user-trigger:focus-visible {
 .buyscreen-hero-scroll-hint {
   display: none;
 }
+.buyscreen-hero-scroll-note {
+  display: none;
+}
 @media (max-width: 640px) {
-  .buyscreen-hero-scroll-hint {
-    display: inline-flex;
-    position: absolute;
-    left: 50%;
-    bottom: 0.45rem;
-    transform: translateX(-50%);
-    z-index: 3;
-    align-items: center;
-    gap: 0.2rem;
-    border-radius: 9999px;
-    background: rgba(2, 6, 23, 0.38);
-    padding: 0.2rem 0.5rem;
-    color: rgba(255, 255, 255, 0.92);
-    font-size: 0.62rem;
+  .buyscreen-hero-scroll-note {
+    display: block;
+    margin-top: 0.35rem;
+    text-align: center;
+    font-size: 0.7rem;
     font-weight: 600;
-    letter-spacing: 0.01em;
-    pointer-events: none;
-    backdrop-filter: blur(1px);
+    color: #475569;
   }
   .buyscreen-hero-content {
     display: flex;
@@ -352,8 +344,8 @@ main.buyscreen-page button.buyscreen-user-trigger:focus-visible {
   }
 }
 @media (hover: hover) and (pointer: fine) and (max-width: 900px) and (min-resolution: 1.4dppx) {
-  .buyscreen-hero-scroll-hint {
-    display: inline-flex;
+  .buyscreen-hero-scroll-note {
+    display: block;
   }
   .buyscreen-hero {
     padding: 0.65rem !important;
