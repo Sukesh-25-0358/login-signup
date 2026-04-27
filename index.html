@@ -2193,6 +2193,12 @@
       // Keep page scroll available on desktop zoom (150-200%) to avoid clipped auth content.
       document.body.style.overflow = "";
       updateMobilePlaceholders();
+      if (page === "buyscreen") {
+        buyscreenTopHeaderActiveItem = "home";
+        if (typeof renderBuyscreenTopHeaderActiveItem === "function") {
+          renderBuyscreenTopHeaderActiveItem();
+        }
+      }
       if (page === "planning") initPlanningHeader();
     }
 
@@ -2234,6 +2240,7 @@
     var buyscreenTopHeaderMenuOpen = false;
     var buyscreenTopHeaderSearchOpen = false;
     var buyscreenTopHeaderProfileMenuOpen = false;
+    var buyscreenTopHeaderActiveItem = "home";
     var buyscreenFooterToastTimer = null;
 
     function sendBuyscreenFooterMail() {
@@ -2283,6 +2290,14 @@
         if (buyscreenTopHeaderMenuOpen) mobileMenu.classList.remove("hidden");
         else mobileMenu.classList.add("hidden");
       }
+    }
+
+    function renderBuyscreenTopHeaderActiveItem() {
+      var items = document.querySelectorAll("#buyscreenPage [data-buyscreen-top-header-item]");
+      items.forEach(function (btn) {
+        var key = (btn.getAttribute("data-buyscreen-top-header-item") || "").toLowerCase();
+        btn.classList.toggle("buyscreen-top-header-nav-item--active", key === buyscreenTopHeaderActiveItem);
+      });
     }
 
     function renderBuyscreenTopHeaderSearch() {
@@ -2901,6 +2916,8 @@
         if (topHeaderItem) {
           e.preventDefault();
           var topHeaderItemKey = (topHeaderItem.getAttribute("data-buyscreen-top-header-item") || "").toLowerCase();
+          buyscreenTopHeaderActiveItem = topHeaderItemKey || "home";
+          renderBuyscreenTopHeaderActiveItem();
           if (topHeaderItemKey === "home") {
             buyscreenTopHeaderMenuOpen = false;
             buyscreenTopHeaderSearchOpen = false;
@@ -3107,6 +3124,7 @@
       renderBuyscreenCategoryMenu();
       renderBuyscreenUserMenu();
       renderBuyscreenTopHeaderMenu();
+      renderBuyscreenTopHeaderActiveItem();
       renderBuyscreenTopHeaderSearch();
       renderBuyscreenTopHeaderProfileMenu();
       renderBuyscreenHeroScrollNote();
@@ -3713,7 +3731,7 @@
             <div class="flex h-9 min-w-[104px] shrink-0 items-center justify-center overflow-hidden rounded-[50%] bg-white px-3">
               <img src="./public/stackly-logo.webp" alt="Stackly logo" width="160" height="40" class="h-[20px] w-auto">
             </div>
-            <button type="button" data-buyscreen-top-header-item="home" class="buyscreen-top-header-nav-item buyscreen-top-header-nav-item--active shrink-0 whitespace-nowrap text-[13px] font-semibold">Home</button>
+            <button type="button" data-buyscreen-top-header-item="home" class="buyscreen-top-header-nav-item shrink-0 whitespace-nowrap text-[13px] font-semibold">Home</button>
             <button type="button" data-buyscreen-top-header-item="about-us" class="buyscreen-top-header-nav-item shrink-0 whitespace-nowrap text-[13px] font-semibold">About Us</button>
             <button type="button" data-buyscreen-top-header-item="our-products" class="buyscreen-top-header-nav-item inline-flex shrink-0 items-center gap-1 whitespace-nowrap text-[13px] font-semibold">
               Our Products
@@ -3776,7 +3794,7 @@
         <div id="buyscreenTopHeaderMobileMenu" class="hidden border-t border-white/20 lg:hidden planning-zoom-show-mobile-menu">
           <div class="mx-auto w-full max-w-7xl px-4 pb-3 pt-2 sm:px-6 lg:px-8">
             <div class="grid grid-cols-2 gap-2">
-              <button type="button" data-buyscreen-top-header-item="home" class="buyscreen-top-header-nav-item buyscreen-top-header-nav-item--grid buyscreen-top-header-nav-item--active px-2 py-2 text-left text-xs">Home</button>
+              <button type="button" data-buyscreen-top-header-item="home" class="buyscreen-top-header-nav-item buyscreen-top-header-nav-item--grid px-2 py-2 text-left text-xs">Home</button>
               <button type="button" data-buyscreen-top-header-item="about-us" class="buyscreen-top-header-nav-item buyscreen-top-header-nav-item--grid px-2 py-2 text-left text-xs">About Us</button>
               <button type="button" data-buyscreen-top-header-item="our-products" class="buyscreen-top-header-nav-item buyscreen-top-header-nav-item--grid px-2 py-2 text-left text-xs">Our Products</button>
               <button type="button" data-buyscreen-top-header-item="categories" class="buyscreen-top-header-nav-item buyscreen-top-header-nav-item--grid px-2 py-2 text-left text-xs">Categories</button>

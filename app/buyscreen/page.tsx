@@ -388,6 +388,7 @@ export default function BuyScreenPage() {
   const [isTopHeaderMenuOpen, setIsTopHeaderMenuOpen] = useState(false);
   const [isTopHeaderSearchOpen, setIsTopHeaderSearchOpen] = useState(false);
   const [isTopHeaderProfileMenuOpen, setIsTopHeaderProfileMenuOpen] = useState(false);
+  const [activeTopHeaderItem, setActiveTopHeaderItem] = useState("Home");
   const [showHeroScrollNote, setShowHeroScrollNote] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isCategoryMenuOpen, setIsCategoryMenuOpen] = useState(false);
@@ -680,6 +681,7 @@ export default function BuyScreenPage() {
 
   const handleTopHeaderItemClick = useCallback(
     (item: string) => {
+      setActiveTopHeaderItem(item);
       if (item === "Home") {
         setIsTopHeaderMenuOpen(false);
         setIsTopHeaderSearchOpen(false);
@@ -1008,21 +1010,21 @@ export default function BuyScreenPage() {
             </div>
             <button
               type="button"
-              className="buyscreen-top-header-nav-item buyscreen-top-header-nav-item--active shrink-0 whitespace-nowrap text-[13px] font-semibold"
+              className={`buyscreen-top-header-nav-item shrink-0 whitespace-nowrap text-[13px] font-semibold${activeTopHeaderItem === "Home" ? " buyscreen-top-header-nav-item--active" : ""}`}
               onClick={() => handleTopHeaderItemClick("Home")}
             >
               Home
             </button>
             <button
               type="button"
-              className="buyscreen-top-header-nav-item shrink-0 whitespace-nowrap text-[13px] font-semibold"
+              className={`buyscreen-top-header-nav-item shrink-0 whitespace-nowrap text-[13px] font-semibold${activeTopHeaderItem === "About Us" ? " buyscreen-top-header-nav-item--active" : ""}`}
               onClick={() => handleTopHeaderItemClick("About Us")}
             >
               About Us
             </button>
             <button
               type="button"
-              className="buyscreen-top-header-nav-item inline-flex shrink-0 items-center gap-1 whitespace-nowrap text-[13px] font-semibold"
+              className={`buyscreen-top-header-nav-item inline-flex shrink-0 items-center gap-1 whitespace-nowrap text-[13px] font-semibold${activeTopHeaderItem === "Our Products" ? " buyscreen-top-header-nav-item--active" : ""}`}
               onClick={() => handleTopHeaderItemClick("Our Products")}
             >
               Our Products
@@ -1032,7 +1034,7 @@ export default function BuyScreenPage() {
             </button>
             <button
               type="button"
-              className="buyscreen-top-header-nav-item inline-flex shrink-0 items-center gap-1 whitespace-nowrap text-[13px] font-semibold"
+              className={`buyscreen-top-header-nav-item inline-flex shrink-0 items-center gap-1 whitespace-nowrap text-[13px] font-semibold${activeTopHeaderItem === "Categories" ? " buyscreen-top-header-nav-item--active" : ""}`}
               onClick={() => handleTopHeaderItemClick("Categories")}
             >
               Categories
@@ -1042,7 +1044,7 @@ export default function BuyScreenPage() {
             </button>
             <button
               type="button"
-              className="buyscreen-top-header-nav-item shrink-0 whitespace-nowrap text-[13px] font-semibold"
+              className={`buyscreen-top-header-nav-item shrink-0 whitespace-nowrap text-[13px] font-semibold${activeTopHeaderItem === "Contact" ? " buyscreen-top-header-nav-item--active" : ""}`}
               onClick={() => handleTopHeaderItemClick("Contact")}
             >
               Contact
@@ -1150,7 +1152,7 @@ export default function BuyScreenPage() {
                   <button
                     key={item}
                     type="button"
-                    className={`buyscreen-top-header-nav-item buyscreen-top-header-nav-item--grid px-2 py-2 text-left text-xs${item === "Home" ? " buyscreen-top-header-nav-item--active" : ""}`}
+                    className={`buyscreen-top-header-nav-item buyscreen-top-header-nav-item--grid px-2 py-2 text-left text-xs${activeTopHeaderItem === item ? " buyscreen-top-header-nav-item--active" : ""}`}
                     onClick={() => handleTopHeaderItemClick(item)}
                   >
                     {item}
