@@ -1325,6 +1325,12 @@ export default function BuyScreenPage() {
                   Shop Now
                 </button>
               </div>
+              <div className="buyscreen-hero-scroll-hint" aria-hidden>
+                <svg width="10" height="10" viewBox="0 0 20 20" fill="none">
+                  <path d="m5.5 7.5 4.5 5 4.5-5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                Scroll for more
+              </div>
             </section>
 
             <section className="buyscreen-features grid gap-6 border-b border-[#efefef] pb-10 text-sm text-[#4b5563] sm:grid-cols-2 sm:gap-8 lg:flex lg:items-start lg:justify-between">

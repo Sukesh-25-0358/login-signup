@@ -266,7 +266,29 @@ main.buyscreen-page button.buyscreen-user-trigger:focus-visible {
 .buyscreen-hero-content p {
   overflow-wrap: anywhere;
 }
+.buyscreen-hero-scroll-hint {
+  display: none;
+}
 @media (max-width: 640px) {
+  .buyscreen-hero-scroll-hint {
+    display: inline-flex;
+    position: absolute;
+    left: 50%;
+    bottom: 0.45rem;
+    transform: translateX(-50%);
+    z-index: 3;
+    align-items: center;
+    gap: 0.2rem;
+    border-radius: 9999px;
+    background: rgba(2, 6, 23, 0.38);
+    padding: 0.2rem 0.5rem;
+    color: rgba(255, 255, 255, 0.92);
+    font-size: 0.62rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    pointer-events: none;
+    backdrop-filter: blur(1px);
+  }
   .buyscreen-hero-content {
     display: flex;
     flex-direction: column;
@@ -330,6 +352,9 @@ main.buyscreen-page button.buyscreen-user-trigger:focus-visible {
   }
 }
 @media (hover: hover) and (pointer: fine) and (max-width: 900px) and (min-resolution: 1.4dppx) {
+  .buyscreen-hero-scroll-hint {
+    display: inline-flex;
+  }
   .buyscreen-hero {
     padding: 0.65rem !important;
   }
