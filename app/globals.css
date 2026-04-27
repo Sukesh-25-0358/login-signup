@@ -272,9 +272,11 @@ main.buyscreen-page button.buyscreen-user-trigger:focus-visible {
 .buyscreen-hero-scroll-note {
   display: none;
 }
+.buyscreen-hero-scroll-note--show {
+  display: block;
+}
 @media (max-width: 640px) {
   .buyscreen-hero-scroll-note {
-    display: block;
     margin-top: 0.35rem;
     text-align: center;
     font-size: 0.7rem;
@@ -344,9 +346,6 @@ main.buyscreen-page button.buyscreen-user-trigger:focus-visible {
   }
 }
 @media (hover: hover) and (pointer: fine) and (max-width: 900px) and (min-resolution: 1.4dppx) {
-  .buyscreen-hero-scroll-note {
-    display: block;
-  }
   .buyscreen-hero {
     padding: 0.65rem !important;
   }

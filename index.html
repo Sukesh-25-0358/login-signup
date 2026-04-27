@@ -349,6 +349,9 @@
     #buyscreenPage .buyscreen-hero-scroll-note {
       display: none;
     }
+    #buyscreenPage .buyscreen-hero-scroll-note--show {
+      display: block;
+    }
     @media (max-width: 1023px) {
       #buyscreenPage .buyscreen-shell,
       #buyscreenPage .buyscreen-shell * {
@@ -438,7 +441,6 @@
     }
     @media (max-width: 640px) {
       #buyscreenPage .buyscreen-hero-scroll-note {
-        display: block;
         margin-top: 0.35rem;
         text-align: center;
         font-size: 0.7rem;
@@ -502,9 +504,6 @@
       }
     }
     @media (hover: hover) and (pointer: fine) and (max-width: 900px) and (min-resolution: 1.4dppx) {
-      #buyscreenPage .buyscreen-hero-scroll-note {
-        display: block;
-      }
       #buyscreenPage .buyscreen-hero {
         padding: 0.65rem !important;
       }
@@ -2323,6 +2322,14 @@
       });
     }
 
+    function renderBuyscreenHeroScrollNote() {
+      var note = document.getElementById("buyscreenHeroScrollNote");
+      var content = document.getElementById("buyscreenHeroContent");
+      if (!note || !content) return;
+      var needsScroll = content.scrollHeight - content.clientHeight > 3;
+      note.classList.toggle("buyscreen-hero-scroll-note--show", needsScroll);
+    }
+
     function renderBuyscreenCategoryMenu() {
       var menu = document.getElementById("buyscreenCategoryMenu");
       var toggle = document.getElementById("buyscreenCategoryToggle");
@@ -3102,6 +3109,7 @@
       renderBuyscreenTopHeaderMenu();
       renderBuyscreenTopHeaderSearch();
       renderBuyscreenTopHeaderProfileMenu();
+      renderBuyscreenHeroScrollNote();
       renderBuyscreenCartTotal();
     }
 
@@ -3152,6 +3160,9 @@
 
     window.addEventListener("resize", function () {
       updateMobilePlaceholders();
+      if (typeof renderBuyscreenHeroScrollNote === "function") {
+        renderBuyscreenHeroScrollNote();
+      }
     });
 
     function validateEmail(email) {
@@ -3403,6 +3414,9 @@
       var hash = window.location.hash.replace("#", "");
       if (hash === "login" || hash === "signup") {
         document.body.style.overflow = "";
+      }
+      if (typeof renderBuyscreenHeroScrollNote === "function") {
+        renderBuyscreenHeroScrollNote();
       }
     });
 
@@ -3886,7 +3900,7 @@
             <img src="./public/background.webp" alt="Electronics hero background" class="h-full w-full object-cover object-center" width="640" height="360">
           </picture>
           <div class="absolute inset-0 z-[1] bg-[#001632]/45" aria-hidden="true"></div>
-          <div class="buyscreen-hero-content relative z-10 w-full min-w-0 max-w-full px-1 text-center sm:max-w-xl sm:px-0 lg:text-left">
+          <div id="buyscreenHeroContent" class="buyscreen-hero-content relative z-10 w-full min-w-0 max-w-full px-1 text-center sm:max-w-xl sm:px-0 lg:text-left">
             <h1 class="text-[clamp(1.05rem,5.1vw,1.75rem)] font-bold leading-tight text-white sm:text-3xl lg:text-4xl">Your One-Stop Electronic Market</h1>
             <p class="mx-auto mt-2 max-w-xl text-[clamp(0.7rem,2.9vw,0.95rem)] leading-relaxed text-white sm:mt-3 sm:text-base lg:mx-0">
               Welcome to e-shop, a place where you can buy everything about electronics. Sale every day.
@@ -3896,7 +3910,7 @@
             </button>
           </div>
         </section>
-        <p class="buyscreen-hero-scroll-note" aria-hidden="true">Scroll inside the banner to read full text.</p>
+        <p id="buyscreenHeroScrollNote" class="buyscreen-hero-scroll-note" aria-hidden="true">Scroll inside the banner to read full text.</p>
 
         <section class="buyscreen-features grid gap-6 border-b border-[#efefef] pb-10 text-sm text-[#4b5563] sm:grid-cols-2 sm:gap-8 lg:flex lg:items-start lg:justify-between">
           <div class="flex items-start gap-4">

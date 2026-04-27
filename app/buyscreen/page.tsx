@@ -388,6 +388,7 @@ export default function BuyScreenPage() {
   const [isTopHeaderMenuOpen, setIsTopHeaderMenuOpen] = useState(false);
   const [isTopHeaderSearchOpen, setIsTopHeaderSearchOpen] = useState(false);
   const [isTopHeaderProfileMenuOpen, setIsTopHeaderProfileMenuOpen] = useState(false);
+  const [showHeroScrollNote, setShowHeroScrollNote] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isCategoryMenuOpen, setIsCategoryMenuOpen] = useState(false);
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
@@ -401,6 +402,7 @@ export default function BuyScreenPage() {
   const allCategoriesWrapRef = useRef<HTMLDivElement | null>(null);
   const userMenuWrapRef = useRef<HTMLDivElement | null>(null);
   const featuredProductsRef = useRef<HTMLElement | null>(null);
+  const heroContentRef = useRef<HTMLDivElement | null>(null);
   const topHeaderBarRef = useRef<HTMLDivElement | null>(null);
   const topHeaderSearchInputRef = useRef<HTMLInputElement | null>(null);
   const productsViewportRef = useRef<HTMLDivElement | null>(null);
@@ -582,6 +584,22 @@ export default function BuyScreenPage() {
       window.removeEventListener("keydown", onKey);
     };
   }, [isTopHeaderSearchOpen]);
+
+  useEffect(() => {
+    const el = heroContentRef.current;
+    if (!el) return;
+    const check = () => {
+      setShowHeroScrollNote(el.scrollHeight - el.clientHeight > 3);
+    };
+    check();
+    const ro = new ResizeObserver(check);
+    ro.observe(el);
+    window.addEventListener("resize", check);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", check);
+    };
+  }, []);
 
   useEffect(() => {
     if (!isTopHeaderProfileMenuOpen) return;
@@ -1310,7 +1328,7 @@ export default function BuyScreenPage() {
                 <img src="/background.webp" alt="Electronics hero background" className="h-full w-full object-cover object-center" />
               </picture>
               <div className="absolute inset-0 z-[1] bg-[#001632]/45" aria-hidden />
-              <div className="buyscreen-hero-content relative z-10 w-full min-w-0 max-w-full px-1 text-center sm:max-w-xl sm:px-0 lg:text-left">
+              <div ref={heroContentRef} className="buyscreen-hero-content relative z-10 w-full min-w-0 max-w-full px-1 text-center sm:max-w-xl sm:px-0 lg:text-left">
                 <h1 className="text-[clamp(1.05rem,5.1vw,1.75rem)] font-bold leading-tight text-white sm:text-3xl lg:text-4xl">
                   Your One-Stop Electronic Market
                 </h1>
@@ -1326,9 +1344,11 @@ export default function BuyScreenPage() {
                 </button>
               </div>
             </section>
-            <p className="buyscreen-hero-scroll-note" aria-hidden>
-              Scroll inside the banner to read full text.
-            </p>
+            {showHeroScrollNote ? (
+              <p className="buyscreen-hero-scroll-note" aria-hidden>
+                Scroll inside the banner to read full text.
+              </p>
+            ) : null}
 
             <section className="buyscreen-features grid gap-6 border-b border-[#efefef] pb-10 text-sm text-[#4b5563] sm:grid-cols-2 sm:gap-8 lg:flex lg:items-start lg:justify-between">
               {buyFeatures.map((feature) => (
