@@ -990,7 +990,7 @@ export default function BuyScreenPage() {
             </div>
             <button
               type="button"
-              className="buyscreen-top-header-nav-item shrink-0 whitespace-nowrap text-[13px] font-semibold"
+              className="buyscreen-top-header-nav-item buyscreen-top-header-nav-item--active shrink-0 whitespace-nowrap text-[13px] font-semibold"
               onClick={() => handleTopHeaderItemClick("Home")}
             >
               Home
@@ -1132,7 +1132,7 @@ export default function BuyScreenPage() {
                   <button
                     key={item}
                     type="button"
-                    className="buyscreen-top-header-nav-item buyscreen-top-header-nav-item--grid px-2 py-2 text-left text-xs"
+                    className={`buyscreen-top-header-nav-item buyscreen-top-header-nav-item--grid px-2 py-2 text-left text-xs${item === "Home" ? " buyscreen-top-header-nav-item--active" : ""}`}
                     onClick={() => handleTopHeaderItemClick(item)}
                   >
                     {item}

@@ -435,11 +435,17 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        justify-content: center;
-        max-height: calc(100% - 0.2rem);
+        justify-content: flex-start;
+        width: 100%;
+        min-height: 0;
+        max-height: 100%;
         overflow-y: auto;
         overscroll-behavior: contain;
+        -webkit-overflow-scrolling: touch;
         scrollbar-width: none;
+        box-sizing: border-box;
+        padding-top: 0.2rem;
+        padding-bottom: 0.7rem;
       }
       #buyscreenPage .buyscreen-hero-content::-webkit-scrollbar {
         display: none;
@@ -489,11 +495,17 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        justify-content: center;
-        max-height: calc(100% - 0.2rem);
+        justify-content: flex-start;
+        width: 100%;
+        min-height: 0;
+        max-height: 100%;
         overflow-y: auto;
         overscroll-behavior: contain;
+        -webkit-overflow-scrolling: touch;
         scrollbar-width: none;
+        box-sizing: border-box;
+        padding-top: 0.2rem;
+        padding-bottom: 0.7rem;
         padding-left: 0.15rem !important;
         padding-right: 0.15rem !important;
       }
@@ -844,6 +856,10 @@
       background: #ffffff !important;
       color: #06224c !important;
       outline: none;
+    }
+    #buyscreenPage button.buyscreen-top-header-nav-item--active {
+      background: #ffffff !important;
+      color: #06224c !important;
     }
     #buyscreenPage button.buyscreen-top-header-nav-item--grid {
       border: 1px solid rgba(255, 255, 255, 0.28) !important;
@@ -3666,7 +3682,7 @@
             <div class="flex h-9 min-w-[104px] shrink-0 items-center justify-center overflow-hidden rounded-[50%] bg-white px-3">
               <img src="./public/stackly-logo.webp" alt="Stackly logo" width="160" height="40" class="h-[20px] w-auto">
             </div>
-            <button type="button" data-buyscreen-top-header-item="home" class="buyscreen-top-header-nav-item shrink-0 whitespace-nowrap text-[13px] font-semibold">Home</button>
+            <button type="button" data-buyscreen-top-header-item="home" class="buyscreen-top-header-nav-item buyscreen-top-header-nav-item--active shrink-0 whitespace-nowrap text-[13px] font-semibold">Home</button>
             <button type="button" data-buyscreen-top-header-item="about-us" class="buyscreen-top-header-nav-item shrink-0 whitespace-nowrap text-[13px] font-semibold">About Us</button>
             <button type="button" data-buyscreen-top-header-item="our-products" class="buyscreen-top-header-nav-item inline-flex shrink-0 items-center gap-1 whitespace-nowrap text-[13px] font-semibold">
               Our Products
@@ -3729,7 +3745,7 @@
         <div id="buyscreenTopHeaderMobileMenu" class="hidden border-t border-white/20 lg:hidden planning-zoom-show-mobile-menu">
           <div class="mx-auto w-full max-w-7xl px-4 pb-3 pt-2 sm:px-6 lg:px-8">
             <div class="grid grid-cols-2 gap-2">
-              <button type="button" data-buyscreen-top-header-item="home" class="buyscreen-top-header-nav-item buyscreen-top-header-nav-item--grid px-2 py-2 text-left text-xs">Home</button>
+              <button type="button" data-buyscreen-top-header-item="home" class="buyscreen-top-header-nav-item buyscreen-top-header-nav-item--grid buyscreen-top-header-nav-item--active px-2 py-2 text-left text-xs">Home</button>
               <button type="button" data-buyscreen-top-header-item="about-us" class="buyscreen-top-header-nav-item buyscreen-top-header-nav-item--grid px-2 py-2 text-left text-xs">About Us</button>
               <button type="button" data-buyscreen-top-header-item="our-products" class="buyscreen-top-header-nav-item buyscreen-top-header-nav-item--grid px-2 py-2 text-left text-xs">Our Products</button>
               <button type="button" data-buyscreen-top-header-item="categories" class="buyscreen-top-header-nav-item buyscreen-top-header-nav-item--grid px-2 py-2 text-left text-xs">Categories</button>
