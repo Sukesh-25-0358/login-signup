@@ -120,7 +120,9 @@ export default function VerifyMobilePage() {
               Want to change your Mobile Number?{" "}
               <button
                 type="button"
-                onClick={() => router.push("/forgot-password")}
+                onClick={() =>
+                  router.push("/forgot-password?changeFrom=verify-mobile")
+                }
                 className="underline font-semibold"
                 style={{ color: "#F2B541" }}
               >

@@ -2180,6 +2180,24 @@
       if (signupConfirm) signupConfirm.placeholder = "Confirm Password";
     }
 
+    function updateForgotPlaceholder() {
+      var forgotInput = document.getElementById("forgotEmail");
+      if (!forgotInput) return;
+      if (window._forgotChangeFrom === "verifyEmail") {
+        forgotInput.placeholder = "Alternative email address";
+      } else if (window._forgotChangeFrom === "verifyMobile") {
+        forgotInput.placeholder = "Alternative mobile number";
+      } else {
+        forgotInput.placeholder = "Email or mobile number";
+      }
+    }
+
+    function openForgotPage(changeFrom) {
+      window._forgotChangeFrom = changeFrom || "";
+      location.hash = "forgot";
+      showPage("forgot");
+    }
+
     function showPage(page) {
       var pages = ["buyscreen", "planning", "signup", "login", "error", "notFound", "forgot", "verifyEmail", "verifyMobile", "verified", "createNewPassword"];
       pages.forEach(function (key) {
@@ -2193,6 +2211,7 @@
       // Keep page scroll available on desktop zoom (150-200%) to avoid clipped auth content.
       document.body.style.overflow = "";
       updateMobilePlaceholders();
+      if (page === "forgot") updateForgotPlaceholder();
       if (page === "buyscreen") {
         buyscreenTopHeaderActiveItem = "home";
         if (typeof renderBuyscreenTopHeaderActiveItem === "function") {
@@ -5185,7 +5204,7 @@
                 />
                 <span>Remember me</span>
               </label>
-              <a href="#forgot" onclick="location.hash='forgot'; showPage('forgot'); return false;" class="forgot-password-link cursor-pointer flex-shrink-0 min-w-0">
+              <a href="#forgot" onclick="openForgotPage(''); return false;" class="forgot-password-link cursor-pointer flex-shrink-0 min-w-0">
                 Forgot Password?
               </a>
             </div>
@@ -5294,7 +5313,7 @@
 
           <p class="text-[12px] sm:text-[13px]" style="color: #FFFFFF;">
             Want to change your Email Address?
-            <button type="button" onclick="showPage('forgot')" class="underline font-semibold" style="color: #F2B541;">
+            <button type="button" onclick="openForgotPage('verifyEmail')" class="underline font-semibold" style="color: #F2B541;">
               Change Here
             </button>
           </p>
@@ -5340,7 +5359,7 @@
 
           <p class="text-[12px] sm:text-[13px]" style="color: #FFFFFF;">
             Want to change your Mobile Number?
-            <button type="button" onclick="showPage('forgot')" class="underline font-semibold" style="color: #F2B541;">
+            <button type="button" onclick="openForgotPage('verifyMobile')" class="underline font-semibold" style="color: #F2B541;">
               Change Here
             </button>
           </p>

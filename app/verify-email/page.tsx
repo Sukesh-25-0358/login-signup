@@ -120,7 +120,9 @@ export default function VerifyEmailPage() {
               Want to change your Email Address?{" "}
               <button
                 type="button"
-                onClick={() => router.push("/forgot-password")}
+                onClick={() =>
+                  router.push("/forgot-password?changeFrom=verify-email")
+                }
                 className="underline font-semibold"
                 style={{ color: "#F2B541" }}
               >

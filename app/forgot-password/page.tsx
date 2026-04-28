@@ -2,14 +2,23 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function ForgotPasswordPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const changeFrom = searchParams.get("changeFrom");
+
+  const contactPlaceholder =
+    changeFrom === "verify-email"
+      ? "Alternative email address"
+      : changeFrom === "verify-mobile"
+        ? "Alternative mobile number"
+        : "Email or mobile number";
 
   const validateEmail = (value: string) =>
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim().toLowerCase());
@@ -98,7 +107,7 @@ export default function ForgotPasswordPage() {
                   <input
                     type="text"
                     inputMode="email"
-                    placeholder="Email or mobile number"
+                    placeholder={contactPlaceholder}
                     value={email}
                     onChange={(e) => {
                       setEmail(e.target.value);
