@@ -519,6 +519,30 @@ main.buyscreen-page button.buyscreen-user-trigger:focus-visible {
   }
 }
 
+@media (max-width: 640px) {
+  .buyscreen-header-trailing {
+    flex-wrap: wrap !important;
+    justify-content: flex-end !important;
+    row-gap: 0.35rem !important;
+    column-gap: 0.35rem !important;
+  }
+  .buyscreen-header-trailing > span[aria-hidden="true"] {
+    display: none !important;
+  }
+  .buyscreen-header-trailing .buyscreen-cart-trigger {
+    min-width: 2.1rem;
+    justify-content: center;
+    padding: 0.35rem !important;
+  }
+  .buyscreen-header-trailing .buyscreen-cart-trigger > span.min-w-0,
+  .buyscreen-header-trailing .buyscreen-user-summary > span.min-w-0 {
+    display: none !important;
+  }
+  .buyscreen-header-trailing .buyscreen-user-summary {
+    padding: 0.35rem !important;
+  }
+}
+
 /* Planning invoice mobile safety: prevent clipping/overlap at 100-200% zoom */
 .planning-invoice-row {
   grid-template-columns: 96px 14px minmax(0, 1fr) !important;
