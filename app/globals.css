@@ -304,6 +304,28 @@ main.buyscreen-page button.buyscreen-user-trigger:focus-visible {
 .buyscreen-hero-scroll-hint {
   display: none;
 }
+.buyscreen-social-row {
+  /* default (desktop/tablet) keeps natural wrapping if needed */
+}
+
+@media (max-width: 640px) {
+  @media (min-resolution: 1.4dppx) {
+    .buyscreen-social-row {
+      flex-wrap: nowrap !important;
+      gap: 0.35rem !important;
+      padding-left: 0.75rem !important;
+      padding-right: 0.75rem !important;
+    }
+    .buyscreen-social-row svg {
+      width: 14px;
+      height: 14px;
+    }
+    .buyscreen-social-row i {
+      font-size: 0.75rem;
+      line-height: 1;
+    }
+  }
+}
 .buyscreen-hero-scroll-note {
   display: none;
 }

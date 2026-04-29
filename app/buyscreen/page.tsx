@@ -192,6 +192,7 @@ function CheckIcon() {
 }
 
 function BuyScreenStacklyFooter() {
+  const router = useRouter();
   const [footerEmail, setFooterEmail] = useState("");
   const [footerToast, setFooterToast] = useState<string | null>(null);
   const footerToastTimerRef = useRef<number | null>(null);
@@ -317,7 +318,17 @@ function BuyScreenStacklyFooter() {
           </div>
 
           <div className="min-w-0 lg:col-span-1">
-            <div className="inline-flex h-8 w-fit min-w-[92px] items-center justify-center overflow-hidden rounded-[50%] bg-white px-3 sm:h-9 sm:min-w-[104px]">
+            <button
+              type="button"
+              onClick={() => {
+                router.push("/buyscreen");
+                window.requestAnimationFrame(() => {
+                  window.scrollTo({ top: 0, behavior: "smooth" });
+                });
+              }}
+              className="inline-flex h-8 w-fit min-w-[92px] items-center justify-center overflow-hidden rounded-[50%] bg-white px-3 sm:h-9 sm:min-w-[104px]"
+              aria-label="Go to home page"
+            >
               <Image
                 src="/stackly-logo.webp"
                 alt="Stackly logo"
@@ -326,7 +337,7 @@ function BuyScreenStacklyFooter() {
                 className="h-[18px] w-auto sm:h-[20px]"
                 unoptimized
               />
-            </div>
+            </button>
             <p className="mt-5 text-sm leading-relaxed text-[#d1d5db]">
               The <strong className="font-semibold text-white">NO-CODE</strong> website builder for everyone. Powered by AWS infrastructure,
               built by The <strong className="font-semibold text-white">Stackly</strong> team.
@@ -335,20 +346,20 @@ function BuyScreenStacklyFooter() {
         </div>
 
         <div className="mt-14 flex flex-col gap-8 border-t border-white/15 pt-10 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
-          <div className="inline-flex w-fit max-w-full flex-wrap items-center gap-4 rounded-full bg-white px-4 py-2.5 text-[#001632] shadow-sm sm:gap-5">
+          <div className="buyscreen-social-row inline-flex w-fit max-w-full flex-wrap items-center gap-4 rounded-full bg-white px-4 py-2.5 text-[#001632] shadow-sm sm:gap-5">
             <a href="https://www.facebook.com/thestackly" target="_blank" rel="noreferrer" className="transition-colors hover:text-[#1877f2]" aria-label="Facebook">
               <FaFacebookF className="h-4 w-4" />
             </a>
             <a href="https://www.youtube.com/@thestackly" target="_blank" rel="noreferrer" className="transition-colors hover:text-[#ff0000]" aria-label="YouTube">
               <FaYoutube className="h-4 w-4" />
             </a>
-            <a href="https://www.instagram.com/thestackly" target="_blank" rel="noreferrer" className="transition-colors hover:text-[#e4405f]" aria-label="Instagram">
+            <a href="https://www.instagram.com/the_stackly" target="_blank" rel="noreferrer" className="transition-colors hover:text-[#e4405f]" aria-label="Instagram">
               <FaInstagram className="h-4 w-4" />
             </a>
-            <a href="https://x.com/thestackly" target="_blank" rel="noreferrer" className="transition-colors hover:text-[#111827]" aria-label="X">
+            <a href="https://X.com/the_stackly" target="_blank" rel="noreferrer" className="transition-colors hover:text-[#111827]" aria-label="X">
               <FaXTwitter className="h-4 w-4" />
             </a>
-            <a href="https://www.linkedin.com/company/thestackly" target="_blank" rel="noreferrer" className="transition-colors hover:text-[#0a66c2]" aria-label="LinkedIn">
+            <a href="https://www.linkedin.com/company/the-stackly/" target="_blank" rel="noreferrer" className="transition-colors hover:text-[#0a66c2]" aria-label="LinkedIn">
               <FaLinkedinIn className="h-4 w-4" />
             </a>
             <a href="https://thestackly.com" target="_blank" rel="noreferrer" className="transition-colors hover:text-[#18a3a4]" aria-label="Website">
@@ -1198,7 +1209,7 @@ export default function BuyScreenPage() {
               </button>
               <button
                 type="button"
-                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white text-[#06224C] transition-colors hover:bg-[#fef3c7] hover:text-[#06224C]"
+                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white text-[#06224C] transition-colors hover:bg-[#fef3c7] hover:text-[#06224C]"
                 aria-label="Search"
                 aria-expanded={isTopHeaderSearchOpen}
                 onClick={(e) => {
@@ -1206,7 +1217,7 @@ export default function BuyScreenPage() {
                   setIsTopHeaderSearchOpen((v) => !v);
                 }}
               >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden>
                   <circle cx="11" cy="11" r="6.5" stroke="currentColor" strokeWidth="1.7" />
                   <path d="m16 16 4 4" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
                 </svg>
@@ -1299,7 +1310,7 @@ export default function BuyScreenPage() {
 
       <div ref={contentStartRef} className="mx-auto w-full max-w-7xl px-4 pb-3 pt-0 sm:px-6 sm:pb-4 sm:pt-0 lg:px-8 lg:pb-6 lg:pt-0">
 
-        <div className="mb-6 flex justify-end sm:mb-8">
+        <div className="my-6 flex justify-end sm:my-8">
           <button
             type="button"
             className="rounded-md bg-[#171717] px-4 py-2 text-xs font-semibold text-white transition-colors hover:bg-[#0f2f66] hover:text-white"
@@ -1536,9 +1547,14 @@ export default function BuyScreenPage() {
                 </button>
               </div>
 
-              <div className="buyscreen-products-row flex items-center gap-2 sm:gap-4">
+              <div className="buyscreen-products-row flex items-stretch gap-2 sm:gap-4">
                 {!showAllProducts && !isSearching ? (
-                  <button type="button" className="buyscreen-products-arrow shrink-0" aria-label="Previous products" onClick={() => moveProducts(-1)}>
+                  <button
+                    type="button"
+                    className="buyscreen-products-arrow shrink-0 self-center"
+                    aria-label="Previous products"
+                    onClick={() => moveProducts(-1)}
+                  >
                     <svg width="16" height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
                       <circle cx="10" cy="10" r="8" stroke="currentColor" strokeWidth="1.3" />
                       <path d="M11.2 7.3 8.4 10l2.8 2.7" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
@@ -1626,7 +1642,12 @@ export default function BuyScreenPage() {
                   </div>
                 </div>
                 {!showAllProducts && !isSearching ? (
-                  <button type="button" className="buyscreen-products-arrow shrink-0" aria-label="Next products" onClick={() => moveProducts(1)}>
+                  <button
+                    type="button"
+                    className="buyscreen-products-arrow shrink-0 self-center"
+                    aria-label="Next products"
+                    onClick={() => moveProducts(1)}
+                  >
                     <svg width="16" height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
                       <circle cx="10" cy="10" r="8" stroke="currentColor" strokeWidth="1.3" />
                       <path d="M8.8 7.3 11.6 10l-2.8 2.7" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
