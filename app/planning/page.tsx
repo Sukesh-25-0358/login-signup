@@ -578,7 +578,7 @@ export default function PlanningPage() {
               >
                 <img
                   src="/photo.webp"
-                  alt=""
+                  alt="User profile photo"
                   className="h-8 w-8 shrink-0 rounded-full object-cover md:h-7 md:w-7"
                 />
                 <span className="hidden max-w-[140px] truncate text-left text-[11px] text-white md:inline md:max-w-[180px]">

@@ -194,6 +194,7 @@ function CheckIcon() {
 function BuyScreenStacklyFooter() {
   const router = useRouter();
   const [footerEmail, setFooterEmail] = useState("");
+  const [footerEmailError, setFooterEmailError] = useState<string | null>(null);
   const [footerToast, setFooterToast] = useState<string | null>(null);
   const footerToastTimerRef = useRef<number | null>(null);
 
@@ -205,14 +206,25 @@ function BuyScreenStacklyFooter() {
     };
   }, []);
 
+  const validateFooterEmail = useCallback((email: string) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
+  }, []);
+
   const handleFooterSend = useCallback(() => {
     const trimmedEmail = footerEmail.trim();
+    let nextError: string | null = null;
     if (!trimmedEmail) {
-      setFooterToast("Please enter your email.");
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
-      setFooterToast("Please enter a valid email address.");
+      nextError = "Please enter your email.";
+    } else if (!validateFooterEmail(trimmedEmail)) {
+      nextError = "Please enter a valid email address.";
+    }
+
+    if (nextError) {
+      setFooterEmailError(nextError);
+      setFooterToast(null);
     } else {
       setFooterEmail("");
+      setFooterEmailError(null);
       setFooterToast("Mail sent successfully.");
     }
     if (footerToastTimerRef.current) {
@@ -221,7 +233,7 @@ function BuyScreenStacklyFooter() {
     footerToastTimerRef.current = window.setTimeout(() => {
       setFooterToast(null);
     }, 2200);
-  }, [footerEmail]);
+  }, [footerEmail, validateFooterEmail]);
 
   return (
     <footer className="buyscreen-stackly-footer mt-3 w-full bg-[#001632] text-[#d1d5db] antialiased sm:mt-4">
@@ -242,9 +254,29 @@ function BuyScreenStacklyFooter() {
                   name="footer-email"
                   autoComplete="email"
                   value={footerEmail}
-                  onChange={(e) => setFooterEmail(e.target.value)}
+                  onChange={(e) => {
+                    const nextValue = e.target.value;
+                    setFooterEmail(nextValue);
+                    if (footerToastTimerRef.current) {
+                      window.clearTimeout(footerToastTimerRef.current);
+                    }
+                    setFooterToast(null);
+                    const trimmed = nextValue.trim();
+                    if (!trimmed) {
+                      setFooterEmailError(null);
+                      return;
+                    }
+                    if (!validateFooterEmail(trimmed)) {
+                      setFooterEmailError("Please enter a valid email address.");
+                      return;
+                    }
+                    setFooterEmailError(null);
+                  }}
                   placeholder="Your email"
                   className="min-w-0 flex-1 bg-transparent px-2 text-sm text-[#374151] outline-none placeholder:text-[#6b7280]"
+                  aria-label="Email address"
+                  aria-invalid={footerEmailError ? "true" : "false"}
+                  aria-describedby="buyscreenFooterEmailError"
                 />
               </div>
               <button
@@ -255,6 +287,12 @@ function BuyScreenStacklyFooter() {
                 <FaPaperPlane className="h-4 w-4" aria-hidden />
               </button>
             </form>
+            <p
+              id="buyscreenFooterEmailError"
+              className={footerEmailError ? "mt-2 text-xs font-semibold text-[#ff664f]" : "hidden mt-2 text-xs font-semibold text-[#ff664f]"}
+            >
+              {footerEmailError}
+            </p>
             <h3 className="mt-8 text-sm font-bold text-white">Headquarters</h3>
             <p className="mt-2 text-sm leading-relaxed text-[#d1d5db]">
               MMR Complex, Salem,
@@ -1346,6 +1384,7 @@ export default function BuyScreenPage() {
                   }}
                   placeholder="Search..."
                   className="min-w-0 flex-1 bg-transparent text-[#4b5563] outline-none placeholder:text-[#4b5563] placeholder:opacity-100"
+                  aria-label="Search products"
                 />
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-[#374151]" aria-hidden>
                   <circle cx="11" cy="11" r="6.5" stroke="currentColor" strokeWidth="1.7" />
@@ -1491,9 +1530,9 @@ export default function BuyScreenPage() {
             <section className="buyscreen-hero relative flex aspect-[4/5] items-center overflow-hidden rounded-xl border border-[#efefef] p-4 sm:aspect-[16/10] sm:p-8 lg:aspect-[16/9] lg:p-10">
               <picture className="absolute inset-0 block h-full w-full">
                 <source media="(max-width: 767px)" srcSet={MOBILE_HERO_IMAGE_URL} />
-                <img src="/background.webp" alt="Electronics hero background" className="h-full w-full object-cover object-center" />
+                <img src="/background.webp" alt="Electronics promotional hero image" className="h-full w-full object-cover object-center" />
               </picture>
-              <div className="buyscreen-hero-overlay absolute inset-0 z-[1] bg-[#001632]/45" aria-hidden />
+              <div className="buyscreen-hero-overlay absolute inset-0 z-[1] bg-[#001632]/45 pointer-events-none" aria-hidden />
               <div ref={heroContentRef} className="buyscreen-hero-content relative z-10 w-full min-w-0 max-w-full px-1 text-center sm:max-w-xl sm:px-0 lg:text-left">
                 <h1 className="text-[clamp(1.05rem,5.1vw,1.75rem)] font-bold leading-tight text-white sm:text-3xl lg:text-4xl">
                   Your One-Stop Electronic Market
@@ -1503,7 +1542,7 @@ export default function BuyScreenPage() {
                 </p>
                 <button
                   type="button"
-                  className="mt-4 rounded-md bg-white px-4 py-2 text-xs font-semibold text-[#06224C] shadow-sm transition-colors hover:bg-[#fef3c7] sm:mt-6 sm:px-5 sm:py-2.5 sm:text-sm"
+                  className="mt-4 rounded-md bg-white px-4 py-2 text-xs font-semibold text-[#06224C] shadow-sm transition-colors hover:bg-[#fef3c7] hover:shadow-md hover:ring-2 hover:ring-[#fef3c7]/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#fef3c7] focus-visible:ring-offset-2 focus-visible:ring-offset-[#001632] sm:mt-6 sm:px-5 sm:py-2.5 sm:text-sm"
                   onClick={() => featuredProductsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })}
                 >
                   Shop Now
