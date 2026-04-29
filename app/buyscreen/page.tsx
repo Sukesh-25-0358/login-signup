@@ -384,7 +384,7 @@ function BuyScreenStacklyFooter() {
         </div>
 
         <div className="mt-14 flex flex-col gap-8 border-t border-white/15 pt-10 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
-          <div className="buyscreen-social-row inline-flex w-fit max-w-full flex-wrap items-center gap-4 rounded-full bg-white px-4 py-2.5 text-[#001632] shadow-sm sm:gap-5">
+          <div className="buyscreen-social-row inline-flex w-fit max-w-full flex-nowrap items-center gap-4 rounded-full bg-white px-4 py-2.5 text-[#001632] shadow-sm sm:gap-5">
             <a href="https://www.facebook.com/thestackly" target="_blank" rel="noreferrer" className="transition-colors hover:text-[#1877f2]" aria-label="Facebook">
               <FaFacebookF className="h-4 w-4" />
             </a>
@@ -1538,7 +1538,9 @@ export default function BuyScreenPage() {
                   Your One-Stop Electronic Market
                 </h1>
                 <p className="mx-auto mt-2 max-w-xl text-[clamp(0.7rem,2.9vw,0.95rem)] leading-relaxed text-white sm:mt-3 sm:text-base lg:mx-0">
-                  Welcome to e-shop, where you can buy all kinds of electronics. Sale every day.
+                  Welcome to e-shop, where you can buy all kinds of electronics.
+                  <br />
+                  Sales every day.
                 </p>
                 <button
                   type="button"
