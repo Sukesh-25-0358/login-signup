@@ -75,16 +75,31 @@ body:has(> main.buyscreen-page) {
 /* Product cards: text + badge safe at mobile & 100–200% zoom */
 .buyscreen-product-card {
   min-width: 0;
+  height: 100%;
+  min-height: 16.75rem;
 }
 .buyscreen-product-meta {
   min-width: 0;
   max-width: 100%;
+  display: flex;
+  min-height: 5rem;
+  flex-direction: column;
+  justify-content: flex-start;
 }
 .buyscreen-product-meta p {
   min-width: 0;
   max-width: 100%;
   overflow-wrap: anywhere;
   word-break: normal;
+}
+.buyscreen-product-meta p:nth-last-child(2) {
+  min-height: 2.35em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.buyscreen-product-meta p:last-child {
+  margin-top: auto;
 }
 /* Featured products: single horizontal row; column count from JS via --buyscreen-carousel-slots (zoom-safe). */
 .buyscreen-products.buyscreen-products--carousel {
@@ -115,18 +130,26 @@ body:has(> main.buyscreen-page) {
 .buyscreen-products-arrow {
   width: 20px;
   height: 20px;
-  border: 0;
-  background: transparent;
-  color: #bcc1c8;
+  border: 1px solid #64748b;
+  border-radius: 9999px;
+  background: #ffffff;
+  color: #1e293b;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
   padding: 0;
   cursor: pointer;
+  transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease, box-shadow 150ms ease;
 }
 .buyscreen-products-arrow:hover {
-  color: #9ca3af;
+  background: #06224c;
+  border-color: #06224c;
+  color: #ffffff;
+}
+.buyscreen-products-arrow:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px #93c5fd;
 }
 .buyscreen-category-item {
   padding: 0.42rem 0.9rem;
@@ -233,6 +256,15 @@ main.buyscreen-page button.buyscreen-user-trigger:focus-visible {
 .buyscreen-product-actions-mobile > button svg {
   width: 11px;
   height: 11px;
+}
+.buyscreen-product-card:focus-visible {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: inset 0 0 0 2px #2563eb;
+}
+.buyscreen-product-card:focus-within .buyscreen-product-hover-actions {
+  pointer-events: auto;
+  opacity: 1;
 }
 @media (max-width: 480px) {
   .buyscreen-products-row .buyscreen-products-arrow {

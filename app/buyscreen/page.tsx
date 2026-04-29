@@ -54,6 +54,7 @@ type BuyProduct = {
   image: string;
   badge: string;
   price: string;
+  originalPrice?: string;
   unitPriceCents: number;
 };
 
@@ -64,7 +65,7 @@ type CartItem = {
 
 const buyProducts: BuyProduct[] = [
   { id: "phone", name: "Phone", image: "/phone.webp", badge: "", price: "$899.00", unitPriceCents: 899_00 },
-  { id: "audio", name: "Audio", image: "/audio.webp", badge: "50%", price: "$149.00", unitPriceCents: 149_00 },
+  { id: "audio", name: "Audio", image: "/audio.webp", badge: "50%", price: "$149.00", originalPrice: "$298.00", unitPriceCents: 149_00 },
   { id: "laptop", name: "Laptop", image: "/laptop.webp", badge: "", price: "$1,299.00", unitPriceCents: 129_900 },
   { id: "camera", name: "Camera", image: "/camera.webp", badge: "", price: "$79.00", unitPriceCents: 79_00 },
   { id: "television", name: "Television", image: "/television.webp", badge: "", price: "$599.00", unitPriceCents: 599_00 },
@@ -74,6 +75,9 @@ const buyProducts: BuyProduct[] = [
   { id: "keyboard", name: "Keyboard", image: "/keyboard.webp", badge: "", price: "$49.00", unitPriceCents: 49_00 },
   { id: "mouse", name: "Mouse", image: "/mouse.webp", badge: "", price: "$29.00", unitPriceCents: 29_00 },
 ];
+const buyProductById = new Map(buyProducts.map((product) => [product.id, product]));
+const BUYSCREEN_CART_STORAGE_KEY = "buyscreenCartItemsV1";
+const BUYSCREEN_FAVORITES_STORAGE_KEY = "buyscreenFavoriteIdsV1";
 
 const bestSellerIds = new Set(["phone", "laptop", "television", "camera", "audio"]);
 const newArrivalIds = new Set(["watch", "speaker", "keyboard", "mouse", "tablet"]);
@@ -390,11 +394,14 @@ export default function BuyScreenPage() {
   const [isTopHeaderProfileMenuOpen, setIsTopHeaderProfileMenuOpen] = useState(false);
   const [activeTopHeaderItem, setActiveTopHeaderItem] = useState("Home");
   const [showHeroScrollNote, setShowHeroScrollNote] = useState(false);
+  const [hasLoadedCart, setHasLoadedCart] = useState(false);
+  const [hasLoadedFavorites, setHasLoadedFavorites] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isCategoryMenuOpen, setIsCategoryMenuOpen] = useState(false);
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [favoriteProductIds, setFavoriteProductIds] = useState<string[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isFavoritesOpen, setIsFavoritesOpen] = useState(false);
   const [licenseProduct, setLicenseProduct] = useState<BuyProduct | null>(null);
   const [licenseQty, setLicenseQty] = useState(1);
   const [actionToast, setActionToast] = useState<string | null>(null);
@@ -410,6 +417,68 @@ export default function BuyScreenPage() {
   const productsTouchStartXRef = useRef<number | null>(null);
   const productsTouchStartYRef = useRef<number | null>(null);
   const [carouselCols, setCarouselCols] = useState(3);
+
+  useEffect(() => {
+    try {
+      const raw = window.localStorage.getItem(BUYSCREEN_CART_STORAGE_KEY);
+      if (!raw) return;
+      const parsed = JSON.parse(raw);
+      if (!Array.isArray(parsed)) return;
+      const restored: CartItem[] = parsed
+        .map((entry) => {
+          if (!entry || typeof entry !== "object") return null;
+          const productId = typeof entry.productId === "string" ? entry.productId : "";
+          const qty = typeof entry.qty === "number" ? Math.floor(entry.qty) : 0;
+          if (!productId || qty <= 0) return null;
+          const product = buyProductById.get(productId);
+          if (!product) return null;
+          return { product, qty };
+        })
+        .filter((entry): entry is CartItem => entry !== null);
+      if (restored.length) setCartItems(restored);
+    } catch {
+      // Ignore malformed storage and keep default empty cart.
+    } finally {
+      setHasLoadedCart(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!hasLoadedCart) return;
+    try {
+      const serializable = cartItems.map((item) => ({
+        productId: item.product.id,
+        qty: item.qty,
+      }));
+      window.localStorage.setItem(BUYSCREEN_CART_STORAGE_KEY, JSON.stringify(serializable));
+    } catch {
+      // Ignore storage write failures.
+    }
+  }, [cartItems, hasLoadedCart]);
+
+  useEffect(() => {
+    try {
+      const raw = window.localStorage.getItem(BUYSCREEN_FAVORITES_STORAGE_KEY);
+      if (!raw) return;
+      const parsed = JSON.parse(raw);
+      if (!Array.isArray(parsed)) return;
+      const restored = parsed.filter((id): id is string => typeof id === "string" && buyProductById.has(id));
+      if (restored.length) setFavoriteProductIds(restored);
+    } catch {
+      // Ignore malformed storage and keep default empty favorites.
+    } finally {
+      setHasLoadedFavorites(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!hasLoadedFavorites) return;
+    try {
+      window.localStorage.setItem(BUYSCREEN_FAVORITES_STORAGE_KEY, JSON.stringify(favoriteProductIds));
+    } catch {
+      // Ignore storage write failures.
+    }
+  }, [favoriteProductIds, hasLoadedFavorites]);
 
   const normalizedSearchQuery = searchQuery.trim().toLowerCase();
   const categoryFilteredProducts = buyProducts.filter((product) => {
@@ -437,6 +506,9 @@ export default function BuyScreenPage() {
       })
     : [];
   const displayedProducts = isSearching || showAllProducts ? searchFilteredProducts : visibleBuyProducts;
+  const favoriteProducts = favoriteProductIds
+    .map((id) => buyProductById.get(id))
+    .filter((product): product is BuyProduct => Boolean(product));
 
   const closeLicenseModal = useCallback(() => {
     setLicenseProduct(null);
@@ -477,11 +549,22 @@ export default function BuyScreenPage() {
 
   const toggleFavorite = useCallback(
     (product: BuyProduct) => {
-      const isFavorite = favoriteProductIds.includes(product.id);
-      setFavoriteProductIds((prev) => (isFavorite ? prev.filter((id) => id !== product.id) : [...prev, product.id]));
-      showActionToast(isFavorite ? `${product.name} removed from favorites` : `${product.name} added to favorites`);
+      setFavoriteProductIds((prev) => {
+        const isFavorite = prev.includes(product.id);
+        showActionToast(isFavorite ? `${product.name} removed from favorites` : `${product.name} added to favorites`);
+        return isFavorite ? prev.filter((id) => id !== product.id) : [...prev, product.id];
+      });
     },
-    [favoriteProductIds, showActionToast]
+    [showActionToast]
+  );
+
+  const removeFavoriteProduct = useCallback(
+    (productId: string) => {
+      const product = buyProductById.get(productId);
+      setFavoriteProductIds((prev) => prev.filter((id) => id !== productId));
+      if (product) showActionToast(`${product.name} removed from favorites`);
+    },
+    [showActionToast]
   );
 
   const shareProduct = useCallback(
@@ -510,11 +593,12 @@ export default function BuyScreenPage() {
   );
 
   useEffect(() => {
-    if (!licenseProduct && !isCartOpen) return;
+    if (!licenseProduct && !isCartOpen && !isFavoritesOpen) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== "Escape") return;
       if (licenseProduct) closeLicenseModal();
       if (isCartOpen) setIsCartOpen(false);
+      if (isFavoritesOpen) setIsFavoritesOpen(false);
     };
     window.addEventListener("keydown", onKey);
     const prev = document.body.style.overflow;
@@ -523,7 +607,7 @@ export default function BuyScreenPage() {
       window.removeEventListener("keydown", onKey);
       document.body.style.overflow = prev;
     };
-  }, [licenseProduct, isCartOpen, closeLicenseModal]);
+  }, [licenseProduct, isCartOpen, isFavoritesOpen, closeLicenseModal]);
 
   useEffect(() => {
     return () => {
@@ -913,6 +997,51 @@ export default function BuyScreenPage() {
           </div>
         </div>
       ) : null}
+      {isFavoritesOpen ? (
+        <div className="fixed inset-0 z-[109] flex items-start justify-center overflow-y-auto overscroll-contain p-4 sm:items-center sm:p-6">
+          <button type="button" className="fixed inset-0 bg-black/45 backdrop-blur-[1px]" aria-label="Close favorites" onClick={() => setIsFavoritesOpen(false)} />
+          <div
+            role="dialog"
+            aria-modal
+            aria-labelledby="buyscreen-favorites-title"
+            className="relative z-10 my-auto flex max-h-[min(90dvh,720px)] w-full max-w-lg flex-col overflow-hidden rounded-2xl border border-[#e5e7eb] bg-white shadow-2xl sm:max-h-[85dvh]"
+          >
+            <div className="shrink-0 border-b border-[#eef2f7] p-6 pb-4 sm:p-8 sm:pb-4">
+              <div className="flex items-center justify-between gap-3">
+                <h2 id="buyscreen-favorites-title" className="text-lg font-semibold text-[#06224C]">
+                  Your favorites
+                </h2>
+                <p className="text-sm font-bold tabular-nums text-[#06224C]">{favoriteProducts.length} item{favoriteProducts.length === 1 ? "" : "s"}</p>
+              </div>
+            </div>
+            <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-6 pb-6 pt-4 sm:px-8 sm:pb-8">
+              {favoriteProducts.length ? (
+                <div className="space-y-3">
+                  {favoriteProducts.map((product) => (
+                    <div key={product.id} className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-[#e5e7eb] bg-[#fafafa] px-3 py-2.5">
+                      <div className="min-w-0 flex-1">
+                        <p className="break-words text-sm font-semibold text-[#111827]">{product.name}</p>
+                        <p className="text-xs text-[#6b7280]">{product.price}</p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => removeFavoriteProduct(product.id)}
+                        className="w-full rounded-md border border-[#fecaca] px-2 py-1 text-xs font-semibold text-[#dc2626] hover:bg-[#fef2f2] sm:w-auto"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="rounded-lg border border-dashed border-[#cbd5e1] bg-[#f8fafc] px-4 py-4 text-sm text-[#6b7280]">
+                  Your favorites list is empty. Tap the heart icon on a product to save it.
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
+      ) : null}
 
       <section className="relative left-1/2 mb-4 w-screen -translate-x-1/2 overflow-visible bg-[#06224C]">
         <div ref={topHeaderBarRef}>
@@ -1223,6 +1352,22 @@ export default function BuyScreenPage() {
                     <span className="buyscreen-cart-secondary block text-[11px] tabular-nums sm:text-xs">{cartItems.length ? formatUsd(cartTotalCents) : "Empty"}</span>
                   </span>
                 </button>
+                <button type="button" className="buyscreen-cart-trigger flex items-center gap-2 rounded-md px-2 py-1" onClick={() => setIsFavoritesOpen(true)}>
+                  <span className="relative shrink-0">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+                      <path d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733C11.285 5.876 9.623 4.75 7.688 4.75 5.099 4.75 3 6.765 3 9.25c0 7.22 9 12 9 12s9-4.78 9-12z" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                    {favoriteProducts.length > 0 ? (
+                      <span className="absolute -right-2 -top-2 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#ff664f] px-1 text-[10px] font-bold leading-none text-white">
+                        {favoriteProducts.length}
+                      </span>
+                    ) : null}
+                  </span>
+                  <span className="min-w-0 leading-tight">
+                    <span className="block text-[11px] font-semibold sm:text-xs">Favorites</span>
+                    <span className="buyscreen-cart-secondary block text-[11px] tabular-nums sm:text-xs">{favoriteProducts.length ? `${favoriteProducts.length} items` : "Empty"}</span>
+                  </span>
+                </button>
                 <span className="h-6 w-px shrink-0 bg-[#d1d5db]" aria-hidden />
                 <div ref={userMenuWrapRef} className="buyscreen-user-menu-wrap relative shrink-0">
                   <button
@@ -1339,7 +1484,7 @@ export default function BuyScreenPage() {
                 </p>
                 <button
                   type="button"
-                  className="mt-4 rounded-md bg-[#06224C] px-4 py-2 text-xs font-semibold text-white sm:mt-6 sm:px-5 sm:py-2.5 sm:text-sm"
+                  className="mt-4 rounded-md bg-white px-4 py-2 text-xs font-semibold text-[#06224C] shadow-sm transition-colors hover:bg-[#fef3c7] sm:mt-6 sm:px-5 sm:py-2.5 sm:text-sm"
                   onClick={() => featuredProductsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })}
                 >
                   Shop Now
@@ -1413,6 +1558,7 @@ export default function BuyScreenPage() {
                   {displayedProducts.map((product, index) => (
                     <article
                       key={`${product.id}-${index}`}
+                      tabIndex={0}
                       className="buyscreen-product-card group relative flex min-w-0 flex-col rounded-lg border border-[#ececec] bg-white p-2 shadow-sm transition-[box-shadow,border-color] duration-200 hover:border-[#d4d4d4] hover:shadow-lg sm:p-3"
                     >
                       <div className="buyscreen-product-image-wrap relative aspect-[4/3] w-full overflow-hidden rounded-md bg-white">
@@ -1422,7 +1568,7 @@ export default function BuyScreenPage() {
                             backgroundImage: `url('${product.image}')`,
                           }}
                         />
-                        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 hidden justify-center px-1 pb-2 pt-6 opacity-0 transition-opacity duration-200 group-hover:pointer-events-auto group-hover:opacity-100 lg:flex">
+                        <div className="buyscreen-product-hover-actions pointer-events-none absolute inset-x-0 bottom-0 z-10 hidden justify-center px-1 pb-2 pt-6 opacity-0 transition-opacity duration-200 group-hover:pointer-events-auto group-hover:opacity-100 group-focus-within:pointer-events-auto group-focus-within:opacity-100 lg:flex">
                           <div className="pointer-events-auto flex items-center gap-1.5 sm:gap-2">
                             <BuyProductActionButtons
                               compact={false}
@@ -1457,6 +1603,9 @@ export default function BuyScreenPage() {
                           {product.name}
                         </p>
                         <p className="mt-1 text-center text-xs font-bold leading-snug tracking-tight text-[#171717] [overflow-wrap:anywhere] tabular-nums sm:text-sm">
+                          {product.originalPrice ? (
+                            <span className="mr-1.5 text-[10px] font-semibold text-[#9ca3af] line-through sm:text-xs">{product.originalPrice}</span>
+                          ) : null}
                           {product.price}
                         </p>
                       </div>
