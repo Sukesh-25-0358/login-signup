@@ -20,7 +20,7 @@ const buyCategories = [
   { label: "Blog" },
   { label: "Contact" },
   { label: "Limited Sale" },
-  { label: "Best Seller" },
+  { label: "Best Sellers" },
   { label: "New Arrivals" },
 ];
 
@@ -42,9 +42,9 @@ const buyAllSubCategorySets = new Map(
 type BuyFeatureIconType = "responsive" | "secure" | "shipping" | "transparent";
 
 const buyFeatures: Array<{ icon: BuyFeatureIconType; title: string; subtitle: string }> = [
-  { icon: "responsive", title: "Responsive", subtitle: "Customer service available 24/7" },
+  { icon: "responsive", title: "Responsive", subtitle: "Customer service is available 24/7" },
   { icon: "secure", title: "Secure", subtitle: "Certified marketplace since 2017" },
-  { icon: "shipping", title: "Shipping", subtitle: "Fast, safe, and reliable worldwide" },
+  { icon: "shipping", title: "Shipping", subtitle: "Shipping worldwide" },
   { icon: "transparent", title: "Transparent", subtitle: "Hassle-free return policy" },
 ];
 
@@ -378,7 +378,7 @@ function BuyScreenStacklyFooter() {
             </button>
             <p className="mt-5 text-sm leading-relaxed text-[#d1d5db]">
               The <strong className="font-semibold text-white">NO-CODE</strong> website builder for everyone. Powered by AWS infrastructure,
-              built by The <strong className="font-semibold text-white">Stackly</strong> team.
+              built by <strong className="font-semibold text-white">The Stackly team</strong>.
             </p>
           </div>
         </div>
@@ -538,7 +538,7 @@ export default function BuyScreenPage() {
     }
     if (activeCategoryLabel === "All Categories" || activeCategoryLabel === "Products") return true;
     if (activeCategoryLabel === "Limited Sale") return Boolean(product.badge);
-    if (activeCategoryLabel === "Best Seller") return bestSellerIds.has(product.id);
+    if (activeCategoryLabel === "Best Sellers") return bestSellerIds.has(product.id);
     if (activeCategoryLabel === "New Arrivals") return newArrivalIds.has(product.id);
     return true;
   });
@@ -1361,7 +1361,7 @@ export default function BuyScreenPage() {
         <section className="buyscreen-shell overflow-hidden rounded-lg border border-[#d9d9d9] bg-white shadow-sm">
           <header className="buyscreen-header flex flex-col gap-4 border-b border-[#ededed] px-4 py-4 sm:px-8 sm:py-5 lg:flex-row lg:items-center lg:justify-between lg:gap-6 lg:py-4">
             <div className="flex shrink-0 items-center justify-between lg:justify-start">
-              <span className="text-base font-bold tracking-tight text-[#2b2b2b] sm:text-lg">e-shop.</span>
+              <span className="text-base font-bold tracking-tight text-[#2b2b2b] sm:text-lg">e-shop</span>
             </div>
 
             <div className="buyscreen-header-actions flex w-full min-w-0 items-center justify-end gap-2 text-[#4b5563] sm:gap-3 lg:w-auto">
@@ -1382,7 +1382,7 @@ export default function BuyScreenPage() {
                     setShowAllProducts(false);
                     featuredProductsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
                   }}
-                  placeholder="Search..."
+                  placeholder="Search products..."
                   className="min-w-0 flex-1 bg-transparent text-[#4b5563] outline-none placeholder:text-[#4b5563] placeholder:opacity-100"
                   aria-label="Search products"
                 />
@@ -1538,7 +1538,7 @@ export default function BuyScreenPage() {
                   Your One-Stop Electronic Market
                 </h1>
                 <p className="mx-auto mt-2 max-w-xl text-[clamp(0.7rem,2.9vw,0.95rem)] leading-relaxed text-white sm:mt-3 sm:text-base lg:mx-0">
-                  Welcome to e-shop, a place where you can buy everything about electronics. Sale every day.
+                  Welcome to e-shop, where you can buy all kinds of electronics. Sale every day.
                 </p>
                 <button
                   type="button"
