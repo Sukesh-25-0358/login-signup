@@ -371,6 +371,9 @@
         display: none !important;
       }
     }
+    #buyscreenPage .buyscreen-hero-overlay {
+      background: rgba(0, 22, 50, 0.45);
+    }
     #buyscreenPage .buyscreen-hero-content h1,
     #buyscreenPage .buyscreen-hero-content p {
       overflow-wrap: anywhere;
@@ -495,6 +498,13 @@
       }
     }
     @media (max-width: 640px) {
+      #buyscreenPage .buyscreen-hero-overlay {
+        background: rgba(0, 22, 50, 0.62) !important;
+      }
+      #buyscreenPage .buyscreen-hero-content h1,
+      #buyscreenPage .buyscreen-hero-content p {
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.55);
+      }
       #buyscreenPage .buyscreen-hero-scroll-note {
         margin-top: 0.35rem;
         text-align: center;
@@ -2310,6 +2320,7 @@
     }
     var buyscreenShowAllProducts = false;
     var buyscreenSearchQuery = "";
+    var buyscreenTopHeaderSearchQuery = "";
     var buyscreenCategoryMenuOpen = false;
     var buyscreenTopHeaderMenuOpen = false;
     var buyscreenTopHeaderSearchOpen = false;
@@ -2387,7 +2398,7 @@
       if (buyscreenTopHeaderSearchOpen) {
         var topInp = document.getElementById("buyscreenTopHeaderSearchInput");
         if (topInp) {
-          topInp.value = buyscreenSearchQuery;
+          topInp.value = buyscreenTopHeaderSearchQuery;
           setTimeout(function () {
             topInp.focus();
           }, 0);
@@ -2593,15 +2604,19 @@
         searchInput.dataset.bound = "1";
         searchInput.addEventListener("input", function () {
           buyscreenSearchQuery = searchInput.value || "";
-          var topHeaderIn = document.getElementById("buyscreenTopHeaderSearchInput");
-          if (topHeaderIn) topHeaderIn.value = buyscreenSearchQuery;
           buyscreenProductStart = 0;
           buyscreenShowAllProducts = false;
-          if (buyscreenSearchQuery.trim()) {
-            var featuredSection = document.getElementById("buyscreenFeaturedProducts");
-            if (featuredSection && featuredSection.scrollIntoView) {
-              featuredSection.scrollIntoView({ behavior: "smooth", block: "start" });
-            }
+          renderBuyscreenProductCarousel();
+        });
+        searchInput.addEventListener("keydown", function (event) {
+          if (event.key !== "Enter") return;
+          event.preventDefault();
+          buyscreenSearchQuery = searchInput.value || "";
+          buyscreenProductStart = 0;
+          buyscreenShowAllProducts = false;
+          var featuredSection = document.getElementById("buyscreenFeaturedProducts");
+          if (featuredSection && featuredSection.scrollIntoView) {
+            featuredSection.scrollIntoView({ behavior: "smooth", block: "start" });
           }
           renderBuyscreenProductCarousel();
         });
@@ -2610,17 +2625,15 @@
       if (topHeaderSearchInput && !topHeaderSearchInput.dataset.bound) {
         topHeaderSearchInput.dataset.bound = "1";
         topHeaderSearchInput.addEventListener("input", function () {
-          buyscreenSearchQuery = topHeaderSearchInput.value || "";
-          if (searchInput) searchInput.value = buyscreenSearchQuery;
-          buyscreenProductStart = 0;
-          buyscreenShowAllProducts = false;
-          if (buyscreenSearchQuery.trim()) {
-            var featuredSection2 = document.getElementById("buyscreenFeaturedProducts");
-            if (featuredSection2 && featuredSection2.scrollIntoView) {
-              featuredSection2.scrollIntoView({ behavior: "smooth", block: "start" });
-            }
-          }
-          renderBuyscreenProductCarousel();
+          buyscreenTopHeaderSearchQuery = topHeaderSearchInput.value || "";
+        });
+        topHeaderSearchInput.addEventListener("keydown", function (event) {
+          if (event.key !== "Enter") return;
+          event.preventDefault();
+          buyscreenTopHeaderSearchOpen = false;
+          renderBuyscreenTopHeaderSearch();
+          location.hash = "notFound";
+          showPage("notFound");
         });
       }
       renderBuyscreenProductCarousel();
@@ -2883,6 +2896,7 @@
       }
       saveBuyscreenCartItems();
       renderBuyscreenCartTotal();
+      showBuyscreenToast(product.name + " added to cart (" + qty + ")");
     }
 
     function removeBuyscreenCartItem(productName) {
@@ -3017,6 +3031,12 @@
         if (!card.hasAttribute("tabindex")) card.setAttribute("tabindex", "0");
         var hoverActions = card.querySelector(".pointer-events-none");
         if (hoverActions) hoverActions.classList.add("buyscreen-product-hover-actions");
+        var imageWrap = card.querySelector(".buyscreen-product-image-wrap");
+        var nameEl = card.querySelector(".buyscreen-product-meta p:nth-last-child(2)") || card.querySelector(".buyscreen-product-meta p");
+        if (imageWrap && nameEl) {
+          imageWrap.setAttribute("role", "img");
+          imageWrap.setAttribute("aria-label", (nameEl.textContent || "Product").trim() + " product image");
+        }
       });
       var favoriteBtns = page.querySelectorAll("[aria-label='Add to wishlist']");
       favoriteBtns.forEach(function (button) {
@@ -3182,8 +3202,6 @@
           buyscreenProductStart = 0;
           var subSearchInput = document.getElementById("buyscreenSearchInput");
           if (subSearchInput) subSearchInput.value = "";
-          var subTopSearch = document.getElementById("buyscreenTopHeaderSearchInput");
-          if (subTopSearch) subTopSearch.value = "";
           renderBuyscreenProductCarousel();
           var subFeaturedSection = document.getElementById("buyscreenFeaturedProducts");
           if (subFeaturedSection && subFeaturedSection.scrollIntoView) {
@@ -3214,8 +3232,6 @@
           buyscreenProductStart = 0;
           var searchInput = document.getElementById("buyscreenSearchInput");
           if (searchInput) searchInput.value = "";
-          var topHeaderSearchClear = document.getElementById("buyscreenTopHeaderSearchInput");
-          if (topHeaderSearchClear) topHeaderSearchClear.value = "";
           renderBuyscreenProductCarousel();
           var featuredSection = document.getElementById("buyscreenFeaturedProducts");
           if (featuredSection && featuredSection.scrollIntoView) {
@@ -4009,7 +4025,7 @@
               id="buyscreenTopHeaderSearchInput"
               type="search"
               placeholder="Search..."
-              class="min-w-0 flex-1 bg-transparent text-[#4b5563] outline-none placeholder:text-[#9ca3af]"
+              class="min-w-0 flex-1 bg-transparent text-[#4b5563] outline-none placeholder:text-[#4b5563] placeholder:opacity-100"
               aria-label="Search products"
             >
           </label>
@@ -4044,7 +4060,7 @@
           </div>
           <div class="buyscreen-header-actions flex w-full min-w-0 items-center justify-end gap-2 text-[#4b5563] sm:gap-3 lg:w-auto">
             <label class="buyscreen-search flex h-8 w-[150px] items-center rounded-md border-2 border-[#cbd5e1] px-2 text-[11px] text-[#4b5563] sm:h-9 sm:w-[180px] sm:text-xs">
-              <input id="buyscreenSearchInput" type="text" placeholder="Search..." class="min-w-0 flex-1 bg-transparent text-[#4b5563] outline-none placeholder:text-[#9ca3af]">
+              <input id="buyscreenSearchInput" type="text" placeholder="Search..." class="min-w-0 flex-1 bg-transparent text-[#4b5563] outline-none placeholder:text-[#4b5563] placeholder:opacity-100">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-[#374151]" aria-hidden="true">
                 <circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="1.7"></circle>
                 <path d="m16 16 4 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"></path>
@@ -4154,7 +4170,7 @@
             <source media="(max-width: 767px)" srcset="https://images.pexels.com/photos/325153/pexels-photo-325153.jpeg?auto=compress&cs=tinysrgb&w=900&h=1125&fit=crop">
             <img src="./public/background.webp" alt="Electronics hero background" class="h-full w-full object-cover object-center" width="640" height="360">
           </picture>
-          <div class="absolute inset-0 z-[1] bg-[#001632]/45" aria-hidden="true"></div>
+          <div class="buyscreen-hero-overlay absolute inset-0 z-[1] bg-[#001632]/45" aria-hidden="true"></div>
           <div id="buyscreenHeroContent" class="buyscreen-hero-content relative z-10 w-full min-w-0 max-w-full px-1 text-center sm:max-w-xl sm:px-0 lg:text-left">
             <h1 class="text-[clamp(1.05rem,5.1vw,1.75rem)] font-bold leading-tight text-white sm:text-3xl lg:text-4xl">Your One-Stop Electronic Market</h1>
             <p class="mx-auto mt-2 max-w-xl text-[clamp(0.7rem,2.9vw,0.95rem)] leading-relaxed text-white sm:mt-3 sm:text-base lg:mx-0">

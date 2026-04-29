@@ -390,6 +390,7 @@ export default function BuyScreenPage() {
   const [activeSubCategoryKey, setActiveSubCategoryKey] = useState<string | null>(null);
   const [isAllCategoriesDropdownOpen, setIsAllCategoriesDropdownOpen] = useState(false);
   const [isTopHeaderMenuOpen, setIsTopHeaderMenuOpen] = useState(false);
+  const [topHeaderSearchQuery, setTopHeaderSearchQuery] = useState("");
   const [isTopHeaderSearchOpen, setIsTopHeaderSearchOpen] = useState(false);
   const [isTopHeaderProfileMenuOpen, setIsTopHeaderProfileMenuOpen] = useState(false);
   const [activeTopHeaderItem, setActiveTopHeaderItem] = useState("Home");
@@ -520,22 +521,6 @@ export default function BuyScreenPage() {
     setLicenseQty(1);
   }, []);
 
-  const confirmLicensePurchase = useCallback(() => {
-    if (!licenseProduct) return;
-    setCartItems((prev) => {
-      const existing = prev.find((item) => item.product.id === licenseProduct.id);
-      if (existing) {
-        return prev.map((item) => (item.product.id === licenseProduct.id ? { ...item, qty: item.qty + licenseQty } : item));
-      }
-      return [...prev, { product: licenseProduct, qty: licenseQty }];
-    });
-    closeLicenseModal();
-  }, [licenseProduct, licenseQty, closeLicenseModal]);
-
-  const removeCartItem = useCallback((productId: string) => {
-    setCartItems((prev) => prev.filter((item) => item.product.id !== productId));
-  }, []);
-
   const showActionToast = useCallback((message: string) => {
     setActionToast(message);
     if (toastTimerRef.current) {
@@ -545,6 +530,25 @@ export default function BuyScreenPage() {
       setActionToast(null);
       toastTimerRef.current = null;
     }, 2200);
+  }, []);
+
+  const confirmLicensePurchase = useCallback(() => {
+    if (!licenseProduct) return;
+    const addedQty = licenseQty;
+    const productName = licenseProduct.name;
+    setCartItems((prev) => {
+      const existing = prev.find((item) => item.product.id === licenseProduct.id);
+      if (existing) {
+        return prev.map((item) => (item.product.id === licenseProduct.id ? { ...item, qty: item.qty + licenseQty } : item));
+      }
+      return [...prev, { product: licenseProduct, qty: licenseQty }];
+    });
+    showActionToast(`${productName} added to cart (${addedQty})`);
+    closeLicenseModal();
+  }, [licenseProduct, licenseQty, closeLicenseModal, showActionToast]);
+
+  const removeCartItem = useCallback((productId: string) => {
+    setCartItems((prev) => prev.filter((item) => item.product.id !== productId));
   }, []);
 
   const toggleFavorite = useCallback(
@@ -1254,18 +1258,18 @@ export default function BuyScreenPage() {
                 <input
                   ref={topHeaderSearchInputRef}
                   type="search"
-                  value={searchQuery}
+                  value={topHeaderSearchQuery}
                   onChange={(e) => {
-                    const nextValue = e.target.value;
-                    setSearchQuery(nextValue);
-                    setActiveProductStart(0);
-                    setShowAllProducts(false);
-                    if (nextValue.trim()) {
-                      featuredProductsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-                    }
+                    setTopHeaderSearchQuery(e.target.value);
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key !== "Enter") return;
+                    e.preventDefault();
+                    setIsTopHeaderSearchOpen(false);
+                    router.push("/page-not-found");
                   }}
                   placeholder="Search..."
-                  className="min-w-0 flex-1 bg-transparent text-[#4b5563] outline-none placeholder:text-[#9ca3af]"
+                  className="min-w-0 flex-1 bg-transparent text-[#4b5563] outline-none placeholder:text-[#4b5563] placeholder:opacity-100"
                   aria-label="Search products"
                 />
               </label>
@@ -1321,12 +1325,16 @@ export default function BuyScreenPage() {
                     setSearchQuery(nextValue);
                     setActiveProductStart(0);
                     setShowAllProducts(false);
-                    if (nextValue.trim()) {
-                      featuredProductsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-                    }
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key !== "Enter") return;
+                    e.preventDefault();
+                    setActiveProductStart(0);
+                    setShowAllProducts(false);
+                    featuredProductsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
                   }}
                   placeholder="Search..."
-                  className="min-w-0 flex-1 bg-transparent text-[#4b5563] outline-none placeholder:text-[#9ca3af]"
+                  className="min-w-0 flex-1 bg-transparent text-[#4b5563] outline-none placeholder:text-[#4b5563] placeholder:opacity-100"
                 />
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-[#374151]" aria-hidden>
                   <circle cx="11" cy="11" r="6.5" stroke="currentColor" strokeWidth="1.7" />
@@ -1474,7 +1482,7 @@ export default function BuyScreenPage() {
                 <source media="(max-width: 767px)" srcSet={MOBILE_HERO_IMAGE_URL} />
                 <img src="/background.webp" alt="Electronics hero background" className="h-full w-full object-cover object-center" />
               </picture>
-              <div className="absolute inset-0 z-[1] bg-[#001632]/45" aria-hidden />
+              <div className="buyscreen-hero-overlay absolute inset-0 z-[1] bg-[#001632]/45" aria-hidden />
               <div ref={heroContentRef} className="buyscreen-hero-content relative z-10 w-full min-w-0 max-w-full px-1 text-center sm:max-w-xl sm:px-0 lg:text-left">
                 <h1 className="text-[clamp(1.05rem,5.1vw,1.75rem)] font-bold leading-tight text-white sm:text-3xl lg:text-4xl">
                   Your One-Stop Electronic Market
@@ -1561,7 +1569,11 @@ export default function BuyScreenPage() {
                       tabIndex={0}
                       className="buyscreen-product-card group relative flex min-w-0 flex-col rounded-lg border border-[#ececec] bg-white p-2 shadow-sm transition-[box-shadow,border-color] duration-200 hover:border-[#d4d4d4] hover:shadow-lg sm:p-3"
                     >
-                      <div className="buyscreen-product-image-wrap relative aspect-[4/3] w-full overflow-hidden rounded-md bg-white">
+                      <div
+                        className="buyscreen-product-image-wrap relative aspect-[4/3] w-full overflow-hidden rounded-md bg-white"
+                        role="img"
+                        aria-label={`${product.name} product image`}
+                      >
                         <div
                           className="absolute inset-2 rounded-sm bg-white bg-contain bg-center bg-no-repeat"
                           style={{

@@ -298,6 +298,9 @@ main.buyscreen-page button.buyscreen-user-trigger:focus-visible {
 .buyscreen-hero-content p {
   overflow-wrap: anywhere;
 }
+.buyscreen-hero-overlay {
+  background: rgba(0, 22, 50, 0.45);
+}
 .buyscreen-hero-scroll-hint {
   display: none;
 }
@@ -308,6 +311,13 @@ main.buyscreen-page button.buyscreen-user-trigger:focus-visible {
   display: block;
 }
 @media (max-width: 640px) {
+  .buyscreen-hero-overlay {
+    background: rgba(0, 22, 50, 0.62) !important;
+  }
+  .buyscreen-hero-content h1,
+  .buyscreen-hero-content p {
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.55);
+  }
   .buyscreen-hero-scroll-note {
     margin-top: 0.35rem;
     text-align: center;
