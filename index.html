@@ -2548,6 +2548,14 @@
       var viewAllArrow = document.getElementById("buyscreenViewAllArrow");
       var emptyState = document.getElementById("buyscreenSearchEmpty");
       var swipeHint = document.getElementById("buyscreenProductsSwipeHint");
+      function setProductNavArrowsVisible(showArrows) {
+        [prev, next].forEach(function (btn) {
+          if (!btn) return;
+          btn.classList.toggle("hidden", !showArrows);
+          btn.style.display = showArrows ? "" : "none";
+          btn.setAttribute("aria-hidden", showArrows ? "false" : "true");
+        });
+      }
       function setViewAllState(label, showArrow) {
         if (viewAllLabel) viewAllLabel.textContent = label;
         if (viewAllArrow) {
@@ -2578,8 +2586,7 @@
       if (emptyState) emptyState.classList.add("hidden");
 
       if (!filteredCards.length) {
-        if (prev) prev.classList.add("hidden");
-        if (next) next.classList.add("hidden");
+        setProductNavArrowsVisible(false);
         setViewAllState("View All", false);
         if (emptyState) emptyState.classList.remove("hidden");
         if (swipeHint) swipeHint.classList.add("hidden");
@@ -2595,8 +2602,7 @@
         filteredCards.forEach(function (card) {
           card.classList.remove("hidden");
         });
-        if (prev) prev.classList.add("hidden");
-        if (next) next.classList.add("hidden");
+        setProductNavArrowsVisible(false);
         setViewAllState("Results", false);
         if (swipeHint) swipeHint.classList.add("hidden");
         return;
@@ -2611,8 +2617,7 @@
         filteredCards.forEach(function (card) {
           card.classList.remove("hidden");
         });
-        if (prev) prev.classList.add("hidden");
-        if (next) next.classList.add("hidden");
+        setProductNavArrowsVisible(false);
         setViewAllState("All Products", false);
         if (swipeHint) swipeHint.classList.add("hidden");
         return;
@@ -2628,8 +2633,7 @@
       if (productsEl) {
         productsEl.style.setProperty("--buyscreen-carousel-slots", String(Math.max(1, buyscreenVisibleCount)));
       }
-      if (prev) prev.classList.remove("hidden");
-      if (next) next.classList.remove("hidden");
+      setProductNavArrowsVisible(true);
       setViewAllState("View All", true);
       if (swipeHint) swipeHint.classList.toggle("hidden", !(filteredTotal > 1 && window.innerWidth <= 1023));
 
@@ -2888,7 +2892,7 @@
       if (totalEl) totalEl.textContent = buyscreenFormatUsd(buyscreenCartTotalCents());
       if (!list) return;
       if (!buyscreenCartItems.length) {
-        list.innerHTML = "<p class=\"rounded-lg border border-dashed border-[#cbd5e1] bg-[#f8fafc] px-4 py-4 text-sm text-[#6b7280]\">Your cart is empty. Add products from Featured Products.</p>";
+        list.innerHTML = "<p class=\"rounded-lg border border-dashed border-[#cbd5e1] bg-[#f8fafc] px-4 py-4 text-sm text-[#6b7280]\">Your cart is empty</p>";
         return;
       }
       list.innerHTML = buyscreenCartItems.map(function (item) {
@@ -2908,7 +2912,7 @@
       if (totalEl) totalEl.textContent = String(favorites.length) + " item" + (favorites.length === 1 ? "" : "s");
       if (!list) return;
       if (!favorites.length) {
-        list.innerHTML = "<p class=\"rounded-lg border border-dashed border-[#cbd5e1] bg-[#f8fafc] px-4 py-4 text-sm text-[#6b7280]\">Your favorites list is empty. Tap the heart icon on a product to save it.</p>";
+        list.innerHTML = "<p class=\"rounded-lg border border-dashed border-[#cbd5e1] bg-[#f8fafc] px-4 py-4 text-sm text-[#6b7280]\">Your favorites list is empty</p>";
         return;
       }
       list.innerHTML = favorites.map(function (name) {

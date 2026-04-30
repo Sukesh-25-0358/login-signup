@@ -1043,7 +1043,7 @@ export default function BuyScreenPage() {
                 </div>
               ) : (
                 <p className="rounded-lg border border-dashed border-[#cbd5e1] bg-[#f8fafc] px-4 py-4 text-sm text-[#6b7280]">
-                  Your cart is empty. Add products from Featured Products.
+                  Your cart is empty
                 </p>
               )}
             </div>
@@ -1088,7 +1088,7 @@ export default function BuyScreenPage() {
                 </div>
               ) : (
                 <p className="rounded-lg border border-dashed border-[#cbd5e1] bg-[#f8fafc] px-4 py-4 text-sm text-[#6b7280]">
-                  Your favorites list is empty. Tap the heart icon on a product to save it.
+                  Your favorites list is empty
                 </p>
               )}
             </div>
