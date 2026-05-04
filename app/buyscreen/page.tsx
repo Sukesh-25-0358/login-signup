@@ -44,7 +44,7 @@ type BuyFeatureIconType = "responsive" | "secure" | "shipping" | "transparent";
 const buyFeatures: Array<{ icon: BuyFeatureIconType; title: string; subtitle: string }> = [
   { icon: "responsive", title: "Responsive", subtitle: "Customer service is available 24/7" },
   { icon: "secure", title: "Secure", subtitle: "Certified marketplace since 2017" },
-  { icon: "shipping", title: "Shipping", subtitle: "Fast, safe, and reliable shipping worldwide" },
+  { icon: "shipping", title: "Shipping", subtitle: "Fast, safe and reliable shipping worldwide" },
   { icon: "transparent", title: "Transparent", subtitle: "Hassle-free return policy" },
 ];
 
@@ -1043,7 +1043,7 @@ export default function BuyScreenPage() {
                 </div>
               ) : (
                 <p className="rounded-lg border border-dashed border-[#cbd5e1] bg-[#f8fafc] px-4 py-4 text-sm text-[#6b7280]">
-                  Your cart is empty
+                  Your cart is empty. Add products from the Featured section.
                 </p>
               )}
             </div>

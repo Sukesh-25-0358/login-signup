@@ -2905,7 +2905,7 @@
       if (totalEl) totalEl.textContent = buyscreenFormatUsd(buyscreenCartTotalCents());
       if (!list) return;
       if (!buyscreenCartItems.length) {
-        list.innerHTML = "<p class=\"rounded-lg border border-dashed border-[#cbd5e1] bg-[#f8fafc] px-4 py-4 text-sm text-[#6b7280]\">Your cart is empty</p>";
+        list.innerHTML = "<p class=\"rounded-lg border border-dashed border-[#cbd5e1] bg-[#f8fafc] px-4 py-4 text-sm text-[#6b7280]\">Your cart is empty. Add products from the Featured section.</p>";
         return;
       }
       list.innerHTML = buyscreenCartItems.map(function (item) {
@@ -4334,7 +4334,7 @@
             </span>
             <div class="min-w-0">
               <p class="font-semibold text-[#111827]">Shipping</p>
-              <p class="mt-0.5 text-xs leading-relaxed text-[#6b7280] sm:text-sm">Fast, safe, and reliable shipping worldwide</p>
+              <p class="mt-0.5 text-xs leading-relaxed text-[#6b7280] sm:text-sm">Fast, safe and reliable shipping worldwide</p>
             </div>
           </div>
           <div class="flex items-start gap-4">
