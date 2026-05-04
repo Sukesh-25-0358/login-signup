@@ -1,8 +1,9 @@
 "use client";
 
+import { Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
-export default function VerifiedPage() {
+function VerifiedContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const contact = searchParams.get("contact") || "";
@@ -62,5 +63,19 @@ export default function VerifiedPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function VerifiedPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen items-center justify-center bg-white px-4 text-sm text-[#64748b]">
+          Loading…
+        </div>
+      }
+    >
+      <VerifiedContent />
+    </Suspense>
   );
 }

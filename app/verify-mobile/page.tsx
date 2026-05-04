@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { verifyOtp } from "@/lib/api";
 
-export default function VerifyMobilePage() {
+function VerifyMobileContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const contact = searchParams.get("contact") || "+91-XXXXXXXXXX";
@@ -168,6 +168,20 @@ export default function VerifyMobilePage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function VerifyMobilePage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen items-center justify-center bg-white px-4 text-sm text-[#64748b]">
+          Loading…
+        </div>
+      }
+    >
+      <VerifyMobileContent />
+    </Suspense>
   );
 }
 
