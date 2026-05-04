@@ -1411,9 +1411,21 @@ export default function BuyScreenPage() {
                   </span>
                 </button>
                 <button type="button" className="buyscreen-cart-trigger flex items-center gap-2 rounded-md px-2 py-1" onClick={() => setIsFavoritesOpen(true)}>
-                  <span className="relative shrink-0">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
-                      <path d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733C11.285 5.876 9.623 4.75 7.688 4.75 5.099 4.75 3 6.765 3 9.25c0 7.22 9 12 9 12s9-4.78 9-12z" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                  <span className="relative flex h-[18px] w-[18px] shrink-0 items-center justify-center">
+                    <svg
+                      className="buyscreen-header-favorites-icon block h-[18px] w-[18px] shrink-0 overflow-visible"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                      aria-hidden
+                    >
+                      <path
+                        d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
+                        stroke="currentColor"
+                        strokeWidth="1.75"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
                     </svg>
                     {favoriteProducts.length > 0 ? (
                       <span className="absolute -right-2 -top-2 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#ff664f] px-1 text-[10px] font-bold leading-none text-white">
@@ -1631,11 +1643,13 @@ export default function BuyScreenPage() {
                         role="img"
                         aria-label={`${product.name} product image`}
                       >
-                        <div
-                          className="absolute inset-2 rounded-sm bg-white bg-contain bg-center bg-no-repeat"
-                          style={{
-                            backgroundImage: `url('${product.image}')`,
-                          }}
+                        <img
+                          src={product.image}
+                          alt={`${product.name} product image`}
+                          className="buyscreen-product-image-media absolute inset-2 h-[calc(100%-1rem)] w-[calc(100%-1rem)] rounded-sm bg-white object-contain object-center"
+                          loading="lazy"
+                          decoding="async"
+                          draggable={false}
                         />
                         <div className="buyscreen-product-hover-actions pointer-events-none absolute inset-x-0 bottom-0 z-10 hidden justify-center px-1 pb-2 pt-6 opacity-0 transition-opacity duration-200 group-hover:pointer-events-auto group-hover:opacity-100 group-focus-within:pointer-events-auto group-focus-within:opacity-100 lg:flex">
                           <div className="pointer-events-auto flex items-center gap-1.5 sm:gap-2">

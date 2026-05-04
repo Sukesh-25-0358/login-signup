@@ -192,6 +192,16 @@
       height: 100%;
       min-height: 16.75rem;
     }
+    #buyscreenPage .buyscreen-product-card:hover {
+      border-color: #94a3b8 !important;
+      box-shadow: 0 14px 30px rgba(15, 23, 42, 0.2), 0 0 0 2px rgba(148, 163, 184, 0.28);
+    }
+    #buyscreenPage .buyscreen-product-image-media {
+      image-rendering: -webkit-optimize-contrast;
+      image-rendering: crisp-edges;
+      transform: translateZ(0);
+      backface-visibility: hidden;
+    }
     #buyscreenPage .buyscreen-product-meta {
       min-width: 0;
       max-width: 100%;
@@ -462,6 +472,9 @@
       #buyscreenPage .buyscreen-products.buyscreen-products--grid {
         grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
       }
+    }
+    #buyscreenPage .buyscreen-header-trailing button.buyscreen-cart-trigger .buyscreen-header-favorites-icon {
+      shape-rendering: geometricPrecision;
     }
     @media (max-width: 420px) {
       #buyscreenPage .buyscreen-header-trailing {
@@ -3114,8 +3127,28 @@
         var imageWrap = card.querySelector(".buyscreen-product-image-wrap");
         var nameEl = card.querySelector(".buyscreen-product-meta p:nth-last-child(2)") || card.querySelector(".buyscreen-product-meta p");
         if (imageWrap && nameEl) {
+          var imageLabel = (nameEl.textContent || "Product").trim() + " product image";
           imageWrap.setAttribute("role", "img");
-          imageWrap.setAttribute("aria-label", (nameEl.textContent || "Product").trim() + " product image");
+          imageWrap.setAttribute("aria-label", imageLabel);
+          var existingImg = imageWrap.querySelector("img.buyscreen-product-image-media");
+          if (!existingImg) {
+            var bgLayer = imageWrap.querySelector("div[style*='background-image']");
+            if (bgLayer) {
+              var inlineStyle = bgLayer.getAttribute("style") || "";
+              var match = inlineStyle.match(/background-image\s*:\s*url\((['"]?)(.*?)\1\)/i);
+              var src = match && match[2] ? match[2] : "";
+              if (src) {
+                var img = document.createElement("img");
+                img.src = src;
+                img.alt = imageLabel;
+                img.loading = "lazy";
+                img.decoding = "async";
+                img.draggable = false;
+                img.className = "buyscreen-product-image-media absolute inset-2 h-[calc(100%-1rem)] w-[calc(100%-1rem)] rounded-sm bg-white object-contain object-center";
+                imageWrap.replaceChild(img, bgLayer);
+              }
+            }
+          }
         }
       });
       var favoriteBtns = page.querySelectorAll("[aria-label='Add to wishlist']");
@@ -4163,9 +4196,9 @@
               </span>
             </button>
             <button type="button" data-buyscreen-favorites-open="1" class="buyscreen-cart-trigger flex items-center gap-2 rounded-md px-2 py-1">
-              <span class="relative shrink-0">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                  <path d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733C11.285 5.876 9.623 4.75 7.688 4.75 5.099 4.75 3 6.765 3 9.25c0 7.22 9 12 9 12s9-4.78 9-12z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+              <span class="relative flex h-[18px] w-[18px] shrink-0 items-center justify-center">
+                <svg class="buyscreen-header-favorites-icon block h-[18px] w-[18px] shrink-0 overflow-visible" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"></path>
                 </svg>
                 <span id="buyscreenFavoritesCountBadge" class="absolute -right-2 -top-2 hidden h-4 min-w-4 rounded-full bg-[#ff664f] px-1 text-center text-[10px] font-bold leading-4 text-white">0</span>
               </span>
