@@ -1043,7 +1043,7 @@ export default function BuyScreenPage() {
                 </div>
               ) : (
                 <p className="rounded-lg border border-dashed border-[#cbd5e1] bg-[#f8fafc] px-4 py-4 text-sm text-[#6b7280]">
-                  Your cart is empty. Add products from the Featured section.
+                  Your cart is empty. Add products from the featured section.
                 </p>
               )}
             </div>
