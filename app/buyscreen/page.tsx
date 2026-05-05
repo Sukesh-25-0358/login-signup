@@ -153,9 +153,9 @@ function BuyProductActionButtons({
       >
         <svg width={icon} height={icon} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
           <path
-            d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733C11.285 5.876 9.623 4.75 7.688 4.75 5.099 4.75 3 6.765 3 9.25c0 7.22 9 12 9 12s9-4.78 9-12z"
+            d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
             stroke="currentColor"
-            strokeWidth="1.8"
+            strokeWidth="1.75"
             strokeLinecap="round"
             strokeLinejoin="round"
             fill={isFavorite ? "currentColor" : "none"}
@@ -463,6 +463,8 @@ export default function BuyScreenPage() {
   const heroContentRef = useRef<HTMLDivElement | null>(null);
   const topHeaderBarRef = useRef<HTMLDivElement | null>(null);
   const topHeaderSearchInputRef = useRef<HTMLInputElement | null>(null);
+  const licenseDialogRef = useRef<HTMLDivElement | null>(null);
+  const licenseConfirmButtonRef = useRef<HTMLButtonElement | null>(null);
   const productsViewportRef = useRef<HTMLDivElement | null>(null);
   const productsTouchStartXRef = useRef<number | null>(null);
   const productsTouchStartYRef = useRef<number | null>(null);
@@ -661,6 +663,51 @@ export default function BuyScreenPage() {
       document.body.style.overflow = prev;
     };
   }, [licenseProduct, isCartOpen, isFavoritesOpen, closeLicenseModal]);
+
+  useEffect(() => {
+    if (!licenseProduct) return;
+    const dialog = licenseDialogRef.current;
+    if (!dialog) return;
+
+    const focusableSelector =
+      'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
+    const id = window.requestAnimationFrame(() => {
+      licenseConfirmButtonRef.current?.focus();
+    });
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== "Tab") return;
+      const active = document.activeElement as HTMLElement | null;
+      const focusable = Array.from(dialog.querySelectorAll<HTMLElement>(focusableSelector)).filter(
+        (el) => !el.hasAttribute("disabled") && el.getAttribute("aria-hidden") !== "true"
+      );
+      if (!focusable.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+
+      if (!active || !dialog.contains(active)) {
+        event.preventDefault();
+        first.focus();
+        return;
+      }
+      if (event.shiftKey && active === first) {
+        event.preventDefault();
+        last.focus();
+        return;
+      }
+      if (!event.shiftKey && active === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => {
+      window.cancelAnimationFrame(id);
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [licenseProduct]);
 
   useEffect(() => {
     return () => {
@@ -936,6 +983,7 @@ export default function BuyScreenPage() {
             role="dialog"
             aria-modal
             aria-labelledby="buyscreen-license-title"
+            ref={licenseDialogRef}
             className="relative z-10 my-auto flex max-h-[min(90dvh,720px)] w-full max-w-md flex-col overflow-hidden rounded-2xl border border-[#e5e7eb] bg-white shadow-2xl sm:max-h-[85dvh]"
           >
             <div className="shrink-0 border-b border-[#eef2f7] p-6 pb-4 sm:p-8 sm:pb-4">
@@ -990,6 +1038,7 @@ export default function BuyScreenPage() {
 
               <button
                 type="button"
+                ref={licenseConfirmButtonRef}
                 className="mt-6 w-full rounded-xl py-3.5 text-center text-sm font-bold text-white transition-opacity hover:opacity-95 sm:text-base"
                 style={{ backgroundColor: NAVY }}
                 onClick={confirmLicensePurchase}
@@ -1351,7 +1400,7 @@ export default function BuyScreenPage() {
         <div className="my-6 flex justify-end sm:my-8">
           <button
             type="button"
-            className="rounded-md bg-[#171717] px-4 py-2 text-xs font-semibold text-white transition-colors hover:bg-[#0f2f66] hover:text-white"
+            className="rounded-md border border-transparent bg-[#171717] px-4 py-2 text-xs font-semibold text-white shadow-md transition-all duration-150 hover:scale-105 hover:border-[#0f2f66] hover:bg-[#0f2f66] hover:text-white hover:shadow-lg focus-visible:scale-105 focus-visible:border-[#0f2f66] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#0f2f66] focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:shadow-[0_0_0_4px_rgba(15,47,102,0.35)]"
             onClick={() => router.push("/page-not-found")}
           >
             Buy Now
@@ -1392,7 +1441,12 @@ export default function BuyScreenPage() {
                 </svg>
               </label>
               <div className="buyscreen-header-trailing flex min-w-0 flex-1 items-center justify-end gap-2 sm:gap-3">
-                <button type="button" className="buyscreen-cart-trigger flex items-center gap-2 rounded-md px-2 py-1" onClick={() => setIsCartOpen(true)}>
+                <button
+                  type="button"
+                  className="buyscreen-cart-trigger flex items-center gap-2 rounded-md px-2 py-1"
+                  aria-label="Open cart"
+                  onClick={() => setIsCartOpen(true)}
+                >
                   <span className="relative shrink-0">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
                       <path d="M3 4h2l1.6 9.2a1 1 0 0 0 1 .8H18a1 1 0 0 0 1-.8L20.6 7H7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
@@ -1410,7 +1464,12 @@ export default function BuyScreenPage() {
                     <span className="buyscreen-cart-secondary block text-[11px] tabular-nums sm:text-xs">{cartItems.length ? formatUsd(cartTotalCents) : "Empty"}</span>
                   </span>
                 </button>
-                <button type="button" className="buyscreen-cart-trigger flex items-center gap-2 rounded-md px-2 py-1" onClick={() => setIsFavoritesOpen(true)}>
+                <button
+                  type="button"
+                  className="buyscreen-cart-trigger flex items-center gap-2 rounded-md px-2 py-1"
+                  aria-label="Open wishlist"
+                  onClick={() => setIsFavoritesOpen(true)}
+                >
                   <span className="relative flex h-[18px] w-[18px] shrink-0 items-center justify-center">
                     <svg
                       className="buyscreen-header-favorites-icon block h-[18px] w-[18px] shrink-0 overflow-visible"
@@ -1444,6 +1503,7 @@ export default function BuyScreenPage() {
                     type="button"
                     aria-expanded={isUserMenuOpen}
                     aria-haspopup="menu"
+                    aria-label="Open user profile menu"
                     className="buyscreen-user-summary buyscreen-user-trigger flex min-w-0 items-center gap-2 rounded-md border-0 bg-transparent px-2 py-1 text-left text-inherit"
                     onClick={() => setIsUserMenuOpen((prev) => !prev)}
                   >
@@ -1577,7 +1637,7 @@ export default function BuyScreenPage() {
                   </span>
                   <div className="min-w-0">
                     <p className="font-semibold text-[#111827]">{feature.title}</p>
-                    <p className="mt-0.5 text-xs leading-relaxed text-[#6b7280] sm:text-sm">{feature.subtitle}</p>
+                    <p className="mt-0.5 text-xs leading-relaxed text-[#374151] sm:text-sm">{feature.subtitle}</p>
                   </div>
                 </div>
               ))}
