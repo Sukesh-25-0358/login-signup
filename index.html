@@ -3144,13 +3144,28 @@
       }
     }
 
-    function openBuyscreenLicenseModal(unitCents, productName, unitPriceText) {
+    function openBuyscreenLicenseModal(unitCents, productName, unitPriceText, originalPriceText) {
       buyscreenLicenseUnitCents = unitCents;
       buyscreenLicenseQty = 1;
       buyscreenSelectedProduct = { unitCents: unitCents, name: productName, priceText: unitPriceText };
       var modal = document.getElementById("buyscreenLicenseModal");
       var sub = document.getElementById("buyscreenLicenseSubtitle");
-      if (sub) sub.textContent = productName + " · " + unitPriceText + " each";
+      if (sub) {
+        var safeName = productName || "Product";
+        var safeUnit = unitPriceText || "";
+        var safeOriginal = originalPriceText || "";
+        if (safeOriginal) {
+          sub.innerHTML =
+            safeName +
+            " · <span class=\"mr-1 line-through text-[#9ca3af]\">" +
+            safeOriginal +
+            "</span> " +
+            safeUnit +
+            " each";
+        } else {
+          sub.textContent = safeName + " · " + safeUnit + " each";
+        }
+      }
       buyscreenSetLicenseLineTotal();
       if (modal) {
         modal.classList.remove("hidden");
@@ -3425,7 +3440,10 @@
           var cents = parseInt(btn.getAttribute("data-unit-cents") || "0", 10);
           var name = btn.getAttribute("data-product-name") || "Product";
           var priceText = btn.getAttribute("data-unit-price") || "";
-          openBuyscreenLicenseModal(cents, name, priceText);
+          var card = btn.closest("[data-buyscreen-product-card]");
+          var originalEl = card ? card.querySelector(".line-through") : null;
+          var originalPriceText = originalEl ? (originalEl.textContent || "").trim() : "";
+          openBuyscreenLicenseModal(cents, name, priceText, originalPriceText);
           return;
         }
         var cartOpen = t.closest("[data-buyscreen-cart-open]");
@@ -4857,7 +4875,7 @@
         <div class="shrink-0 border-b border-[#eef2f7] p-6 pb-4 sm:p-8 sm:pb-4">
           <h2 id="buyscreenLicenseTitle" class="text-base font-semibold text-[#06224C] sm:text-lg">Regular license</h2>
           <div class="mt-1 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
-            <p id="buyscreenLicenseSubtitle" class="min-w-0 flex-1 truncate text-xs text-[#6b7280]"></p>
+            <p id="buyscreenLicenseSubtitle" class="min-w-0 flex-1 text-xs text-[#6b7280]"></p>
             <p id="buyscreenLicenseLineTotal" class="shrink-0 whitespace-nowrap text-base font-bold leading-tight tabular-nums text-[#06224C] sm:text-xl"></p>
           </div>
         </div>

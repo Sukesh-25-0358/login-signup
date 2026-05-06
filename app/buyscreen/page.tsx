@@ -991,8 +991,12 @@ export default function BuyScreenPage() {
                 Regular license
               </h2>
               <div className="mt-1 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
-                <p className="min-w-0 flex-1 truncate text-xs text-[#6b7280]">
-                  {licenseProduct.name} · {licenseProduct.price} each
+                <p className="min-w-0 flex-1 text-xs text-[#6b7280]">
+                  {licenseProduct.name} ·{" "}
+                  {licenseProduct.originalPrice ? (
+                    <span className="mr-1 line-through text-[#9ca3af]">{licenseProduct.originalPrice}</span>
+                  ) : null}
+                  <span>{licenseProduct.price}</span> each
                 </p>
                 <p className="shrink-0 whitespace-nowrap text-base font-bold leading-tight tabular-nums sm:text-xl" style={{ color: NAVY }}>
                   {formatUsd(lineTotalCents)}
