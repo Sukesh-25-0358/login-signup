@@ -3144,28 +3144,13 @@
       }
     }
 
-    function openBuyscreenLicenseModal(unitCents, productName, unitPriceText, originalPriceText) {
+    function openBuyscreenLicenseModal(unitCents, productName, unitPriceText) {
       buyscreenLicenseUnitCents = unitCents;
       buyscreenLicenseQty = 1;
       buyscreenSelectedProduct = { unitCents: unitCents, name: productName, priceText: unitPriceText };
       var modal = document.getElementById("buyscreenLicenseModal");
       var sub = document.getElementById("buyscreenLicenseSubtitle");
-      if (sub) {
-        var safeName = productName || "Product";
-        var safeUnit = unitPriceText || "";
-        var safeOriginal = originalPriceText || "";
-        if (safeOriginal) {
-          sub.innerHTML =
-            safeName +
-            " · <span class=\"mr-1 line-through text-[#9ca3af]\">" +
-            safeOriginal +
-            "</span> " +
-            safeUnit +
-            " each";
-        } else {
-          sub.textContent = safeName + " · " + safeUnit + " each";
-        }
-      }
+      if (sub) sub.textContent = productName + " · " + unitPriceText + " each";
       buyscreenSetLicenseLineTotal();
       if (modal) {
         modal.classList.remove("hidden");
@@ -3440,10 +3425,7 @@
           var cents = parseInt(btn.getAttribute("data-unit-cents") || "0", 10);
           var name = btn.getAttribute("data-product-name") || "Product";
           var priceText = btn.getAttribute("data-unit-price") || "";
-          var card = btn.closest("[data-buyscreen-product-card]");
-          var originalEl = card ? card.querySelector(".line-through") : null;
-          var originalPriceText = originalEl ? (originalEl.textContent || "").trim() : "";
-          openBuyscreenLicenseModal(cents, name, priceText, originalPriceText);
+          openBuyscreenLicenseModal(cents, name, priceText);
           return;
         }
         var cartOpen = t.closest("[data-buyscreen-cart-open]");
@@ -4873,10 +4855,12 @@
       <button type="button" id="buyscreenLicenseBackdrop" class="pointer-events-auto fixed inset-0 bg-black/45 backdrop-blur-[1px]" aria-label="Close dialog"></button>
       <div role="dialog" aria-modal="true" aria-labelledby="buyscreenLicenseTitle" class="pointer-events-auto relative z-10 my-auto flex max-h-[min(90dvh,720px)] w-full max-w-md flex-col overflow-hidden rounded-2xl border border-[#e5e7eb] bg-white shadow-2xl sm:max-h-[85dvh]">
         <div class="shrink-0 border-b border-[#eef2f7] p-6 pb-4 sm:p-8 sm:pb-4">
-          <h2 id="buyscreenLicenseTitle" class="text-base font-semibold text-[#06224C] sm:text-lg">Regular license</h2>
-          <div class="mt-1 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
-            <p id="buyscreenLicenseSubtitle" class="min-w-0 flex-1 text-xs text-[#6b7280]"></p>
-            <p id="buyscreenLicenseLineTotal" class="shrink-0 whitespace-nowrap text-base font-bold leading-tight tabular-nums text-[#06224C] sm:text-xl"></p>
+          <div class="flex flex-wrap items-start justify-between gap-x-3 gap-y-2">
+            <div class="min-w-0 flex-1">
+              <h2 id="buyscreenLicenseTitle" class="text-base font-semibold text-[#06224C] sm:text-lg">Regular license</h2>
+              <p id="buyscreenLicenseSubtitle" class="mt-1 break-words text-xs text-[#6b7280]"></p>
+            </div>
+            <p id="buyscreenLicenseLineTotal" class="w-full text-right text-base font-bold leading-tight tabular-nums text-[#06224C] sm:w-auto sm:whitespace-nowrap sm:text-xl"></p>
           </div>
         </div>
         <div class="min-h-0 flex-1 overflow-y-auto overscroll-contain px-6 pb-6 pt-5 sm:px-8 sm:pb-8">
