@@ -987,18 +987,16 @@ export default function BuyScreenPage() {
             className="relative z-10 my-auto flex max-h-[min(90dvh,720px)] w-full max-w-md flex-col overflow-hidden rounded-2xl border border-[#e5e7eb] bg-white shadow-2xl sm:max-h-[85dvh]"
           >
             <div className="shrink-0 border-b border-[#eef2f7] p-6 pb-4 sm:p-8 sm:pb-4">
-              <div className="flex flex-wrap items-start justify-between gap-x-3 gap-y-2">
-              <div className="min-w-0 flex-1">
-                <h2 id="buyscreen-license-title" className="text-base font-semibold sm:text-lg" style={{ color: NAVY }}>
-                  Regular license
-                </h2>
-                <p className="mt-1 break-words text-xs text-[#6b7280]">
+              <h2 id="buyscreen-license-title" className="text-base font-semibold sm:text-lg" style={{ color: NAVY }}>
+                Regular license
+              </h2>
+              <div className="mt-1 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
+                <p className="min-w-0 flex-1 truncate text-xs text-[#6b7280]">
                   {licenseProduct.name} · {licenseProduct.price} each
                 </p>
-              </div>
-              <p className="w-full text-right text-base font-bold leading-tight tabular-nums sm:w-auto sm:whitespace-nowrap sm:text-xl" style={{ color: NAVY }}>
-                {formatUsd(lineTotalCents)}
-              </p>
+                <p className="shrink-0 whitespace-nowrap text-base font-bold leading-tight tabular-nums sm:text-xl" style={{ color: NAVY }}>
+                  {formatUsd(lineTotalCents)}
+                </p>
               </div>
             </div>
             <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-6 pb-6 pt-5 sm:px-8 sm:pb-8">
