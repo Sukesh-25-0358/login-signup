@@ -1012,7 +1012,7 @@ export default function BuyScreenPage() {
               </ul>
 
               <div
-                className="mt-6 grid min-w-0 grid-cols-[2rem_4.5rem_2rem] items-center justify-center gap-2 overflow-hidden rounded-full border-2 p-2 sm:grid-cols-[2.25rem_5rem_2.25rem] sm:gap-3 sm:px-3"
+                className="mt-6 flex min-w-0 items-center justify-center gap-2 rounded-full border-2 p-2 sm:gap-3 sm:px-3"
                 style={{ borderColor: NAVY }}
               >
               <button
@@ -1025,7 +1025,7 @@ export default function BuyScreenPage() {
               >
                 <span className="text-lg font-light leading-none">−</span>
               </button>
-              <div className="w-[4.5rem] overflow-hidden rounded-md border border-dashed border-[#cbd5e1] bg-[#f8fafc] px-2 py-1.5 text-center text-sm font-semibold tabular-nums text-[#0f172a] sm:w-[5rem] sm:text-lg">
+              <div className="w-[4.5rem] rounded-md border border-dashed border-[#cbd5e1] bg-[#f8fafc] px-2 py-1.5 text-center text-sm font-semibold tabular-nums text-[#0f172a] sm:w-[5rem] sm:text-lg">
                 {licenseQty}
               </div>
               <button
