@@ -1025,7 +1025,7 @@ export default function BuyScreenPage() {
               >
                 <span className="text-lg font-light leading-none">−</span>
               </button>
-              <div className="min-w-0 w-full rounded-md border border-dashed border-[#cbd5e1] bg-[#f8fafc] px-2 py-1.5 text-center text-base font-semibold tabular-nums text-[#0f172a] sm:text-lg">
+              <div className="min-w-0 w-full overflow-hidden rounded-md border border-dashed border-[#cbd5e1] bg-[#f8fafc] px-2 py-1.5 text-center text-sm font-semibold tabular-nums text-[#0f172a] sm:text-lg">
                 {licenseQty}
               </div>
               <button
