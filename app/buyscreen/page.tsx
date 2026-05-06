@@ -64,16 +64,16 @@ type CartItem = {
 };
 
 const buyProducts: BuyProduct[] = [
-  { id: "phone", name: "Phone", image: "/phone.jpg", badge: "", price: "$899.00", unitPriceCents: 899_00 },
-  { id: "audio", name: "Audio", image: "/audio.jpg", badge: "50%", price: "$149.00", originalPrice: "$298.00", unitPriceCents: 149_00 },
-  { id: "laptop", name: "Laptop", image: "/laptop.jpg", badge: "", price: "$1,299.00", unitPriceCents: 129_900 },
-  { id: "camera", name: "Camera", image: "/camera.jpg", badge: "", price: "$79.00", unitPriceCents: 79_00 },
-  { id: "television", name: "Television", image: "/television.jpg", badge: "", price: "$599.00", unitPriceCents: 599_00 },
-  { id: "tablet", name: "Tablet", image: "/tablet.jpg", badge: "", price: "$399.00", unitPriceCents: 399_00 },
-  { id: "watch", name: "Watch", image: "/watch.jpg", badge: "", price: "$199.00", unitPriceCents: 199_00 },
-  { id: "speaker", name: "Speaker", image: "/speaker.jpg", badge: "", price: "$89.00", unitPriceCents: 89_00 },
-  { id: "keyboard", name: "Keyboard", image: "/keyboard.jpg", badge: "", price: "$49.00", unitPriceCents: 49_00 },
-  { id: "mouse", name: "Mouse", image: "/mouse.jpg", badge: "", price: "$29.00", unitPriceCents: 29_00 },
+  { id: "phone", name: "Phone", image: "/featured-new/phone.jpg", badge: "", price: "$899.00", unitPriceCents: 899_00 },
+  { id: "audio", name: "Audio", image: "/featured-new/audio.jpg", badge: "50%", price: "$149.00", originalPrice: "$298.00", unitPriceCents: 149_00 },
+  { id: "laptop", name: "Laptop", image: "/featured-new/laptop.jpg", badge: "", price: "$1,299.00", unitPriceCents: 129_900 },
+  { id: "camera", name: "Camera", image: "/featured-new/camera.jpg", badge: "", price: "$79.00", unitPriceCents: 79_00 },
+  { id: "television", name: "Television", image: "/featured-new/television.jpg", badge: "", price: "$599.00", unitPriceCents: 599_00 },
+  { id: "tablet", name: "Tablet", image: "/featured-new/tablet.jpg", badge: "", price: "$399.00", unitPriceCents: 399_00 },
+  { id: "watch", name: "Watch", image: "/featured-new/watch.jpg", badge: "", price: "$199.00", unitPriceCents: 199_00 },
+  { id: "speaker", name: "Speaker", image: "/featured-new/speaker.jpg", badge: "", price: "$89.00", unitPriceCents: 89_00 },
+  { id: "keyboard", name: "Keyboard", image: "/featured-new/keyboard.jpg", badge: "", price: "$49.00", unitPriceCents: 49_00 },
+  { id: "mouse", name: "Mouse", image: "/featured-new/mouse.jpg", badge: "", price: "$29.00", unitPriceCents: 29_00 },
 ];
 const buyProductById = new Map(buyProducts.map((product) => [product.id, product]));
 const BUYSCREEN_CART_STORAGE_KEY = "buyscreenCartItemsV1";
@@ -987,16 +987,16 @@ export default function BuyScreenPage() {
             className="relative z-10 my-auto flex max-h-[min(90dvh,720px)] w-full max-w-md flex-col overflow-hidden rounded-2xl border border-[#e5e7eb] bg-white shadow-2xl sm:max-h-[85dvh]"
           >
             <div className="shrink-0 border-b border-[#eef2f7] p-6 pb-4 sm:p-8 sm:pb-4">
-              <div className="flex items-start justify-between gap-3">
-              <div>
+              <div className="flex flex-wrap items-start justify-between gap-x-3 gap-y-2">
+              <div className="min-w-0 flex-1">
                 <h2 id="buyscreen-license-title" className="text-base font-semibold sm:text-lg" style={{ color: NAVY }}>
                   Regular license
                 </h2>
-                <p className="mt-1 text-xs text-[#6b7280]">
+                <p className="mt-1 break-words text-xs text-[#6b7280]">
                   {licenseProduct.name} · {licenseProduct.price} each
                 </p>
               </div>
-              <p className="whitespace-nowrap text-lg font-bold tabular-nums sm:text-xl" style={{ color: NAVY }}>
+              <p className="w-full text-right text-base font-bold leading-tight tabular-nums sm:w-auto sm:whitespace-nowrap sm:text-xl" style={{ color: NAVY }}>
                 {formatUsd(lineTotalCents)}
               </p>
               </div>
@@ -1011,10 +1011,10 @@ export default function BuyScreenPage() {
               ))}
               </ul>
 
-              <div className="mt-6 grid grid-cols-3 items-center gap-2 rounded-full border-2 p-2 sm:px-3" style={{ borderColor: NAVY }}>
+              <div className="mt-6 flex items-center gap-2 rounded-full border-2 p-2 sm:gap-3 sm:px-3" style={{ borderColor: NAVY }}>
               <button
                 type="button"
-                className="justify-self-start flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-white transition-opacity hover:opacity-90 disabled:opacity-40 sm:h-9 sm:w-9"
+                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-white transition-opacity hover:opacity-90 disabled:opacity-40 sm:h-9 sm:w-9"
                 style={{ backgroundColor: NAVY }}
                 aria-label="Decrease quantity"
                 disabled={licenseQty <= 1}
@@ -1022,12 +1022,12 @@ export default function BuyScreenPage() {
               >
                 <span className="text-lg font-light leading-none">−</span>
               </button>
-              <div className="min-w-0 w-full rounded-md border border-dashed border-[#cbd5e1] bg-[#f8fafc] px-2 py-1.5 text-center text-lg font-semibold tabular-nums text-[#0f172a]">
+              <div className="min-w-[3.25rem] flex-1 rounded-md border border-dashed border-[#cbd5e1] bg-[#f8fafc] px-2 py-1.5 text-center text-base font-semibold tabular-nums text-[#0f172a] sm:text-lg">
                 {licenseQty}
               </div>
               <button
                 type="button"
-                className="justify-self-end flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-white transition-opacity hover:opacity-90 sm:h-9 sm:w-9"
+                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-white transition-opacity hover:opacity-90 sm:h-9 sm:w-9"
                 style={{ backgroundColor: NAVY }}
                 aria-label="Increase quantity"
                 onClick={() => setLicenseQty((q) => q + 1)}
@@ -1699,7 +1699,7 @@ export default function BuyScreenPage() {
                       className="buyscreen-product-card group relative flex min-w-0 flex-col rounded-lg border border-[#ececec] bg-white p-2 shadow-sm transition-[box-shadow,border-color] duration-200 hover:border-[#d4d4d4] hover:shadow-lg sm:p-3"
                     >
                       <div
-                        className="buyscreen-product-image-wrap relative aspect-[4/3] w-full overflow-hidden rounded-md bg-white"
+                        className="buyscreen-product-image-wrap relative aspect-square w-full overflow-hidden rounded-md bg-white"
                         role="img"
                         aria-label={`${product.name} product image`}
                       >

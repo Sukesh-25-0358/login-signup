@@ -83,10 +83,14 @@ body:has(> main.buyscreen-page) {
   box-shadow: 0 14px 30px rgba(15, 23, 42, 0.2), 0 0 0 2px rgba(148, 163, 184, 0.28);
 }
 .buyscreen-product-image-media {
-  image-rendering: -webkit-optimize-contrast;
-  image-rendering: crisp-edges;
+  image-rendering: auto;
   transform: translateZ(0);
   backface-visibility: hidden;
+  transition: transform 220ms ease;
+}
+.buyscreen-product-image-wrap:hover .buyscreen-product-image-media,
+.buyscreen-product-image-wrap:focus-within .buyscreen-product-image-media {
+  transform: translateZ(0) scale(1.04);
 }
 .buyscreen-product-meta {
   min-width: 0;
