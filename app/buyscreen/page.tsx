@@ -1011,10 +1011,13 @@ export default function BuyScreenPage() {
               ))}
               </ul>
 
-              <div className="mt-6 flex items-center gap-2 rounded-full border-2 p-2 sm:gap-3 sm:px-3" style={{ borderColor: NAVY }}>
+              <div
+                className="mt-6 grid min-w-0 grid-cols-[2rem_minmax(0,1fr)_2rem] items-center gap-2 overflow-hidden rounded-full border-2 p-2 sm:grid-cols-[2.25rem_minmax(0,1fr)_2.25rem] sm:gap-3 sm:px-3"
+                style={{ borderColor: NAVY }}
+              >
               <button
                 type="button"
-                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-white transition-opacity hover:opacity-90 disabled:opacity-40 sm:h-9 sm:w-9"
+                className="flex h-8 w-8 items-center justify-center rounded-full text-white transition-opacity hover:opacity-90 disabled:opacity-40 sm:h-9 sm:w-9"
                 style={{ backgroundColor: NAVY }}
                 aria-label="Decrease quantity"
                 disabled={licenseQty <= 1}
@@ -1022,12 +1025,12 @@ export default function BuyScreenPage() {
               >
                 <span className="text-lg font-light leading-none">−</span>
               </button>
-              <div className="min-w-[3.25rem] flex-1 rounded-md border border-dashed border-[#cbd5e1] bg-[#f8fafc] px-2 py-1.5 text-center text-base font-semibold tabular-nums text-[#0f172a] sm:text-lg">
+              <div className="min-w-0 w-full rounded-md border border-dashed border-[#cbd5e1] bg-[#f8fafc] px-2 py-1.5 text-center text-base font-semibold tabular-nums text-[#0f172a] sm:text-lg">
                 {licenseQty}
               </div>
               <button
                 type="button"
-                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-white transition-opacity hover:opacity-90 sm:h-9 sm:w-9"
+                className="flex h-8 w-8 items-center justify-center rounded-full text-white transition-opacity hover:opacity-90 sm:h-9 sm:w-9"
                 style={{ backgroundColor: NAVY }}
                 aria-label="Increase quantity"
                 onClick={() => setLicenseQty((q) => q + 1)}
