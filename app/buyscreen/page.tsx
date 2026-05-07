@@ -64,16 +64,16 @@ type CartItem = {
 };
 
 const buyProducts: BuyProduct[] = [
-  { id: "phone", name: "Phone", image: "/featured-new/phone.jpg", badge: "", price: "$899.00", unitPriceCents: 899_00 },
-  { id: "audio", name: "Audio", image: "/featured-new/audio.jpg", badge: "50%", price: "$149.00", originalPrice: "$298.00", unitPriceCents: 149_00 },
-  { id: "laptop", name: "Laptop", image: "/featured-new/laptop.jpg", badge: "", price: "$1,299.00", unitPriceCents: 129_900 },
-  { id: "camera", name: "Camera", image: "/featured-new/camera.jpg", badge: "", price: "$79.00", unitPriceCents: 79_00 },
-  { id: "television", name: "Television", image: "/featured-new/television.jpg", badge: "", price: "$599.00", unitPriceCents: 599_00 },
-  { id: "tablet", name: "Tablet", image: "/featured-new/tablet.jpg", badge: "", price: "$399.00", unitPriceCents: 399_00 },
-  { id: "watch", name: "Watch", image: "/featured-new/watch.jpg", badge: "", price: "$199.00", unitPriceCents: 199_00 },
-  { id: "speaker", name: "Speaker", image: "/featured-new/speaker.jpg", badge: "", price: "$89.00", unitPriceCents: 89_00 },
-  { id: "keyboard", name: "Keyboard", image: "/featured-new/keyboard.jpg", badge: "", price: "$49.00", unitPriceCents: 49_00 },
-  { id: "mouse", name: "Mouse", image: "/featured-new/mouse.jpg", badge: "", price: "$29.00", unitPriceCents: 29_00 },
+  { id: "phone", name: "Phone", image: "/featured-new/phone.webp", badge: "", price: "$899.00", unitPriceCents: 899_00 },
+  { id: "audio", name: "Audio", image: "/featured-new/audio.webp", badge: "50%", price: "$149.00", originalPrice: "$298.00", unitPriceCents: 149_00 },
+  { id: "laptop", name: "Laptop", image: "/featured-new/laptop.webp", badge: "", price: "$1,299.00", unitPriceCents: 129_900 },
+  { id: "camera", name: "Camera", image: "/featured-new/camera.webp", badge: "", price: "$79.00", unitPriceCents: 79_00 },
+  { id: "television", name: "Television", image: "/featured-new/television.webp", badge: "", price: "$599.00", unitPriceCents: 599_00 },
+  { id: "tablet", name: "Tablet", image: "/featured-new/tablet.webp", badge: "", price: "$399.00", unitPriceCents: 399_00 },
+  { id: "watch", name: "Watch", image: "/featured-new/watch.webp", badge: "", price: "$199.00", unitPriceCents: 199_00 },
+  { id: "speaker", name: "Speaker", image: "/featured-new/speaker.webp", badge: "", price: "$89.00", unitPriceCents: 89_00 },
+  { id: "keyboard", name: "Keyboard", image: "/featured-new/keyboard.webp", badge: "", price: "$49.00", unitPriceCents: 49_00 },
+  { id: "mouse", name: "Mouse", image: "/featured-new/mouse.webp", badge: "", price: "$29.00", unitPriceCents: 29_00 },
 ];
 const buyProductById = new Map(buyProducts.map((product) => [product.id, product]));
 const BUYSCREEN_CART_STORAGE_KEY = "buyscreenCartItemsV1";
