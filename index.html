@@ -3012,7 +3012,7 @@
     function buyscreenProductFromActionButton(button) {
       var card = button ? button.closest("[data-buyscreen-product-card]") : null;
       if (!card) return "Product";
-      var nameEl = card.querySelector("p");
+      var nameEl = card.querySelector(".buyscreen-product-meta p:nth-last-child(2)") || card.querySelector(".buyscreen-product-meta p");
       return nameEl ? nameEl.textContent.trim() : "Product";
     }
 
