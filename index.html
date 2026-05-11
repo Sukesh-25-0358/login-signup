@@ -2537,8 +2537,10 @@
       if (allDropdown) {
         if (buyscreenAllCategoryDropdownOpen) {
           allDropdown.classList.add("buyscreen-all-categories-dropdown--open");
+          allDropdown.removeAttribute("inert");
         } else {
           allDropdown.classList.remove("buyscreen-all-categories-dropdown--open");
+          allDropdown.setAttribute("inert", "");
         }
       }
     }
@@ -2549,7 +2551,7 @@
       if (dataBtn && dataBtn.getAttribute) {
         return (dataBtn.getAttribute("data-product-name") || "").trim().toLowerCase();
       }
-      var nameEl = card.querySelector(".buyscreen-product-meta p:nth-last-child(2)");
+      var nameEl = card.querySelector(".buyscreen-product-name");
       if (!nameEl) nameEl = card.querySelector(".buyscreen-product-meta p");
       return (nameEl ? nameEl.textContent : "").trim().toLowerCase();
     }
@@ -3030,7 +3032,7 @@
     function buyscreenProductFromActionButton(button) {
       var card = button ? button.closest("[data-buyscreen-product-card]") : null;
       if (!card) return "Product";
-      var nameEl = card.querySelector(".buyscreen-product-meta p:nth-last-child(2)") || card.querySelector(".buyscreen-product-meta p");
+      var nameEl = card.querySelector(".buyscreen-product-name") || card.querySelector(".buyscreen-product-meta p");
       return nameEl ? nameEl.textContent.trim() : "Product";
     }
 
@@ -3206,7 +3208,7 @@
         var hoverActions = card.querySelector(".pointer-events-none");
         if (hoverActions) hoverActions.classList.add("buyscreen-product-hover-actions");
         var imageWrap = card.querySelector(".buyscreen-product-image-wrap");
-        var nameEl = card.querySelector(".buyscreen-product-meta p:nth-last-child(2)") || card.querySelector(".buyscreen-product-meta p");
+        var nameEl = card.querySelector(".buyscreen-product-name") || card.querySelector(".buyscreen-product-meta p");
         if (imageWrap && nameEl) {
           var imageLabel = (nameEl.textContent || "Product").trim() + " product image";
           imageWrap.setAttribute("role", "img");
@@ -3243,6 +3245,59 @@
       shareBtns.forEach(function (button) {
         button.setAttribute("data-buyscreen-share-product", "1");
       });
+      var allCategoriesToggleEl = document.getElementById("buyscreenAllCategoriesToggle");
+      if (allCategoriesToggleEl && !allCategoriesToggleEl.dataset.kbdAllCategoriesBound) {
+        allCategoriesToggleEl.dataset.kbdAllCategoriesBound = "1";
+        allCategoriesToggleEl.addEventListener("keydown", function (e) {
+          function focusFirstSubcategory() {
+            if (!buyscreenAllCategoryDropdownOpen) {
+              buyscreenAllCategoryDropdownOpen = true;
+              renderBuyscreenCategoryMenu();
+            }
+            var firstItem = document.querySelector("#buyscreenAllCategoriesDropdown .buyscreen-all-categories-item");
+            if (firstItem) firstItem.focus();
+          }
+          if (e.key === "ArrowDown") {
+            e.preventDefault();
+            focusFirstSubcategory();
+            return;
+          }
+          if (e.key === "Tab" && !e.shiftKey) {
+            e.preventDefault();
+            focusFirstSubcategory();
+          }
+        });
+      }
+      var allCategoriesDropdownEl = document.getElementById("buyscreenAllCategoriesDropdown");
+      if (allCategoriesDropdownEl && !allCategoriesDropdownEl.dataset.tabFlowBound) {
+        allCategoriesDropdownEl.dataset.tabFlowBound = "1";
+        var subItems = allCategoriesDropdownEl.querySelectorAll(".buyscreen-all-categories-item");
+        if (subItems.length) {
+          var firstSub = subItems[0];
+          var lastSub = subItems[subItems.length - 1];
+          firstSub.addEventListener("keydown", function (e) {
+            if (e.key !== "Tab" || !e.shiftKey) return;
+            e.preventDefault();
+            buyscreenAllCategoryDropdownOpen = false;
+            renderBuyscreenCategoryMenu();
+            window.requestAnimationFrame(function () {
+              var tgl = document.getElementById("buyscreenAllCategoriesToggle");
+              if (tgl) tgl.focus();
+            });
+          });
+          lastSub.addEventListener("keydown", function (e) {
+            if (e.key !== "Tab" || e.shiftKey) return;
+            e.preventDefault();
+            buyscreenAllCategoryDropdownOpen = false;
+            renderBuyscreenCategoryMenu();
+            window.requestAnimationFrame(function () {
+              var wrap = document.querySelector(".buyscreen-all-categories-wrap");
+              var nextBtn = wrap && wrap.nextElementSibling;
+              if (nextBtn && typeof nextBtn.focus === "function") nextBtn.focus();
+            });
+          });
+        }
+      }
       page.addEventListener("click", function (e) {
         var t = e.target;
         if (!t || !t.closest) return;
@@ -3374,6 +3429,12 @@
           e.preventDefault();
           buyscreenCategoryMenuOpen = !buyscreenCategoryMenuOpen;
           renderBuyscreenCategoryMenu();
+          if (buyscreenCategoryMenuOpen) {
+            window.requestAnimationFrame(function () {
+              var ac = document.getElementById("buyscreenAllCategoriesToggle");
+              if (ac) ac.focus();
+            });
+          }
           return;
         }
         var allCategoriesToggle = t.closest("[data-buyscreen-all-categories-toggle]");
@@ -3553,6 +3614,11 @@
         } else if (e.key === "Escape" && buyscreenTopHeaderProfileMenuOpen) {
           buyscreenTopHeaderProfileMenuOpen = false;
           renderBuyscreenTopHeaderProfileMenu();
+        } else if (e.key === "Escape" && buyscreenAllCategoryDropdownOpen) {
+          buyscreenAllCategoryDropdownOpen = false;
+          renderBuyscreenCategoryMenu();
+          var allCatToggle = document.getElementById("buyscreenAllCategoriesToggle");
+          if (allCatToggle) allCatToggle.focus();
         }
       });
       renderBuyscreenCategoryMenu();
@@ -4334,21 +4400,21 @@
         </div>
         <div id="buyscreenCategoryMenu" class="buyscreen-categories-list">
           <div class="buyscreen-all-categories-wrap relative shrink-0">
-            <button type="button" id="buyscreenAllCategoriesToggle" data-buyscreen-all-categories-toggle="1" aria-expanded="false" class="buyscreen-all-categories-toggle inline-flex items-center gap-1 rounded-md px-2 py-1 text-left text-[10px] font-semibold transition-colors duration-150 hover:bg-white hover:text-[#06224C] sm:text-xs">
+            <button type="button" id="buyscreenAllCategoriesToggle" data-buyscreen-all-categories-toggle="1" aria-haspopup="menu" aria-controls="buyscreenAllCategoriesDropdown" aria-expanded="false" class="buyscreen-all-categories-toggle inline-flex items-center gap-1 rounded-md px-2 py-1 text-left text-[10px] font-semibold transition-colors duration-150 hover:bg-white hover:text-[#06224C] sm:text-xs">
               All Categories
               <svg width="12" height="12" viewBox="0 0 20 20" fill="none" aria-hidden="true">
                 <path d="m5 7.5 5 5 5-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
               </svg>
             </button>
-            <div id="buyscreenAllCategoriesDropdown" class="buyscreen-all-categories-dropdown">
-              <button type="button" data-buyscreen-subcategory-btn="mobiles" class="buyscreen-all-categories-item">Mobiles</button>
-              <button type="button" data-buyscreen-subcategory-btn="audio" class="buyscreen-all-categories-item">Audio</button>
-              <button type="button" data-buyscreen-subcategory-btn="laptops" class="buyscreen-all-categories-item">Laptops</button>
-              <button type="button" data-buyscreen-subcategory-btn="cameras" class="buyscreen-all-categories-item">Cameras</button>
-              <button type="button" data-buyscreen-subcategory-btn="televisions" class="buyscreen-all-categories-item">Televisions</button>
-              <button type="button" data-buyscreen-subcategory-btn="tablets" class="buyscreen-all-categories-item">Tablets</button>
-              <button type="button" data-buyscreen-subcategory-btn="wearables" class="buyscreen-all-categories-item">Wearables</button>
-              <button type="button" data-buyscreen-subcategory-btn="accessories" class="buyscreen-all-categories-item">Accessories</button>
+            <div id="buyscreenAllCategoriesDropdown" class="buyscreen-all-categories-dropdown" role="menu" aria-label="Product categories" inert>
+              <button type="button" role="menuitem" data-buyscreen-subcategory-btn="mobiles" class="buyscreen-all-categories-item">Mobiles</button>
+              <button type="button" role="menuitem" data-buyscreen-subcategory-btn="audio" class="buyscreen-all-categories-item">Audio</button>
+              <button type="button" role="menuitem" data-buyscreen-subcategory-btn="laptops" class="buyscreen-all-categories-item">Laptops</button>
+              <button type="button" role="menuitem" data-buyscreen-subcategory-btn="cameras" class="buyscreen-all-categories-item">Cameras</button>
+              <button type="button" role="menuitem" data-buyscreen-subcategory-btn="televisions" class="buyscreen-all-categories-item">Televisions</button>
+              <button type="button" role="menuitem" data-buyscreen-subcategory-btn="tablets" class="buyscreen-all-categories-item">Tablets</button>
+              <button type="button" role="menuitem" data-buyscreen-subcategory-btn="wearables" class="buyscreen-all-categories-item">Wearables</button>
+              <button type="button" role="menuitem" data-buyscreen-subcategory-btn="accessories" class="buyscreen-all-categories-item">Accessories</button>
             </div>
           </div>
           <button type="button" data-buyscreen-category-btn="1" class="buyscreen-category-item shrink-0 rounded-md text-left transition-colors duration-150 hover:bg-white hover:text-[#06224C]">Products</button>
@@ -4510,8 +4576,8 @@
                         </button>
                   </div>
                   <div class="buyscreen-product-meta mt-2 min-w-0 px-0.5 sm:mt-3">
-                  <p class="mb-1 text-center"><span class="inline-block rounded bg-[#ff664f] px-2 py-0.5 text-[10px] font-bold leading-none text-white shadow-sm">50%</span></p>
-                  <p class="text-center text-[10px] font-semibold uppercase leading-snug tracking-tight text-[#6b7280] break-words sm:text-xs sm:leading-normal sm:tracking-wide md:tracking-wider">Audio</p>
+                  <p class="buyscreen-product-name text-center text-[10px] font-semibold uppercase leading-snug tracking-tight text-[#6b7280] break-words sm:text-xs sm:leading-normal sm:tracking-wide md:tracking-wider">Audio</p>
+                  <p class="mt-1 text-center"><span class="inline-block rounded bg-[#ff664f] px-2 py-0.5 text-[10px] font-bold leading-none text-white shadow-sm">50%</span></p>
                   <p class="mt-1 text-center text-xs font-bold leading-snug tracking-tight text-[#171717] break-words tabular-nums sm:text-sm"><span class="mr-1.5 text-[10px] font-semibold text-[#9ca3af] line-through sm:text-xs">$298.00</span>$149.00</p>
                   </div>
                 </article>

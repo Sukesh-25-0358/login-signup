@@ -731,6 +731,28 @@ export default function BuyScreenPage() {
   }, [isAllCategoriesDropdownOpen]);
 
   useEffect(() => {
+    if (!isAllCategoriesDropdownOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== "Escape") return;
+      setIsAllCategoriesDropdownOpen(false);
+      e.preventDefault();
+      window.requestAnimationFrame(() => {
+        document.getElementById("buyscreen-all-categories-toggle")?.focus();
+      });
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [isAllCategoriesDropdownOpen]);
+
+  useEffect(() => {
+    if (!isCategoryMenuOpen) return;
+    const id = window.requestAnimationFrame(() => {
+      document.getElementById("buyscreen-all-categories-toggle")?.focus();
+    });
+    return () => window.cancelAnimationFrame(id);
+  }, [isCategoryMenuOpen]);
+
+  useEffect(() => {
     if (!isUserMenuOpen) return;
     const onPointerDown = (event: MouseEvent) => {
       const target = event.target as Node | null;
@@ -1565,26 +1587,76 @@ export default function BuyScreenPage() {
                   <div key={item.label} ref={allCategoriesWrapRef} className="buyscreen-all-categories-wrap relative shrink-0">
                     <button
                       type="button"
+                      id="buyscreen-all-categories-toggle"
+                      aria-haspopup="menu"
                       aria-expanded={isAllCategoriesDropdownOpen}
+                      aria-controls="buyscreen-all-categories-menu"
                       className="buyscreen-all-categories-toggle inline-flex items-center gap-1 rounded-md px-2 py-1 text-left text-[10px] font-semibold transition-colors duration-150 hover:bg-white hover:text-[#06224C] sm:text-xs"
                       onClick={() => setIsAllCategoriesDropdownOpen((prev) => !prev)}
+                      onKeyDown={(e) => {
+                        const focusFirstSubcategory = () => {
+                          setIsAllCategoriesDropdownOpen(true);
+                          window.requestAnimationFrame(() => {
+                            allCategoriesWrapRef.current
+                              ?.querySelector<HTMLButtonElement>(".buyscreen-all-categories-item")
+                              ?.focus();
+                          });
+                        };
+                        if (e.key === "ArrowDown") {
+                          e.preventDefault();
+                          focusFirstSubcategory();
+                          return;
+                        }
+                        if (e.key === "Tab" && !e.shiftKey) {
+                          e.preventDefault();
+                          focusFirstSubcategory();
+                        }
+                      }}
                     >
                       All Categories
                       <svg width="12" height="12" viewBox="0 0 20 20" fill="none" aria-hidden>
                         <path d="m5 7.5 5 5 5-5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
                       </svg>
                     </button>
-                    <div className={`buyscreen-all-categories-dropdown ${isAllCategoriesDropdownOpen ? "buyscreen-all-categories-dropdown--open" : ""}`}>
-                      {buyAllSubCategories.map((subCategory) => (
-                        <button
-                          key={subCategory.key}
-                          type="button"
-                          className="buyscreen-all-categories-item"
-                          onClick={() => handleSubCategoryClick(subCategory.key)}
-                        >
-                          {subCategory.label}
-                        </button>
-                      ))}
+                    <div
+                      id="buyscreen-all-categories-menu"
+                      role="menu"
+                      aria-label="Product categories"
+                      inert={!isAllCategoriesDropdownOpen}
+                      className={`buyscreen-all-categories-dropdown ${isAllCategoriesDropdownOpen ? "buyscreen-all-categories-dropdown--open" : ""}`}
+                    >
+                      {buyAllSubCategories.map((subCategory, subIndex) => {
+                        const isFirstSub = subIndex === 0;
+                        const isLastSub = subIndex === buyAllSubCategories.length - 1;
+                        return (
+                          <button
+                            key={subCategory.key}
+                            type="button"
+                            role="menuitem"
+                            className="buyscreen-all-categories-item"
+                            onClick={() => handleSubCategoryClick(subCategory.key)}
+                            onKeyDown={(e) => {
+                              if (e.key === "Tab" && e.shiftKey && isFirstSub) {
+                                e.preventDefault();
+                                setIsAllCategoriesDropdownOpen(false);
+                                window.requestAnimationFrame(() => {
+                                  document.getElementById("buyscreen-all-categories-toggle")?.focus();
+                                });
+                              }
+                              if (e.key === "Tab" && !e.shiftKey && isLastSub) {
+                                e.preventDefault();
+                                setIsAllCategoriesDropdownOpen(false);
+                                window.requestAnimationFrame(() => {
+                                  const next = allCategoriesWrapRef.current?.nextElementSibling;
+                                  if (next instanceof HTMLElement) next.focus();
+                                });
+                              }
+                            }}
+                          >
+                            {subCategory.label}
+                          </button>
+                        );
+                      })}
                     </div>
                   </div>
                 ) : (
@@ -1740,14 +1812,14 @@ export default function BuyScreenPage() {
                         />
                       </div>
                       <div className="buyscreen-product-meta mt-2 min-w-0 px-0.5 sm:mt-3">
+                        <p className="buyscreen-product-name text-center text-[10px] font-semibold uppercase leading-snug tracking-tight text-[#6b7280] [overflow-wrap:anywhere] sm:text-xs sm:leading-normal sm:tracking-[0.06em] md:tracking-[0.08em]">
+                          {product.name}
+                        </p>
                         {product.badge ? (
-                          <p className="mb-1 text-center">
+                          <p className="mt-1 text-center">
                             <span className="inline-block rounded bg-[#ff664f] px-2 py-0.5 text-[10px] font-bold leading-none text-white shadow-sm">{product.badge}</span>
                           </p>
                         ) : null}
-                        <p className="text-center text-[10px] font-semibold uppercase leading-snug tracking-tight text-[#6b7280] [overflow-wrap:anywhere] sm:text-xs sm:leading-normal sm:tracking-[0.06em] md:tracking-[0.08em]">
-                          {product.name}
-                        </p>
                         <p className="mt-1 text-center text-xs font-bold leading-snug tracking-tight text-[#171717] [overflow-wrap:anywhere] tabular-nums sm:text-sm">
                           {product.originalPrice ? (
                             <span className="mr-1.5 text-[10px] font-semibold text-[#9ca3af] line-through sm:text-xs">{product.originalPrice}</span>
