@@ -106,7 +106,7 @@ body:has(> main.buyscreen-page) {
   overflow-wrap: anywhere;
   word-break: normal;
 }
-.buyscreen-product-meta p:nth-last-child(2) {
+.buyscreen-product-meta .buyscreen-product-name {
   min-height: 2.35em;
   display: flex;
   align-items: center;
