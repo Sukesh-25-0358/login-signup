@@ -1392,7 +1392,7 @@ export default function BuyScreenPage() {
                     router.push("/page-not-found");
                   }}
                   placeholder="Search..."
-                  className="min-w-0 flex-1 bg-transparent text-[#4b5563] outline-none placeholder:text-[#f1f5f9] placeholder:opacity-100"
+                  className="min-w-0 flex-1 bg-transparent text-[#4b5563] outline-none placeholder:text-[#cbd5e1] placeholder:opacity-100"
                   aria-label="Search products"
                 />
               </label>
@@ -1457,7 +1457,7 @@ export default function BuyScreenPage() {
                     featuredProductsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
                   }}
                   placeholder="Search products..."
-                  className="min-w-0 flex-1 bg-transparent text-[#4b5563] outline-none placeholder:text-[#f1f5f9] placeholder:opacity-100"
+                  className="min-w-0 flex-1 bg-transparent text-[#4b5563] outline-none placeholder:text-[#4b5563] placeholder:opacity-100"
                   aria-label="Search products"
                 />
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-[#374151]" aria-hidden>
