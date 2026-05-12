@@ -1392,7 +1392,7 @@ export default function BuyScreenPage() {
                     router.push("/page-not-found");
                   }}
                   placeholder="Search..."
-                  className="min-w-0 flex-1 bg-transparent text-[#4b5563] outline-none placeholder:text-[#4b5563] placeholder:opacity-100"
+                  className="min-w-0 flex-1 bg-transparent text-[#4b5563] outline-none placeholder:text-[#f1f5f9] placeholder:opacity-100"
                   aria-label="Search products"
                 />
               </label>
@@ -1457,7 +1457,7 @@ export default function BuyScreenPage() {
                     featuredProductsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
                   }}
                   placeholder="Search products..."
-                  className="min-w-0 flex-1 bg-transparent text-[#4b5563] outline-none placeholder:text-[#4b5563] placeholder:opacity-100"
+                  className="min-w-0 flex-1 bg-transparent text-[#4b5563] outline-none placeholder:text-[#f1f5f9] placeholder:opacity-100"
                   aria-label="Search products"
                 />
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-[#374151]" aria-hidden>
@@ -1815,11 +1815,13 @@ export default function BuyScreenPage() {
                         <p className="buyscreen-product-name text-center text-[10px] font-semibold uppercase leading-snug tracking-tight text-[#6b7280] [overflow-wrap:anywhere] sm:text-xs sm:leading-normal sm:tracking-[0.06em] md:tracking-[0.08em]">
                           {product.name}
                         </p>
-                        {product.badge ? (
-                          <p className="mt-1 text-center">
+                        <p className="mt-1 min-h-[18px] text-center">
+                          {product.badge ? (
                             <span className="inline-block rounded bg-[#ff664f] px-2 py-0.5 text-[10px] font-bold leading-none text-white shadow-sm">{product.badge}</span>
-                          </p>
-                        ) : null}
+                          ) : (
+                            <span className="inline-block px-2 py-0.5 text-[10px] leading-none opacity-0 select-none">00%</span>
+                          )}
+                        </p>
                         <p className="mt-1 text-center text-xs font-bold leading-snug tracking-tight text-[#171717] [overflow-wrap:anywhere] tabular-nums sm:text-sm">
                           {product.originalPrice ? (
                             <span className="mr-1.5 text-[10px] font-semibold text-[#9ca3af] line-through sm:text-xs">{product.originalPrice}</span>
