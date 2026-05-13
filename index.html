@@ -955,6 +955,20 @@
       }
     }
 
+    /* Buy screen: desktop high zoom (~175%) keeps hero content centered */
+    @media (hover: hover) and (pointer: fine) and (max-width: 1150px) and (min-resolution: 1.4dppx) {
+      #buyscreenPage .buyscreen-hero-content {
+        max-width: 100% !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+        text-align: center !important;
+      }
+      #buyscreenPage .buyscreen-hero-content p {
+        margin-left: auto !important;
+        margin-right: auto !important;
+      }
+    }
+
     /* Stackly top header nav — match category-row hover (blue pill, white text) */
     #buyscreenPage button.buyscreen-top-header-nav-item {
       padding: 0.42rem 0.9rem;

@@ -958,6 +958,22 @@ main.buyscreen-page button.buyscreen-top-header-nav-item--grid,
   }
 }
 
+/* Buy screen: desktop high zoom (~175%) keeps hero content centered */
+@media (hover: hover) and (pointer: fine) and (max-width: 1150px) and (min-resolution: 1.4dppx) {
+  main.buyscreen-page .buyscreen-hero-content,
+  #buyscreenPage .buyscreen-hero-content {
+    max-width: 100% !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    text-align: center !important;
+  }
+  main.buyscreen-page .buyscreen-hero-content p,
+  #buyscreenPage .buyscreen-hero-content p {
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+}
+
 /*
  * iOS Safari: make 100% / min-height chain resolve to the *visible* viewport.
  * Without this, auth pages can render too short, leave gaps, or flex children collapse.
