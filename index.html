@@ -65,21 +65,26 @@
       }
     }
 
-    /* Signup: tighter stack so all inline errors + Google button fit without clipping (index.html). */
+    /* Signup only: tighter stack so all inline errors + Google button fit (card height rules unchanged). */
     #signupPage .signup-card-content .error-text {
-      margin-top: 2px;
-      line-height: 1.15;
-      font-size: 10px;
+      margin-top: 2px !important;
+      line-height: 1.12 !important;
+      font-size: 10px !important;
     }
     @media (min-width: 480px) {
       #signupPage .signup-card-content .error-text {
-        font-size: 11px;
+        font-size: 11px !important;
       }
     }
     #signupPage .signup-card-content .signup-brand-stack {
       margin-bottom: 0.5rem !important;
     }
     @media (min-width: 640px) {
+      #signupPage .signup-card-content .signup-brand-stack {
+        margin-bottom: 0.65rem !important;
+      }
+    }
+    @media (min-width: 1024px) {
       #signupPage .signup-card-content .signup-brand-stack {
         margin-bottom: 0.75rem !important;
       }
@@ -90,6 +95,24 @@
     @media (min-width: 1024px) {
       #signupPage .signup-card-content .signup-welcome-title {
         margin-bottom: 0.5rem !important;
+      }
+    }
+    #signupPage .signup-fields-tight > * + * {
+      margin-top: 0.3rem;
+    }
+    @media (min-width: 640px) {
+      #signupPage .signup-fields-tight > * + * {
+        margin-top: 0.4rem;
+      }
+    }
+    @media (min-width: 1024px) {
+      #signupPage .signup-fields-tight > * + * {
+        margin-top: 0.5rem;
+      }
+    }
+    @media (max-width: 1023px) {
+      #signupPage .signup-card-content [class*="border-b"] {
+        padding-bottom: 0.3rem !important;
       }
     }
 
@@ -1205,8 +1228,8 @@
         padding-bottom: clamp(1.25rem, 5.5vh, 2.75rem) !important;
       }
       #signupPage .signup-card-content {
-        padding-top: clamp(0.65rem, 2.2vh, 1.35rem) !important;
-        padding-bottom: clamp(0.65rem, 2.8vh, 1.75rem) !important;
+        padding-top: clamp(0.45rem, 1.6vh, 1.1rem) !important;
+        padding-bottom: clamp(0.4rem, 1.6vh, 1.15rem) !important;
       }
     }
     @media (max-width: 420px) {
@@ -1319,8 +1342,8 @@
         padding-top: 0.75rem;
       }
       .auth-form-card .signup-card-content {
-        padding-top: 0.375rem;
-        padding-bottom: 0.375rem;
+        padding-top: 0.2rem;
+        padding-bottom: 0.2rem;
       }
       .auth-form-card .auth-card-content {
         padding-top: 0.375rem;
@@ -1328,7 +1351,7 @@
       }
       /* Tighter input rows on signup so Google button fits */
       #signupPage .signup-card-content [class*="border-b"] {
-        padding-bottom: 0.375rem;
+        padding-bottom: 0.26rem !important;
       }
     }
 
@@ -1558,20 +1581,9 @@
         justify-content: flex-start;
       }
       #signupPage .signup-card-content .error-text {
-        margin-top: 0.125rem;
-        line-height: 1.15;
-      }
-      /* Signup: all field errors + Google must stay visible — no fixed cap / no inner clip (login unchanged). */
-      #signupPage .auth-form-card {
-        height: auto;
-        max-height: none;
-        min-height: min(580px, 78vh);
-        overflow: visible !important;
-      }
-      #signupPage .auth-form-card .signup-card-content {
-        overflow: visible !important;
-        flex: 0 1 auto;
-        min-height: 0;
+        margin-top: 2px;
+        line-height: 1.1;
+        font-size: 10px;
       }
     }
 
@@ -1588,9 +1600,6 @@
       .auth-form-card .auth-card-content,
       .auth-form-card .signup-card-content {
         overflow: visible;
-      }
-      #signupPage .auth-form-card {
-        overflow: visible !important;
       }
     }
 
@@ -5627,19 +5636,19 @@
             "
           ></div>
 
-            <div class="relative z-10 flex flex-col flex-1 min-h-0 min-w-0 px-4 sm:px-6 pt-1.5 sm:pt-3 pb-1 sm:pb-2 lg:pt-5 lg:pb-3 text-white signup-card-content text-left justify-start lg:justify-between">
+            <div class="relative z-10 flex flex-col flex-1 min-h-0 min-w-0 px-4 sm:px-6 pt-1.5 sm:pt-2.5 pb-1 sm:pb-2 lg:pt-5 lg:pb-3 text-white signup-card-content text-left justify-start lg:justify-between">
             <!-- WELCOME + logo: same stack so both center on one axis -->
             <div class="signup-brand-stack flex w-full min-w-0 flex-col items-center flex-shrink-0 mb-2 sm:mb-2 lg:mb-3">
-              <h1 class="signup-welcome-title font-welcome-heading text-lg sm:text-xl md:text-2xl lg:text-3xl text-center font-semibold mb-0.5 sm:mb-2 lg:mb-3 break-words tracking-widest">
+              <h1 class="signup-welcome-title font-welcome-heading text-lg sm:text-xl md:text-2xl lg:text-3xl text-center font-semibold mb-0.5 sm:mb-2 lg:mb-4 break-words tracking-widest">
               WELCOME
             </h1>
-              <div class="bg-white w-[120px] sm:w-[140px] lg:w-[180px] h-[40px] sm:h-[48px] lg:h-[56px] rounded-[50%] flex items-center justify-center shadow-lg overflow-hidden shrink-0">
+              <div class="bg-white w-[120px] sm:w-[140px] lg:w-[180px] h-[38px] sm:h-[46px] lg:h-[56px] rounded-[50%] flex items-center justify-center shadow-lg overflow-hidden shrink-0">
                 <img src="public/stackly-logo.webp" alt="Stackly Logo" class="h-3.5 sm:h-4 lg:h-7 object-contain" />
               </div>
             </div>
 
             <!-- INPUTS -->
-            <div class="space-y-1.5 sm:space-y-2 lg:space-y-2 flex-shrink-0">
+            <div class="signup-fields-tight flex-shrink-0 min-h-0">
               <div>
                 <div class="flex items-center border-b border-white/80 pb-2">
                   <i class="fa-solid fa-user mr-3 text-sm text-white/90"></i>
@@ -5726,7 +5735,7 @@
             <!-- SIGNUP BUTTON -->
             <button
               onclick="handleSignup()"
-              class="mt-1.5 mb-1.5 lg:mt-2 lg:mb-2 w-full h-[40px] lg:h-[42px] flex-shrink-0 bg-gradient-to-r from-[#2d8cf0] to-[#5a78c7] rounded-md text-sm font-medium text-white shadow-md hover:opacity-90 transition"
+              class="mt-1.5 mb-1 lg:mt-2 lg:mb-1.5 w-full h-[40px] lg:h-[42px] flex-shrink-0 bg-gradient-to-r from-[#2d8cf0] to-[#5a78c7] rounded-md text-sm font-medium text-white shadow-md hover:opacity-90 transition"
             >
               Sign Up
             </button>
@@ -5754,6 +5763,7 @@
               type="button"
               onclick="window.location.href='https://accounts.google.com/o/oauth2/v2/auth?client_id=703831654489-m34p97it8cppn924006cgt8u6jgk9tsa.apps.googleusercontent.com&redirect_uri=http://localhost:5000/api/auth/google&response_type=code&scope=openid%20email%20profile&access_type=online&prompt=select_account'"
               class="
+                signup-google-btn
                 w-full
                 h-[40px]
                 lg:h-[42px]
