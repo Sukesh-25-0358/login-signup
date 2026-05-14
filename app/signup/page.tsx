@@ -6,10 +6,19 @@ import { FaUser, FaEnvelope, FaPhone, FaLock } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 import { useRouter } from "next/navigation";
 import { register as registerApi } from "@/lib/api";
+import {
+  DEFAULT_SIGNUP_PHONE_COUNTRY_ID,
+  SIGNUP_PHONE_COUNTRIES,
+  getDefaultSignupPhoneCountry,
+  getSignupPhoneCountry,
+  toE164Mobile,
+  validateSignupNationalDigits,
+} from "@/lib/signupPhoneCountries";
 
 type SignupFormState = {
   name: string;
   email: string;
+  phoneCountryId: string;
   mobileNumber: string;
   password: string;
   confirmPassword: string;
@@ -27,6 +36,7 @@ type SignupFormErrors = {
 const initialSignupState: SignupFormState = {
   name: "",
   email: "",
+  phoneCountryId: DEFAULT_SIGNUP_PHONE_COUNTRY_ID,
   mobileNumber: "",
   password: "",
   confirmPassword: "",
@@ -129,10 +139,14 @@ export default function SignupPage() {
       newErrors.email = "Please enter a valid email address.";
     }
 
-    if (!values.mobileNumber.trim()) {
+    const phoneCountry =
+      getSignupPhoneCountry(values.phoneCountryId) ?? getDefaultSignupPhoneCountry();
+    const mobileDigits = values.mobileNumber.replace(/\D/g, "");
+    if (!mobileDigits) {
       newErrors.mobileNumber = "Mobile number is required.";
-    } else if (!/^[0-9]{10}$/.test(values.mobileNumber.trim())) {
-      newErrors.mobileNumber = "Mobile number must be exactly 10 digits.";
+    } else {
+      const mobileErr = validateSignupNationalDigits(mobileDigits, phoneCountry);
+      if (mobileErr) newErrors.mobileNumber = mobileErr;
     }
 
     if (!values.password) {
@@ -164,14 +178,30 @@ export default function SignupPage() {
     return newErrors;
   };
 
+  const handleCountryChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const id = event.target.value;
+    setForm((prev) => {
+      const country = getSignupPhoneCountry(id) ?? getDefaultSignupPhoneCountry();
+      const mobile = prev.mobileNumber.replace(/\D/g, "").slice(0, country.maxDigits);
+      return { ...prev, phoneCountryId: id, mobileNumber: mobile };
+    });
+    setErrors((prev) => ({ ...prev, mobileNumber: undefined, form: undefined }));
+  };
+
   const handleChange =
-    (field: keyof SignupFormState) =>
+    (field: keyof Omit<SignupFormState, "phoneCountryId">) =>
     (event: React.ChangeEvent<HTMLInputElement>) => {
-      let value = event.target.value;
-      // Keep mobile number numeric only at input-level (no alphabets).
       if (field === "mobileNumber") {
-        value = value.replace(/\D/g, "").slice(0, 10);
+        setForm((prev) => {
+          const country =
+            getSignupPhoneCountry(prev.phoneCountryId) ?? getDefaultSignupPhoneCountry();
+          const value = event.target.value.replace(/\D/g, "").slice(0, country.maxDigits);
+          return { ...prev, mobileNumber: value };
+        });
+        setErrors((prev) => ({ ...prev, mobileNumber: undefined, form: undefined }));
+        return;
       }
+      const value = event.target.value;
       setForm((prev) => ({ ...prev, [field]: value }));
       setErrors((prev) => ({ ...prev, [field]: undefined, form: undefined }));
     };
@@ -189,11 +219,14 @@ export default function SignupPage() {
       setIsSubmitting(true);
       setErrors((prev) => ({ ...prev, form: undefined }));
 
+      const phoneCountry =
+        getSignupPhoneCountry(form.phoneCountryId) ?? getDefaultSignupPhoneCountry();
+      const nationalDigits = form.mobileNumber.replace(/\D/g, "");
       await registerApi({
         name: form.name.trim(),
         email: form.email.trim().toLowerCase(),
         password: form.password,
-        ...(form.mobileNumber.trim() && { mobileNumber: form.mobileNumber.trim() }),
+        ...(nationalDigits && { mobileNumber: toE164Mobile(phoneCountry, nationalDigits) }),
       });
 
       setForm(initialSignupState);
@@ -283,16 +316,31 @@ export default function SignupPage() {
                   </div>
 
                   <div className="flex flex-col">
-                    <div className="flex items-center border-b border-white/80 pb-2">
-                      <FaPhone className="mr-3 text-sm text-white/90" />
+                    <div className="flex items-center border-b border-white/80 pb-2 gap-2 min-w-0">
+                      <FaPhone className="mr-1 sm:mr-2 text-sm text-white/90 flex-shrink-0" />
+                      <select
+                        value={form.phoneCountryId}
+                        onChange={handleCountryChange}
+                        aria-label="Country"
+                        className="bg-transparent outline-none text-white text-xs sm:text-sm border border-white/50 rounded px-1.5 py-1 max-[46%] sm:max-w-[200px] flex-shrink-0 cursor-pointer"
+                      >
+                        {SIGNUP_PHONE_COUNTRIES.map((c) => (
+                          <option key={c.id} value={c.id} className="text-gray-900">
+                            {c.name} (+{c.dialCode})
+                          </option>
+                        ))}
+                      </select>
                       <input
                         type="tel"
                         inputMode="numeric"
-                        maxLength={10}
-                        placeholder="Mobile number"
+                        maxLength={
+                          (getSignupPhoneCountry(form.phoneCountryId) ?? getDefaultSignupPhoneCountry())
+                            .maxDigits
+                        }
+                        placeholder="Phone number"
                         value={form.mobileNumber}
                         onChange={handleChange("mobileNumber")}
-                        className="bg-transparent outline-none w-full placeholder-white/90 text-sm text-white min-w-0"
+                        className="bg-transparent outline-none w-full min-w-0 placeholder-white/90 text-sm text-white"
                         aria-invalid={!!errors.mobileNumber}
                         aria-describedby={errors.mobileNumber ? "mobile-error" : undefined}
                       />

@@ -2343,6 +2343,7 @@
         }
       }
       if (page === "planning") initPlanningHeader();
+      if (page === "signup") initSignupPhoneCountrySelect();
     }
 
     var buyscreenProductStart = 0;
@@ -3714,8 +3715,106 @@
       return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     }
 
-    function isMobile(value) {
-      return /^[0-9]{10}$/.test(value.trim());
+    /** Login / forgot “mobile” field: plain 10-digit local number (unchanged from prior behavior). */
+    function isTenDigitMobileContact(value) {
+      return /^[0-9]{10}$/.test((value || "").trim());
+    }
+
+    // National lengths — keep in sync with lib/signupPhoneCountries.ts (Next.js signup).
+    var SIGNUP_PHONE_COUNTRIES_RAW = [
+      { id: "AU", name: "Australia", dial: "61", min: 9, max: 9 },
+      { id: "BD", name: "Bangladesh", dial: "880", min: 10, max: 10 },
+      { id: "BE", name: "Belgium", dial: "32", min: 9, max: 9 },
+      { id: "BR", name: "Brazil", dial: "55", min: 10, max: 11 },
+      { id: "CA", name: "Canada", dial: "1", min: 10, max: 10 },
+      { id: "CH", name: "Switzerland", dial: "41", min: 9, max: 9 },
+      { id: "CN", name: "China", dial: "86", min: 11, max: 11 },
+      { id: "DE", name: "Germany", dial: "49", min: 10, max: 11 },
+      { id: "EG", name: "Egypt", dial: "20", min: 10, max: 10 },
+      { id: "ES", name: "Spain", dial: "34", min: 9, max: 9 },
+      { id: "FR", name: "France", dial: "33", min: 9, max: 9 },
+      { id: "GB", name: "United Kingdom", dial: "44", min: 10, max: 10 },
+      { id: "ID", name: "Indonesia", dial: "62", min: 9, max: 12 },
+      { id: "IN", name: "India", dial: "91", min: 10, max: 10 },
+      { id: "IT", name: "Italy", dial: "39", min: 9, max: 10 },
+      { id: "JP", name: "Japan", dial: "81", min: 10, max: 11 },
+      { id: "KE", name: "Kenya", dial: "254", min: 9, max: 9 },
+      { id: "KR", name: "South Korea", dial: "82", min: 9, max: 11 },
+      { id: "LK", name: "Sri Lanka", dial: "94", min: 9, max: 9 },
+      { id: "MX", name: "Mexico", dial: "52", min: 10, max: 10 },
+      { id: "MY", name: "Malaysia", dial: "60", min: 9, max: 10 },
+      { id: "NG", name: "Nigeria", dial: "234", min: 10, max: 10 },
+      { id: "NL", name: "Netherlands", dial: "31", min: 9, max: 9 },
+      { id: "NZ", name: "New Zealand", dial: "64", min: 8, max: 10 },
+      { id: "PH", name: "Philippines", dial: "63", min: 10, max: 10 },
+      { id: "PK", name: "Pakistan", dial: "92", min: 10, max: 10 },
+      { id: "SA", name: "Saudi Arabia", dial: "966", min: 9, max: 9 },
+      { id: "SG", name: "Singapore", dial: "65", min: 8, max: 8 },
+      { id: "TH", name: "Thailand", dial: "66", min: 9, max: 9 },
+      { id: "AE", name: "United Arab Emirates", dial: "971", min: 9, max: 9 },
+      { id: "US", name: "United States", dial: "1", min: 10, max: 10 },
+      { id: "VN", name: "Vietnam", dial: "84", min: 9, max: 9 },
+      { id: "ZA", name: "South Africa", dial: "27", min: 9, max: 9 }
+    ];
+    var SIGNUP_PHONE_COUNTRIES = SIGNUP_PHONE_COUNTRIES_RAW.slice().sort(function (a, b) {
+      return a.name.localeCompare(b.name);
+    });
+
+    function getSignupPhoneCountry(id) {
+      for (var i = 0; i < SIGNUP_PHONE_COUNTRIES.length; i++) {
+        if (SIGNUP_PHONE_COUNTRIES[i].id === id) return SIGNUP_PHONE_COUNTRIES[i];
+      }
+      return null;
+    }
+
+    function getDefaultSignupPhoneCountry() {
+      return getSignupPhoneCountry("IN") || SIGNUP_PHONE_COUNTRIES[0];
+    }
+
+    function signupPhoneRules() {
+      var sel = document.getElementById("signupPhoneCountry");
+      var id = sel && sel.value ? sel.value : "IN";
+      return getSignupPhoneCountry(id) || getDefaultSignupPhoneCountry();
+    }
+
+    function onSignupPhoneCountryChange() {
+      var r = signupPhoneRules();
+      var el = document.getElementById("signupMobile");
+      if (el) {
+        el.setAttribute("maxlength", String(r.max));
+        el.value = (el.value || "").replace(/\D/g, "").slice(0, r.max);
+      }
+    }
+
+    function onSignupPhoneInput(el) {
+      if (!el) return;
+      var r = signupPhoneRules();
+      el.setAttribute("maxlength", String(r.max));
+      el.value = (el.value || "").replace(/\D/g, "").slice(0, r.max);
+    }
+
+    function signupNationalDigitsError(digits, c) {
+      var n = (digits || "").replace(/\D/g, "");
+      if (n.length < c.min || n.length > c.max) {
+        return c.min === c.max
+          ? "Enter " + c.min + " digits for " + c.name + "."
+          : "Enter " + c.min + "–" + c.max + " digits for " + c.name + ".";
+      }
+      return "";
+    }
+
+    function initSignupPhoneCountrySelect() {
+      var sel = document.getElementById("signupPhoneCountry");
+      if (!sel || sel.getAttribute("data-phone-inited") === "1") return;
+      sel.setAttribute("data-phone-inited", "1");
+      SIGNUP_PHONE_COUNTRIES.forEach(function (c) {
+        var opt = document.createElement("option");
+        opt.value = c.id;
+        opt.textContent = c.name + " (+" + c.dial + ")";
+        sel.appendChild(opt);
+      });
+      sel.value = "IN";
+      onSignupPhoneCountryChange();
     }
 
     async function handleSignup() {
@@ -3754,12 +3853,17 @@
         emailError.innerText = "Enter valid email";
         valid = false;
       }
-      if (!mobile) {
+      var phoneRules = signupPhoneRules();
+      var mobileDigits = (mobile || "").replace(/\D/g, "");
+      if (!mobileDigits) {
         if (mobileError) mobileError.innerText = "Mobile number is required";
         valid = false;
-      } else if (!isMobile(mobile)) {
-        if (mobileError) mobileError.innerText = "Mobile number must be exactly 10 digits";
-        valid = false;
+      } else {
+        var mobileMsg = signupNationalDigitsError(mobileDigits, phoneRules);
+        if (mobileMsg) {
+          if (mobileError) mobileError.innerText = mobileMsg;
+          valid = false;
+        }
       }
       if (password.length < 8) {
         passwordError.innerText = "Password must be at least 8 characters";
@@ -3794,7 +3898,7 @@
 
       try {
         const body = { name: name, email: email.toLowerCase(), password: password };
-        if (mobile) body.mobileNumber = mobile;
+        if (mobileDigits) body.mobileNumber = "+" + phoneRules.dial + mobileDigits;
         const res = await fetch(BACKEND_BASE_URL + "/api/auth/register", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -3826,7 +3930,7 @@
 
       let valid = true;
       var isEmail = validateEmail(email);
-      var isMobileLogin = isMobile(email);
+      var isMobileLogin = isTenDigitMobileContact(email);
       if (!isEmail && !isMobileLogin) {
         emailError.innerText = "Enter valid email or mobile number";
         valid = false;
@@ -3866,7 +3970,7 @@
       errEl.innerText = "";
       if (msgEl) msgEl.innerText = "";
       var isEmail = validateEmail(email);
-      var isMobileContact = isMobile(email);
+      var isMobileContact = isTenDigitMobileContact(email);
       if (!isEmail && !isMobileContact) {
         errEl.innerText = "Enter a valid email or mobile number";
         return;
@@ -5520,16 +5624,22 @@
               </div>
 
               <div>
-                <div class="flex items-center border-b border-white/80 pb-2">
-                  <i class="fa-solid fa-phone mr-3 text-sm text-white/90"></i>
+                <div class="flex items-center border-b border-white/80 pb-2 gap-2 min-w-0">
+                  <i class="fa-solid fa-phone mr-1 sm:mr-2 text-sm text-white/90 flex-shrink-0"></i>
+                  <select
+                    id="signupPhoneCountry"
+                    onchange="onSignupPhoneCountryChange()"
+                    aria-label="Country"
+                    class="bg-transparent outline-none text-white text-xs sm:text-sm border border-white/50 rounded px-1.5 py-1 max-[46%] sm:max-w-[200px] flex-shrink-0 cursor-pointer"
+                  ></select>
                   <input
                     id="signupMobile"
                     type="tel"
                     inputmode="numeric"
-                    maxlength="10"
-                    oninput="this.value = this.value.replace(/\D/g, '').slice(0, 10);"
-                    placeholder="Mobile number"
-                    class="bg-transparent outline-none w-full placeholder-white/90 text-sm text-white min-w-0"
+                    maxlength="15"
+                    oninput="onSignupPhoneInput(this)"
+                    placeholder="Phone number"
+                    class="bg-transparent outline-none w-full min-w-0 placeholder-white/90 text-sm text-white"
                   />
                 </div>
                 <p id="signupMobileError" class="error-text mt-0.5 text-[11px] sm:text-xs"></p>
