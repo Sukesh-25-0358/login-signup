@@ -4,12 +4,21 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { FaCheckCircle } from "react-icons/fa";
+import { downloadPlanningInvoiceForEntry } from "@/lib/planningInvoiceHtml";
+import type { PlanningInvoiceContactDefaults } from "@/lib/planningInvoiceHtml";
 
 /**
  * Shown in the header until session/API provides the real name.
  * Replace with `session.user.name` (or equivalent) when auth is connected.
  */
 const PLANNING_DISPLAY_USER_NAME = "Pentakota Srinivas";
+
+const PLANNING_INVOICE_CONTACT: PlanningInvoiceContactDefaults = {
+  displayName: PLANNING_DISPLAY_USER_NAME,
+  email: "srinu@gmail.com",
+  phone: "9848xxxx19",
+  address: "Chennai - 636008",
+};
 
 const NAV_ITEMS = [
   { id: "workspace" as const, label: "Workspace" },
@@ -185,6 +194,16 @@ type BillingHistoryEntry = {
   invoiceId: string;
   amount: string;
   status: "Paid" | "Free";
+  planName?: string;
+  planTier?: string;
+  websiteLabel?: string;
+  paymentMethodLabel?: string;
+  paymentDetail?: string;
+  buyerName?: string;
+  buyerEmail?: string;
+  buyerPhone?: string;
+  buyerAddress?: string;
+  generatedAt?: string;
 };
 
 type InvoiceData = {
@@ -204,14 +223,128 @@ function historyYearFromDate(date: string) {
 }
 
 const DEFAULT_BILLING_HISTORY: BillingHistoryEntry[] = [
-  { date: "Apr 02 2026", invoiceId: "INV-200987", amount: "$39.00", status: "Paid" },
-  { date: "Mar 15 2026", invoiceId: "INV-121289", amount: "$39.00", status: "Paid" },
-  { date: "Feb 08 2026", invoiceId: "INV-100123", amount: "$39.00", status: "Paid" },
-  { date: "Jan 20 2026", invoiceId: "INV-100154", amount: "$39.00", status: "Paid" },
-  { date: "Dec 20 2025", invoiceId: "INV-101164", amount: "$39.00", status: "Paid" },
-  { date: "Dec 10 2025", invoiceId: "INV-100140", amount: "$0.00", status: "Free" },
-  { date: "Nov 20 2025", invoiceId: "INV-100100", amount: "$0.00", status: "Free" },
-  { date: "Oct 08 2025", invoiceId: "INV-100240", amount: "$0.00", status: "Free" },
+  {
+    date: "Apr 02 2026",
+    invoiceId: "INV-200987",
+    amount: "$39.00",
+    status: "Paid",
+    planName: "Business Plan (Monthly)",
+    planTier: "Business Plan",
+    websiteLabel: "Stackly workspace subscription",
+    paymentMethodLabel: "Credit / Debit card",
+    paymentDetail: "Card payment · ****4242 · exp 09/28",
+    generatedAt: "2026-04-02T14:22:00.000Z",
+    buyerName: PLANNING_DISPLAY_USER_NAME,
+    buyerEmail: PLANNING_INVOICE_CONTACT.email,
+    buyerPhone: PLANNING_INVOICE_CONTACT.phone,
+    buyerAddress: PLANNING_INVOICE_CONTACT.address,
+  },
+  {
+    date: "Mar 15 2026",
+    invoiceId: "INV-121289",
+    amount: "$39.00",
+    status: "Paid",
+    planName: "Basic (Monthly)",
+    planTier: "Basic",
+    websiteLabel: "Stackly workspace subscription",
+    paymentMethodLabel: "PayPal",
+    paymentDetail: "PayPal · srinu@gmail.com",
+    generatedAt: "2026-03-15T11:05:00.000Z",
+    buyerName: PLANNING_DISPLAY_USER_NAME,
+    buyerEmail: PLANNING_INVOICE_CONTACT.email,
+    buyerPhone: PLANNING_INVOICE_CONTACT.phone,
+    buyerAddress: PLANNING_INVOICE_CONTACT.address,
+  },
+  {
+    date: "Feb 08 2026",
+    invoiceId: "INV-100123",
+    amount: "$39.00",
+    status: "Paid",
+    planName: "Advanced (Yearly)",
+    planTier: "Advanced",
+    websiteLabel: "Stackly workspace subscription",
+    paymentMethodLabel: "UPI / Wallet",
+    paymentDetail: "Google Pay · UPI srinu@okaxis",
+    generatedAt: "2026-02-08T09:40:00.000Z",
+    buyerName: PLANNING_DISPLAY_USER_NAME,
+    buyerEmail: PLANNING_INVOICE_CONTACT.email,
+    buyerPhone: PLANNING_INVOICE_CONTACT.phone,
+    buyerAddress: PLANNING_INVOICE_CONTACT.address,
+  },
+  {
+    date: "Jan 20 2026",
+    invoiceId: "INV-100154",
+    amount: "$39.00",
+    status: "Paid",
+    planName: "Business Plan (Monthly)",
+    planTier: "Pro",
+    websiteLabel: "Landing Page",
+    paymentMethodLabel: "Credit / Debit card",
+    paymentDetail: "Card payment · ****9012 · exp 12/27",
+    generatedAt: "2026-01-20T16:00:00.000Z",
+    buyerName: "Srinivas Pentakota",
+    buyerEmail: PLANNING_INVOICE_CONTACT.email,
+    buyerPhone: PLANNING_INVOICE_CONTACT.phone,
+    buyerAddress: PLANNING_INVOICE_CONTACT.address,
+  },
+  {
+    date: "Dec 20 2025",
+    invoiceId: "INV-101164",
+    amount: "$39.00",
+    status: "Paid",
+    planName: "Business Plan (Monthly)",
+    planTier: "Pro",
+    websiteLabel: "Stackly workspace subscription",
+    paymentMethodLabel: "Net banking",
+    paymentDetail: "Net banking · State Bank of India",
+    generatedAt: "2025-12-20T10:15:00.000Z",
+    buyerName: PLANNING_DISPLAY_USER_NAME,
+    buyerEmail: PLANNING_INVOICE_CONTACT.email,
+    buyerPhone: PLANNING_INVOICE_CONTACT.phone,
+    buyerAddress: PLANNING_INVOICE_CONTACT.address,
+  },
+  {
+    date: "Dec 10 2025",
+    invoiceId: "INV-100140",
+    amount: "$0.00",
+    status: "Free",
+    planName: "Basic (Free)",
+    planTier: "Free",
+    websiteLabel: "Stackly workspace subscription",
+    generatedAt: "2025-12-10T08:00:00.000Z",
+    buyerName: PLANNING_DISPLAY_USER_NAME,
+    buyerEmail: PLANNING_INVOICE_CONTACT.email,
+    buyerPhone: PLANNING_INVOICE_CONTACT.phone,
+    buyerAddress: PLANNING_INVOICE_CONTACT.address,
+  },
+  {
+    date: "Nov 20 2025",
+    invoiceId: "INV-100100",
+    amount: "$0.00",
+    status: "Free",
+    planName: "Basic (Free)",
+    planTier: "Free",
+    websiteLabel: "Stackly workspace subscription",
+    generatedAt: "2025-11-20T08:00:00.000Z",
+    buyerName: PLANNING_DISPLAY_USER_NAME,
+    buyerEmail: PLANNING_INVOICE_CONTACT.email,
+    buyerPhone: PLANNING_INVOICE_CONTACT.phone,
+    buyerAddress: PLANNING_INVOICE_CONTACT.address,
+  },
+  {
+    date: "Oct 08 2025",
+    invoiceId: "INV-100240",
+    amount: "$0.00",
+    status: "Free",
+    planName: "Basic (Free)",
+    planTier: "Free",
+    websiteLabel: "Stackly workspace subscription",
+    generatedAt: "2025-10-08T08:00:00.000Z",
+    buyerName: PLANNING_DISPLAY_USER_NAME,
+    buyerEmail: PLANNING_INVOICE_CONTACT.email,
+    buyerPhone: PLANNING_INVOICE_CONTACT.phone,
+    buyerAddress: PLANNING_INVOICE_CONTACT.address,
+  },
 ];
 
 const PLANNING_BILLING_HISTORY_KEY = "stacklyPlanningBillingHistory";
@@ -250,29 +383,56 @@ function saveBillingHistoryToStorage(entries: BillingHistoryEntry[]) {
   }
 }
 
-/** Client-side invoice summary — avoids 404 when no API / static hosting (e.g. GitHub Pages). */
-function downloadBillingInvoiceSummary(entry: BillingHistoryEntry) {
+function paymentMethodInvoiceLabel(id: PaymentMethodId): string {
+  switch (id) {
+    case "paypal":
+      return "PayPal";
+    case "card":
+      return "Credit / Debit card";
+    case "netbanking":
+      return "Net banking";
+    case "online":
+      return "UPI / Wallet";
+    default:
+      return "Payment";
+  }
+}
+
+type PaymentMaskParams = {
+  isFree: boolean;
+  method: PaymentMethodId;
+  paypalEmail: string;
+  cardNumber: string;
+  cardExpiry: string;
+  netBank: string;
+  onlineWallet: "gpay" | "phonepe";
+  upiId: string;
+};
+
+function buildPaymentMaskDetail(p: PaymentMaskParams): string {
+  if (p.isFree) return "No charge — complimentary activation.";
+  switch (p.method) {
+    case "paypal":
+      return `PayPal · ${p.paypalEmail.trim()}`;
+    case "card": {
+      const last = p.cardNumber.replace(/\D/g, "").slice(-4) || "****";
+      return `Card payment · ****${last} · exp ${p.cardExpiry || "—"}`;
+    }
+    case "netbanking":
+      return `Net banking · ${p.netBank.trim() || "Selected bank"}`;
+    case "online": {
+      const w = p.onlineWallet === "gpay" ? "Google Pay" : "PhonePe";
+      return `${w} · UPI ${p.upiId.trim()}`;
+    }
+    default:
+      return "Online payment";
+  }
+}
+
+/** Stackly-branded HTML invoice (open file and use browser Print → Save as PDF if needed). */
+async function downloadBillingInvoiceSummary(entry: BillingHistoryEntry) {
   if (typeof window === "undefined") return;
-  const lines = [
-    "STACKLY — Invoice summary",
-    "",
-    `Invoice ID: ${entry.invoiceId}`,
-    `Date: ${entry.date}`,
-    `Amount: ${entry.amount}`,
-    `Status: ${entry.status}`,
-    "",
-    "Generated in your browser. Official PDF invoices will be available when billing is connected to your account.",
-  ];
-  const blob = new Blob([lines.join("\n")], { type: "text/plain;charset=utf-8" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = `${entry.invoiceId.replace(/[^a-zA-Z0-9-_]/g, "_")}.txt`;
-  a.rel = "noopener";
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
+  await downloadPlanningInvoiceForEntry(entry, PLANNING_INVOICE_CONTACT, entry.invoiceId);
 }
 
 export default function PlanningPage() {
@@ -455,6 +615,25 @@ export default function PlanningPage() {
           invoiceId: createdInvoice.invoiceId,
           amount: createdInvoice.amount,
           status: isFreeCheckout ? "Free" : "Paid",
+          planName: createdInvoice.planName,
+          planTier: selectedPlan.name,
+          websiteLabel: "Stackly workspace subscription",
+          paymentMethodLabel: paymentMethodInvoiceLabel(paymentMethod),
+          paymentDetail: buildPaymentMaskDetail({
+            isFree: isFreeCheckout,
+            method: paymentMethod,
+            paypalEmail,
+            cardNumber,
+            cardExpiry,
+            netBank,
+            onlineWallet,
+            upiId,
+          }),
+          buyerName: createdInvoice.name,
+          buyerEmail: createdInvoice.email,
+          buyerPhone: createdInvoice.contactNo,
+          buyerAddress: createdInvoice.address,
+          generatedAt: now.toISOString(),
         };
         const next = [row, ...prev.filter((e) => e.invoiceId !== row.invoiceId)];
         saveBillingHistoryToStorage(next);
@@ -1173,7 +1352,7 @@ export default function PlanningPage() {
                               className="inline-flex h-6 w-7 cursor-pointer items-center justify-center rounded-md border-0 text-xs font-bold text-white transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1e7fd8] focus-visible:ring-offset-2 focus-visible:ring-offset-white"
                               style={{ backgroundColor: "#1e7fd8" }}
                               aria-label={`Download invoice summary ${entry.invoiceId}`}
-                              onClick={() => downloadBillingInvoiceSummary(entry)}
+                              onClick={() => void downloadBillingInvoiceSummary(entry)}
                             >
                               <svg width="12" height="12" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
                                 <path d="M10 4v8m0 0l-3-3m3 3l3-3M5 14h10" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />

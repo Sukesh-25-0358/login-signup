@@ -7,6 +7,8 @@
 
   <!-- Tailwind via CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Stackly planning invoice HTML (keep in sync: run npm run build or esbuild on lib/planningInvoiceHtml.ts) -->
+  <script src="public/planning-invoice-document.js"></script>
 
   <!-- Font Awesome for field icons (user, email, lock) -->
   <link
@@ -1917,15 +1919,21 @@
     var PLANNING_BILLING_HISTORY_KEY = "stacklyPlanningBillingHistory";
 
     function planningDefaultHistoryRows() {
+      var base = {
+        buyerName: "Pentakota Srinivas",
+        buyerEmail: "srinu@gmail.com",
+        buyerPhone: "9848xxxx19",
+        buyerAddress: "Chennai - 636008"
+      };
       return [
-        { date: "Apr 02 2026", invoiceId: "INV-200987", amount: "$39.00", status: "Paid" },
-        { date: "Mar 15 2026", invoiceId: "INV-121289", amount: "$39.00", status: "Paid" },
-        { date: "Feb 08 2026", invoiceId: "INV-100123", amount: "$39.00", status: "Paid" },
-        { date: "Jan 20 2026", invoiceId: "INV-100154", amount: "$39.00", status: "Paid" },
-        { date: "Dec 20 2025", invoiceId: "INV-101164", amount: "$39.00", status: "Paid" },
-        { date: "Dec 10 2025", invoiceId: "INV-100140", amount: "$0.00", status: "Free" },
-        { date: "Nov 20 2025", invoiceId: "INV-100100", amount: "$0.00", status: "Free" },
-        { date: "Oct 08 2025", invoiceId: "INV-100240", amount: "$0.00", status: "Free" }
+        { date: "Apr 02 2026", invoiceId: "INV-200987", amount: "$39.00", status: "Paid", planName: "Business Plan (Monthly)", planTier: "Business Plan", websiteLabel: "Stackly workspace subscription", paymentMethodLabel: "Credit / Debit card", paymentDetail: "Card payment · ****4242 · exp 09/28", generatedAt: "2026-04-02T14:22:00.000Z", buyerName: base.buyerName, buyerEmail: base.buyerEmail, buyerPhone: base.buyerPhone, buyerAddress: base.buyerAddress },
+        { date: "Mar 15 2026", invoiceId: "INV-121289", amount: "$39.00", status: "Paid", planName: "Basic (Monthly)", planTier: "Basic", websiteLabel: "Stackly workspace subscription", paymentMethodLabel: "PayPal", paymentDetail: "PayPal · srinu@gmail.com", generatedAt: "2026-03-15T11:05:00.000Z", buyerName: base.buyerName, buyerEmail: base.buyerEmail, buyerPhone: base.buyerPhone, buyerAddress: base.buyerAddress },
+        { date: "Feb 08 2026", invoiceId: "INV-100123", amount: "$39.00", status: "Paid", planName: "Advanced (Yearly)", planTier: "Advanced", websiteLabel: "Stackly workspace subscription", paymentMethodLabel: "UPI / Wallet", paymentDetail: "Google Pay · UPI srinu@okaxis", generatedAt: "2026-02-08T09:40:00.000Z", buyerName: base.buyerName, buyerEmail: base.buyerEmail, buyerPhone: base.buyerPhone, buyerAddress: base.buyerAddress },
+        { date: "Jan 20 2026", invoiceId: "INV-100154", amount: "$39.00", status: "Paid", planName: "Business Plan (Monthly)", planTier: "Pro", websiteLabel: "Landing Page", paymentMethodLabel: "Credit / Debit card", paymentDetail: "Card payment · ****9012 · exp 12/27", generatedAt: "2026-01-20T16:00:00.000Z", buyerName: "Srinivas Pentakota", buyerEmail: base.buyerEmail, buyerPhone: base.buyerPhone, buyerAddress: base.buyerAddress },
+        { date: "Dec 20 2025", invoiceId: "INV-101164", amount: "$39.00", status: "Paid", planName: "Business Plan (Monthly)", planTier: "Pro", websiteLabel: "Stackly workspace subscription", paymentMethodLabel: "Net banking", paymentDetail: "Net banking · State Bank of India", generatedAt: "2025-12-20T10:15:00.000Z", buyerName: base.buyerName, buyerEmail: base.buyerEmail, buyerPhone: base.buyerPhone, buyerAddress: base.buyerAddress },
+        { date: "Dec 10 2025", invoiceId: "INV-100140", amount: "$0.00", status: "Free", planName: "Basic (Free)", planTier: "Free", websiteLabel: "Stackly workspace subscription", paymentMethodLabel: "", paymentDetail: "", generatedAt: "2025-12-10T08:00:00.000Z", buyerName: base.buyerName, buyerEmail: base.buyerEmail, buyerPhone: base.buyerPhone, buyerAddress: base.buyerAddress },
+        { date: "Nov 20 2025", invoiceId: "INV-100100", amount: "$0.00", status: "Free", planName: "Basic (Free)", planTier: "Free", websiteLabel: "Stackly workspace subscription", paymentMethodLabel: "", paymentDetail: "", generatedAt: "2025-11-20T08:00:00.000Z", buyerName: base.buyerName, buyerEmail: base.buyerEmail, buyerPhone: base.buyerPhone, buyerAddress: base.buyerAddress },
+        { date: "Oct 08 2025", invoiceId: "INV-100240", amount: "$0.00", status: "Free", planName: "Basic (Free)", planTier: "Free", websiteLabel: "Stackly workspace subscription", paymentMethodLabel: "", paymentDetail: "", generatedAt: "2025-10-08T08:00:00.000Z", buyerName: base.buyerName, buyerEmail: base.buyerEmail, buyerPhone: base.buyerPhone, buyerAddress: base.buyerAddress }
       ];
     }
 
@@ -2237,11 +2245,22 @@
           contactNo: "9848xxxx19",
           address: "Chennai - 636008"
         };
+        var pm = planningGetPaymentMethod();
         var newRow = {
           date: planningInvoiceData.date,
           invoiceId: planningInvoiceData.invoiceId,
           amount: planningInvoiceData.amount,
-          status: planningIsFreeCheckout ? "Free" : "Paid"
+          status: planningIsFreeCheckout ? "Free" : "Paid",
+          planName: planningInvoiceData.planName,
+          planTier: names[planningSelectedPlanIndex],
+          websiteLabel: "Stackly workspace subscription",
+          paymentMethodLabel: planningPaymentMethodLabel(pm),
+          paymentDetail: planningMaskPaymentDetail(pm),
+          buyerName: planningInvoiceData.name,
+          buyerEmail: planningInvoiceData.email,
+          buyerPhone: planningInvoiceData.contactNo,
+          buyerAddress: planningInvoiceData.address,
+          generatedAt: now.toISOString()
         };
         planningHistory = [newRow].concat(
           planningHistory.filter(function (e) {
@@ -2278,7 +2297,56 @@
       });
     }
 
+    function planningPaymentMethodLabel(method) {
+      var m = {
+        paypal: "PayPal",
+        card: "Credit / Debit card",
+        netbanking: "Net banking",
+        online: "UPI / Wallet"
+      };
+      return m[method] || "Payment";
+    }
+
+    function planningMaskPaymentDetail(method, opts) {
+      opts = opts || {};
+      var isFree = typeof opts.isFree === "boolean" ? opts.isFree : planningIsFreeCheckout;
+      if (isFree) return "No charge — complimentary activation.";
+      if (method === "paypal") {
+        var pe = document.getElementById("planningPaypalEmail");
+        return "PayPal · " + (pe && pe.value ? pe.value.trim() : "");
+      }
+      if (method === "card") {
+        var cn = document.getElementById("planningCardNumber");
+        var ce = document.getElementById("planningCardExpiry");
+        var digits = (cn && cn.value ? cn.value : "").replace(/\D/g, "");
+        var last = digits.slice(-4) || "****";
+        return "Card payment · ****" + last + " · exp " + (ce && ce.value ? ce.value : "—");
+      }
+      if (method === "netbanking") {
+        var nb = document.getElementById("planningNetBank");
+        return "Net banking · " + (nb && nb.value ? nb.value.trim() : "Selected bank");
+      }
+      if (method === "online") {
+        var upi = document.getElementById("planningUpiId");
+        var w = document.querySelector('input[name="planningOnlineWallet"]:checked');
+        var wn = w && w.value === "phonepe" ? "PhonePe" : "Google Pay";
+        return wn + " · UPI " + (upi && upi.value ? upi.value.trim() : "");
+      }
+      return "Online payment";
+    }
+
     function planningDownloadInvoiceSummary(entry) {
+      var G = typeof StacklyPlanningInvoice !== "undefined" ? StacklyPlanningInvoice : null;
+      if (G && typeof G.downloadPlanningInvoiceForEntry === "function") {
+        var defaults = {
+          displayName: PLANNING_DISPLAY_USER_NAME,
+          email: "srinu@gmail.com",
+          phone: "9848xxxx19",
+          address: "Chennai - 636008"
+        };
+        G.downloadPlanningInvoiceForEntry(entry, defaults, entry.invoiceId).catch(function () {});
+        return;
+      }
       if (!entry || !entry.invoiceId) return;
       var lines = [
         "STACKLY — Invoice summary",

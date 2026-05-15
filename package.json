@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "node scripts/dev-safe.mjs",
-    "build": "next build",
+    "build": "esbuild lib/planningInvoiceHtml.ts --format=iife --global-name=StacklyPlanningInvoice --bundle --outfile=public/planning-invoice-document.js && next build",
     "start": "next start",
     "lint": "eslint",
     "deploy": "next build && gh-pages -d out"
@@ -24,6 +24,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
+    "esbuild": "^0.25.0",
     "sharp": "^0.34.5",
     "tailwindcss": "^4",
     "typescript": "^5"
